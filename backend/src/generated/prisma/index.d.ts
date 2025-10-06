@@ -13520,4 +13520,4 @@ export namespace Prisma {
    * DMMF
    */
   export const dmmf: runtime.BaseDMMF
-},
+}
