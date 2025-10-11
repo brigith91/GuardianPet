@@ -1,20 +1,10 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-}
-
-model clinica {
-  id        Int    @id @default(autoincrement())
-  Tienda    String @db.VarChar(255)
-  Direcci_n String @map("Dirección") @db.VarChar(255)
-  Telefono  String @db.VarChar(255)
-  Latitud   Float
-  Longitud  Float
 }
 
 model enfermedad {
@@ -75,11 +65,11 @@ model tratamiento {
 
 model usuario {
   id         Int      @id @default(autoincrement())
-  Nombre     String   @db.VarChar(255)
-  Email      String   @db.VarChar(255)
-  Telefono   String   @db.VarChar(255)
-  Contrase_a String   @map("Contraseña") @db.VarChar(255)
-  Rol        String   @db.VarChar(255)
+  nombre     String   @db.VarChar(255)
+  email      String   @unique(map: "email") @db.VarChar(255)
+  telefono   String   @db.VarChar(255)
+  contrasena String   @db.VarChar(255)
+  rol        String   @db.VarChar(255)
   mascota    mascota?
 }
 
@@ -98,4 +88,13 @@ model veterinario {
   Email             String             @db.VarChar(255)
   Matricula         String             @db.VarChar(255)
   historial_clinico historial_clinico?
+}
+
+model clinica {
+  id        Int    @id @default(autoincrement())
+  Tienda    String @db.VarChar(255)
+  Direcci_n String @map("Dirección") @db.VarChar(255)
+  Telefono  String @db.VarChar(255)
+  Latitud   Float
+  Longitud  Float
 }
