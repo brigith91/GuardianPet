@@ -1,4 +1,5 @@
-import svc from "./user.service.js";
+import svc from "./clinic.service.js";
+
 export default {
   registrar: async (req, res, next) => {
     try {
@@ -7,7 +8,7 @@ export default {
       next(e);
     }
   },
-  
+
   listar: async (req, res, next) => {
     try {
       res.json(await svc.listar(req.query));
@@ -15,6 +16,19 @@ export default {
       next(e);
     }
   },
+
+  obtenerPorId: async (req, res, next) => {
+    try {
+      const clinic = await svc.obtenerPorId(req.params.id);
+      if (!clinic) {
+        return res.status(404).json({ error: "Clínica no encontrada" });
+      }
+      res.json(clinic);
+    } catch (e) {
+      next(e);
+    }
+  },
+
   actualizar: async (req, res, next) => {
     try {
       res.json(await svc.actualizar(req.params.id, req.body));
@@ -22,6 +36,7 @@ export default {
       next(e);
     }
   },
+
   eliminar: async (req, res, next) => {
     try {
       await svc.eliminar(req.params.id);
@@ -29,5 +44,5 @@ export default {
     } catch (e) {
       next(e);
     }
-  },
+  }
 };

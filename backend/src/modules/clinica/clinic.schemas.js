@@ -1,12 +1,21 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import { z } from "zod";
 
-const userSchema = new Schema({
-  nombre: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  telefono: { type: String },
-  contraseña: { type: String, required: true }, // debe almacenarse hasheada
-  rol: { type: String, default: 'usuario' }
-}, { timestamps: true });
+export const registerClinicSchema = z.object({
+  body: z.object({
+    tienda: z.string().min(2),
+    direccion: z.string().min(5),
+    telefono: z.string().min(7),
+    latitud: z.number().min(-90).max(90),
+    longitud: z.number().min(-180).max(180),
+  }),
+});
 
-module.exports = mongoose.model('Usuario', userSchema);
+export const updateClinicSchema = z.object({
+  body: z.object({
+    tienda: z.string().min(2).optional(),
+    direccion: z.string().min(5).optional(),
+    telefono: z.string().min(7).optional(),
+    latitud: z.number().min(-90).max(90).optional(),
+    longitud: z.number().min(-180).max(180).optional(),
+  }),
+});
