@@ -9,5 +9,9 @@ export const registerSchema = z.object({
   }),
 });
 export const loginSchema = z.object({
-  body: z.object({ email: z.string().email(), contrasena: z.string().min(6) }),
+  body: z.object({
+    email: z.string().email(), 
+    contrasena: z.string().min(6) }),
 });
+
+
