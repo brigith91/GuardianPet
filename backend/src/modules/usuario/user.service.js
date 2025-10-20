@@ -3,12 +3,14 @@ import { hashPassword, comparePassword } from "../../utils/crypto.js";
 import repo from "./user.repository.js";
 
 export default {
-  async registrar({ nombre, email, telefono, contrasena, rol = "usuario" }) {
+  async registrar({ nombre, email, telefono, contrasena, rol = "usuario", cedula }) {
     if (await repo.existsEmail(email))
       throw new Error("El email ya está registrado");
+    else if (await repo.existsCedula(cedula))
+      throw new Error("La cédula ya está registrada");
     const hash = await hashPassword(contrasena);
     contrasena = hash;
-    return repo.create({ nombre, email, telefono, contrasena, rol });
+    return repo.create({ nombre, email, telefono, contrasena, rol, cedula });
   },
   async login({ email, contrasena }) {
     const user = await repo.findByEmail(email);
@@ -19,8 +21,8 @@ export default {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
     );
-    const { id, nombre, telefono, rol } = user;
-    return { token, user: { id, nombre, email, telefono, rol } };
+    const { id, nombre, telefono, rol, cedula } = user;
+    return { token, user: { id, nombre, email, telefono, rol, cedula } };
   },
   perfil(id) {
     return repo.findById(id);
