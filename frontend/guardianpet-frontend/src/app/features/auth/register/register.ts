@@ -8,32 +8,15 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   selector: 'app-register',
   imports: [CommonModule, FormsModule, RouterLink],
-  template: `
-  <div class="card">
-    <h2>Crear cuenta</h2>
-    <form (ngSubmit)="onSubmit()">
-      <label>Cedula</label>
-      <input [(ngModel)]="cedula" name="cedula" type="number" required/>
-      <label>Nombre</label>
-      <input [(ngModel)]="nombre" name="nombre" required/>
-      <label>Email</label>
-      <input [(ngModel)]="email" name="email" type="email" required/>
-      <label>Teléfono</label>
-      <input [(ngModel)]="telefono" name="telefono"/>
-      <label>Contraseña</label>
-      <input [(ngModel)]="contrasena" name="contrasena" type="contrasena" required/>
-      <button type="submit">Registrarme</button>
-    </form>
-    <a routerLink="/login">Ya tengo cuenta</a>
-    <p class="ok" *ngIf="ok">Cuenta creada, ahora inicia sesión</p>
-    <p class="error" *ngIf="error">{{error}}</p>
-  </div>`,
-  styles:[`.card{max-width:420px;margin:4rem auto;padding:1.5rem;border:1px solid #eee;border-radius:12px} .ok{color:#2e7d32} .error{color:#c62828}`]
+  templateUrl: './register.html',
+  styleUrl: './register.scss'  
+
 })
 export class RegisterComponent{
   nombre = '';
+  apellidos = '';
   email = '';
-  telefono = '';
+  telefono = ''; 
   contrasena = '';
   cedula = 0;   
   ok = false;
