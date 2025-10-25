@@ -6,11 +6,11 @@ import { registerDiseaseSchema, updateDiseaseSchema } from "./disease.schemas.js
 
 const r = Router();
 
-r.use(auth);
+//r.use(auth);
 r.get("/", ctrl.listar);
 r.get("/:id", ctrl.obtenerPorId);
 r.post("/", validate(registerDiseaseSchema), ctrl.registrar);
 r.put("/:id", validate(updateDiseaseSchema), ctrl.actualizar);
-r.delete("/:id", allow("admin"), ctrl.eliminar);
+r.delete("/:id", ctrl.eliminar);
 
 export default r;
