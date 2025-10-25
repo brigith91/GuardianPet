@@ -2,17 +2,16 @@ import { Router } from "express";
 import ctrl from "./veterinarian.controller.js";
 import { auth, allow } from "../../middlewares/auth.js";
 import { validate } from "../../middlewares/validate.js";
-import { registerSchema, loginSchema } from "./veterinarian.schemas.js";
+import { registerVetenirarianSchema, loginSchema } from "./veterinarian.schemas.js";
 
 const r = Router();
 
-r.post("/registro", validate(registerSchema), ctrl.registrar);
-r.post("/login", validate(loginSchema), ctrl.login);
+r.get("/", ctrl.listar);
+r.get("/:id", ctrl.obtenerPorId);
 
-r.use(auth);
-r.get("/me", ctrl.perfil);
-r.get("/", allow("admin"), ctrl.listar);
-r.put("/:id", allow("admin"), ctrl.actualizar);
-r.delete("/:id", allow("admin"), ctrl.eliminar);
+//r.use(auth);
+r.post("/",  validate(registerVetenirarianSchema), ctrl.registrar);
+r.put("/:id", validate(updateVetenirarianSchema), ctrl.actualizar);
+r.delete("/:id", ctrl.eliminar);
 
 export default r;
