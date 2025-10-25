@@ -1,11 +1,9 @@
 import repo from "./record.repository.js";
 
 export default {
-  async crear({ fecha, descripcion, tipo, veterinario_id_fk, mascota_id_fk }) {
-    if (await repo.existsByMascotaAndFecha(mascota_id_fk, fecha, tipo)) {
-      throw new Error("Ya existe un registro del mismo tipo en esta fecha para esta mascota");
-    }
-    return repo.create({ fecha, descripcion, tipo, veterinario_id_fk, mascota_id_fk });
+  async crear({ fecha, descripcion, tipo, veterinario_id_fk, mascota_id_fk,url_archivos,  cita_id_fk }) {
+    
+    return repo.create({ fecha, descripcion, tipo, veterinario_id_fk, mascota_id_fk,url_archivos,  cita_id_fk });
   },
 
   obtenerPorId(id) {
@@ -16,12 +14,12 @@ export default {
     return repo.list(params);
   },
 
-  listarPorVeterinario(veterinario_id) {
-    return repo.findByVeterinarioId(veterinario_id);
+  listarPorVeterinario(veterinario_id_fk) {
+    return repo.findByVeterinario(veterinario_id_fk);
   },
 
-  listarPorMascota(mascota_id) {
-    return repo.findByMascotaId(mascota_id);
+  listarPorMascota(mascota_id_fk) {
+    return repo.findByMascotaId(mascota_id_fk);
   },
 
   async actualizar(id, data) {
@@ -32,9 +30,6 @@ export default {
 
     if (data.fecha && data.tipo) {
       const mascota_id = data.mascota_id_fk || record.mascota_id_fk;
-      if (await repo.existsByMascotaAndFecha(mascota_id, data.fecha, data.tipo)) {
-        throw new Error("Ya existe un registro del mismo tipo en esta fecha para esta mascota");
-      }
     }
 
     return repo.update(id, data);
