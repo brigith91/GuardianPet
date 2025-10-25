@@ -9,9 +9,9 @@ const r = Router();
 r.get("/", ctrl.listar);
 r.get("/:id", ctrl.obtenerPorId);
 
-r.use(auth);
-r.post("/", allow("admin"), validate(registerClinicSchema), ctrl.registrar);
-r.put("/:id", allow("admin"), validate(updateClinicSchema), ctrl.actualizar);
-r.delete("/:id", allow("admin"), ctrl.eliminar);
+//r.use(auth);
+r.post("/",  validate(registerClinicSchema), ctrl.registrar);
+r.put("/:id", validate(updateClinicSchema), ctrl.actualizar);
+r.delete("/:id", ctrl.eliminar);
 
 export default r;

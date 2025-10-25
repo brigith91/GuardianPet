@@ -12,20 +12,9 @@ const selectPublic = {
 
 const base = createCrudRepository("clinica", {
   defaultSelect: selectPublic,
-  searchable: ["nombre", "direccion", "ciudad", "email"],
+  searchable: ["direccion", "telefono", "longitud", "latitud", "tienda"],
 });
 
 export default {
   ...base,
-
-  findByTienda(tienda) {
-    return prisma.clinica.findUnique({ where: { tienda } });
-  },
-
-  async existsTienda(tienda) {
-    return !!(await prisma.clinica.findUnique({
-      where: { tienda },
-      select: { id: true },
-    }));
-  }
 };

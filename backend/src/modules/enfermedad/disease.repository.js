@@ -12,23 +12,11 @@ const selectPublic = {
 
 const base = createCrudRepository("enfermedad", {
   defaultSelect: selectPublic,
-  searchable: ["tipo", "descripcion"],
+  searchable: ["tipo", "fecha_inicio", "fecha_fin", "descripcion", "historial_clinico_id_fk"],
 });
 
 export default {
   ...base,
 
-  findByHistorialClinico(historialClinicoId) {
-    return prisma.enfermedad.findMany({
-      where: { historial_clinico_id_fk: historialClinicoId },
-      select: selectPublic
-    });
-  },
-
-  findByTipo(tipo) {
-    return prisma.enfermedad.findMany({
-      where: { tipo: { contains: tipo, mode: 'insensitive' } },
-      select: selectPublic
-    });
-  }
+  
 };
