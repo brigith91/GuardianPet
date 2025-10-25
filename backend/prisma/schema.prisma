@@ -12,7 +12,7 @@ model enfermedad {
   tipo           String          @db.VarChar(255)
   fecha_inicio   DateTime        @db.DateTime(0)
   fecha_fin      DateTime        @db.DateTime(0)
-  descripci_n    String          @map("descripción") @db.Text
+  descripcion    String          @db.Text
   det_enfermedad det_enfermedad?
   tratamiento    tratamiento?
 }
@@ -51,7 +51,7 @@ model operacion {
   id            Int            @id @default(autoincrement())
   tipo          String         @db.VarChar(255)
   fecha         DateTime       @db.DateTime(0)
-  descripci_n   String         @map("descripción") @db.Text
+  descripcion   String         @db.Text
   det_operacion det_operacion?
 }
 
@@ -60,7 +60,7 @@ model tratamiento {
   tipo             Int
   fecha            DateTime   @db.DateTime(0)
   fecha_fin        Int
-  descripci_n      String     @map("descripción") @db.Text
+  descripcion      String     @db.Text
   enfermedad_id_fk Int        @unique(map: "enfermedad_id_fk")
   enfermedad       enfermedad @relation(fields: [enfermedad_id_fk], references: [id], onUpdate: Restrict, map: "tratamiento_ibfk_1")
 }
@@ -81,7 +81,7 @@ model vacuna {
   id          Int         @id @default(autoincrement())
   nombre      String      @db.VarChar(255)
   fecha       DateTime    @db.DateTime(0)
-  descripci_n String      @map("descripción") @db.VarChar(255)
+  descripcion String      @db.VarChar(255)
   det_vacuna  det_vacuna?
 }
 
@@ -109,7 +109,7 @@ model cita {
 model clinica {
   id        Int    @id @default(autoincrement())
   tienda    String @db.VarChar(255)
-  direcci_n String @map("dirección") @db.VarChar(255)
+  direccion String @db.VarChar(255)
   telefono  String @db.VarChar(255)
   latitud   Float
   longitud  Float
