@@ -5,31 +5,15 @@ const selectPublic = {
   nombre: true,
   email: true,
   telefono: true,
+  contrasena: true,
   rol: true,
-  cedula: true
+  cedula: true  
 };
 const base = createCrudRepository("usuario", {
   defaultSelect: selectPublic,
-  searchable: ["nombre", "email", "cedula"],
+  searchable: ["nombre", "email", "telefono","rol","contrasena","cedula"],
 });
 export default {
   ...base,
-  findByEmail(email) {
-    return prisma.usuario.findUnique({ where: { email } });
-  },
-  findByCedula(cedula) {
-    return prisma.usuario.findUnique({ where: { cedula } });
-  },
-  async existsEmail(email) {
-    return !!(await prisma.usuario.findUnique({
-      where: { email },
-      select: { id: true },
-    }));
-  },
-  async existsCedula(cedula) {
-    return !!(await prisma.usuario.findUnique({
-      where: { cedula },
-      select: { id: true },
-    }));
-  },
+  
 };

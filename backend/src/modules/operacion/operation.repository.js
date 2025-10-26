@@ -11,7 +11,7 @@ const selectPublic = {
 
 const base = createCrudRepository("operation", {
   defaultSelect: selectPublic,
-  searchable: ["tipo", "descripcion"],
+  searchable: ["tipo","fecha", "descripcion","historial_clinico_id_fk"],
 });
 
 export default {

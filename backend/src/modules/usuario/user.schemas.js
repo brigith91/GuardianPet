@@ -1,5 +1,5 @@
 import { z } from "zod";
-export const registerSchema = z.object({
+export const registerUserSchema = z.object({
   body: z.object({
     nombre: z.string().min(2),
     email: z.string().email(),
@@ -9,7 +9,7 @@ export const registerSchema = z.object({
     cedula: z.int().min(6),
   }),
 });
-export const loginSchema = z.object({
+export const loginUserSchema = z.object({
   body: z.object({ email: z.string().email(), contrasena: z.string().min(6) }),
 });
 
