@@ -22,6 +22,9 @@ body {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   border-radius: 50px;
   overflow: hidden;
+  justify-content: center;
+  margin-left: 500px;
+  padding: 70px;
 }
 
 .contenido {
@@ -68,7 +71,7 @@ body {
 
 .contenido input::placeholder {
   color: #b0b0b0;
-} 
+}
 
 .contenido a{
   text-decoration: none;
@@ -79,7 +82,7 @@ body {
   color: #666;
   cursor: pointer;
 
-  
+
 }
 
 .volver a:hover{
@@ -92,7 +95,7 @@ body {
   margin-bottom: 1px;
   text-align: center;
   font-size: 12px;
- 
+
   color: #666;
 }
 
