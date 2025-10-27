@@ -9,6 +9,7 @@ export const routes: Routes = [
   { path: 'login',    canMatch: [guestGuard], loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent) },
   { path: 'registro', canMatch: [guestGuard], loadComponent: () => import('./features/auth/register/register').then(m => m.RegisterComponent) },
   { path: 'indice', canMatch: [guestGuard], loadComponent: () => import('./features/indice/indice').then(m => m.IndiceComponent) },
+  { path: 'menu', canMatch: [guestGuard], loadComponent: () => import('./features/menu/menu').then(m => m.IndiceComponent) },
 
   // Requieren token
   { path: 'home',     canMatch: [authGuard],  loadComponent: () => import('./features/home/home').then(m => m.HomeComponent) },

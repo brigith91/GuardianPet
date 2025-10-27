@@ -11,28 +11,11 @@ const selectPublic = {
 
 const base = createCrudRepository("vaccine", {
   defaultSelect: selectPublic,
-  searchable: ["nombre", "descripción"],
+  searchable: ["nombre", "fecha","descripción"," historial_clinico_id_fk"],
 });
 
 export default {
   ...base,
 
-  findByHistorialId(historial_id) {
-    return prisma.vaccine.findMany({
-      where: { historial_clinico_id_fk: historial_id },
-      select: selectPublic,
-      orderBy: { fecha: 'desc' },
-    });
-  },
-
-  async existsByNombreAndHistorial(nombre, historial_id, fecha) {
-    return !!(await prisma.vaccine.findFirst({
-      where: {
-        nombre,
-        historial_clinico_id_fk: historial_id,
-        fecha,
-      },
-      select: { id: true },
-    }));
-  },
+  
 };
