@@ -8,40 +8,22 @@ const selectPublic = {
   tipo: true,
   veterinario_id_fk: true,
   mascota_id_fk: true,
+  url_archivos: true,
+  cita_id_fk: true,
+  
 };
 
 const base = createCrudRepository("record", {
   defaultSelect: selectPublic,
-  searchable: ["descripcion", "tipo"],
+  searchable: ["fecha","descripcion", "tipo", "veterinario_id_fk", "mascota_id_fk" ,"cita_id_fk", "url_archivos"],
 });
 
 export default {
   ...base,
-
-  findByVeterinarioId(veterinario_id) {
-    return prisma.record.findMany({
-      where: { veterinario_id_fk: veterinario_id },
-      select: selectPublic,
-      orderBy: { fecha: 'desc' },
-    });
+findByVeterinario(veterinario_id_fk) {
+    return prisma.historia_clinico.findUnique({ where: { veterinario_id_fk } });
   },
-
-  findByMascotaId(mascota_id) {
-    return prisma.record.findMany({
-      where: { mascota_id_fk: mascota_id },
-      select: selectPublic,
-      orderBy: { fecha: 'desc' },
-    });
-  },
-
-  async existsByMascotaAndFecha(mascota_id, fecha, tipo) {
-    return !!(await prisma.record.findFirst({
-      where: {
-        mascota_id_fk: mascota_id,
-        fecha,
-        tipo,
-      },
-      select: { id: true },
-    }));
+findByVeterinario(mascota_id_fk) {
+    return prisma.historia_clinico.findUnique({ where: { mascota_id_fk } });
   },
 };
