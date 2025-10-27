@@ -1,11 +1,9 @@
 import repo from "./treatment.repository.js";
 
 export default {
-  async registrar({ tipo, fecha, fecha_fin, descripcion, historial_clinico_id_fk }) {
-    if (await repo.existsByTipoAndHistorial(tipo, historial_clinico_id_fk, fecha)) {
-      throw new Error("Ya existe un tratamiento del mismo tipo en esta fecha para este historial");
-    }
-    return repo.create({ tipo, fecha, fecha_fin, descripcion, historial_clinico_id_fk });
+  async registrar({ tipo, fecha, fecha_fin, descripcion, enfermeda_id_fk }) {
+   
+    return repo.create({ tipo, fecha, fecha_fin, descripcion, enfermeda_id_fk });
   },
 
   obtenerPorId(id) {
@@ -16,8 +14,8 @@ export default {
     return repo.list(params);
   },
 
-  listarPorHistorial(historial_id) {
-    return repo.findByHistorialId(historial_id);
+  listarPorEnfermedad(enfermeda_id) {
+    return repo.findByEnfermedaId(enfermeda_id);
   },
 
   async actualizar(id, data) {
@@ -27,8 +25,8 @@ export default {
     }
 
     if (data.tipo && data.fecha) {
-      const historial_id = data.historial_clinico_id_fk || treatment.historial_clinico_id_fk;
-      if (await repo.existsByTipoAndHistorial(data.tipo, historial_id, data.fecha)) {
+      const enfermeda_id = data.enfermeda_id_fk || treatment.enfermeda_id_fk;
+      if (await repo.existsByTipoAndEnfermeda(data.tipo, enfermeda_id, data.fecha)) {
         throw new Error("Ya existe un tratamiento del mismo tipo en esta fecha para este historial");
       }
     }

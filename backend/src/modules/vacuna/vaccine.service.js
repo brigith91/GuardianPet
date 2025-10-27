@@ -2,9 +2,7 @@ import repo from "./vaccine.repository.js";
 
 export default {
   async registrar({ nombre, fecha, descripción, historial_clinico_id_fk }) {
-    if (await repo.existsByNombreAndHistorial(nombre, historial_clinico_id_fk, fecha)) {
-      throw new Error("Ya existe una vacuna con ese nombre en esta fecha para este historial");
-    }
+    
     return repo.create({ nombre, fecha, descripción, historial_clinico_id_fk });
   },
 

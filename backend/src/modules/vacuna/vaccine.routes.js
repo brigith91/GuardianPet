@@ -6,10 +6,10 @@ import { registrarVaccineSchema, actualizarVaccineSchema } from "./vaccine.schem
 
 const r = Router();
 
-r.use(auth);
+//r.use(auth);
 r.post("/", validate(registrarVaccineSchema), ctrl.registrar);
 r.get("/historial/:historial_id", ctrl.listarPorHistorial);
-r.get("/", allow("admin"), ctrl.listar);
+r.get("/",  ctrl.listar);
 r.get("/:id", ctrl.obtenerPorId);
 r.put("/:id", validate(actualizarVaccineSchema), ctrl.actualizar);
 r.delete("/:id", ctrl.eliminar);
