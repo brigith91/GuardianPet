@@ -6,10 +6,10 @@ import { registrarOperationSchema, actualizarOperationSchema } from "./operation
 
 const r = Router();
 
-r.use(auth);
+//r.use(auth);
 r.post("/", validate(registrarOperationSchema), ctrl.registrar);
 r.get("/historial/:historial_id", ctrl.listarPorHistorial);
-r.get("/", allow("admin"), ctrl.listar);
+r.get("/", ctrl.listar);
 r.get("/:id", ctrl.obtenerPorId);
 r.put("/:id", validate(actualizarOperationSchema), ctrl.actualizar);
 r.delete("/:id", ctrl.eliminar);

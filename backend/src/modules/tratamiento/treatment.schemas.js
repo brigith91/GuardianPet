@@ -1,17 +1,21 @@
-import { Router } from "express";
-import ctrl from "./treatment.controller.js";
-import { auth, allow } from "../../middlewares/auth.js";
-import { validate } from "../../middlewares/validate.js";
-import { registrarTreatmentSchema, actualizarTreatmentSchema } from "./treatment.schemas.js";
+import { z } from "zod";
 
-const r = Router();
+export const registerTreatmentSchema = z.object({
+  body: z.object({
+    tipo: z.string().min(2),
+    fecha: z.string().datetime(),
+    fecha_fin: z.string().datetime().optional(),
+    descripcion: z.string().optional(),
+    enfermeda_id_fk: z.number().int().positive(),
+  }),       
+});
 
-r.use(auth);
-r.post("/", validate(registrarTreatmentSchema), ctrl.registrar);
-r.get("/historial/:historial_id", ctrl.listarPorHistorial);
-r.get("/", allow("admin"), ctrl.listar);
-r.get("/:id", ctrl.obtenerPorId);
-r.put("/:id", validate(actualizarTreatmentSchema), ctrl.actualizar);
-r.delete("/:id", ctrl.eliminar);
-
-export default r;
+export const updateTreatmentSchema = z.object({
+  body: z.object({
+    tipo: z.string().min(2).optional(),
+    fecha_inicio: z.string().datetime().optional(),
+    fecha_fin: z.string().datetime().optional(),
+    descripcion: z.string().optional(),
+    enfermeda_id_fk: z.number().int().positive().optional(),
+  }),
+});

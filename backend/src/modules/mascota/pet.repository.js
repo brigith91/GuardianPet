@@ -6,14 +6,15 @@ const selectPublic = {
   nombre: true,
   especie: true,
   raza: true,
-  edad: true,
   sexo: true,
+  fecha_nacimiento: true,
+  url_foto: true, 
   usuario_id_fk: true,
 };
 
 const base = createCrudRepository("pet", {
   defaultSelect: selectPublic,
-  searchable: ["nombre", "especie", "raza", "sexo", "edad",usuario_id_fk],
+  searchable: ["nombre", "especie", "raza", "sexo", "fecha_nacimiento","url_foto","usuario_id_fk"],
 });
 
 export default {
