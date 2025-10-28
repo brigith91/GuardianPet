@@ -11,6 +11,7 @@ export const registrarPetSchema = z.object({
   }),
 });
 
+
 export const actualizarPetSchema = z.object({
   body: z.object({
     nombre: z.string().min(2).optional(),

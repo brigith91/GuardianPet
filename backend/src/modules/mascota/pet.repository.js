@@ -13,7 +13,7 @@ const selectPublic = {
 
 const base = createCrudRepository("pet", {
   defaultSelect: selectPublic,
-  searchable: ["nombre", "especie", "raza"],
+  searchable: ["nombre", "especie", "raza", "sexo", "edad",usuario_id_fk],
 });
 
 export default {
