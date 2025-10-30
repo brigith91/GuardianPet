@@ -24,18 +24,18 @@ export default {
     const { id, nombre, telefono, rol, cedula } = user;
     return { token, user: { id, nombre, email, telefono, rol, cedula } };
   },
-  perfil(id) {
-    return repo.findById(id);
-  },
+
   listar(params) {
     return repo.list(params);
   },
+  perfil(id) {
+    return repo.findById(id);
+  },
   async actualizar(id, data) {
-    if (data.contrasena) {
-      data.hash = await hashPassword(data.contrasena);
-      delete data.contrasena;
-    }
-    return repo.update(id, data);
+  if (data.contrasena) {
+    data.contrasena = await hashPassword(data.contrasena);
+  }
+  return repo.update(id, data);
   },
   eliminar(id) {
     return repo.remove(id);
