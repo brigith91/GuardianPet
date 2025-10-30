@@ -19,7 +19,7 @@ export default {
 
   perfil: async (req, res, next) => {
     try {
-      const veterinarian = await svc.perfil(req.veterinarianId || req.userId);
+      const veterinarian = await svc.perfil(req.params.id);
       if (!veterinarian) return res.status(404).json({ error: "Veterinario no encontrado" });
       res.json(veterinarian);
     } catch (e) {

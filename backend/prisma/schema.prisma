@@ -10,8 +10,6 @@ datasource db {
 model enfermedad {
   id             Int             @id @default(autoincrement())
   tipo           String          @db.VarChar(255)
-  fecha_inicio   DateTime        @db.DateTime(0)
-  fecha_fin      DateTime        @db.DateTime(0)
   descripcion    String          @db.Text
   det_enfermedad det_enfermedad?
   tratamiento    tratamiento?
@@ -50,7 +48,6 @@ model mascota {
 model operacion {
   id            Int            @id @default(autoincrement())
   tipo          String         @db.VarChar(255)
-  fecha         DateTime       @db.DateTime(0)
   descripcion   String         @db.Text
   det_operacion det_operacion?
 }
@@ -80,14 +77,13 @@ model usuario {
 model vacuna {
   id          Int         @id @default(autoincrement())
   nombre      String      @db.VarChar(255)
-  fecha       DateTime    @db.DateTime(0)
   descripcion String      @db.VarChar(255)
   det_vacuna  det_vacuna?
 }
 
 model veterinario {
   id                Int                @id @default(autoincrement())
-  nombre            DateTime           @db.Date
+  nombre            String             @db.VarChar(255)
   email             String             @db.VarChar(255)
   matricula         String             @db.VarChar(255)
   cita              cita?
@@ -119,6 +115,9 @@ model det_enfermedad {
   id                      Int               @id
   historial_clinico_id_fk Int               @unique(map: "historial_clinico_id_fk")
   enfermedad_id_fk        Int               @unique(map: "enfermedad_id_fk")
+  fecha_inicio            DateTime          @db.DateTime(0)
+  fecha_fin               DateTime          @db.DateTime(0)
+  descripcion             String            @db.Text
   historial_clinico       historial_clinico @relation(fields: [historial_clinico_id_fk], references: [id], onUpdate: Restrict, map: "det_enfermedad_ibfk_1")
   enfermedad              enfermedad        @relation(fields: [enfermedad_id_fk], references: [id], onUpdate: Restrict, map: "det_enfermedad_ibfk_2")
 }
@@ -127,6 +126,8 @@ model det_operacion {
   id                      Int               @id
   historial_clinico_id_fk Int               @unique(map: "historial_clinico_id_fk")
   operacion_id_fk         Int               @unique(map: "operacion_id_fk")
+  fecha                   DateTime          @db.DateTime(0)
+  observaciones           String            @db.Text
   historial_clinico       historial_clinico @relation(fields: [historial_clinico_id_fk], references: [id], onUpdate: Restrict, map: "det_operacion_ibfk_1")
   operacion               operacion         @relation(fields: [operacion_id_fk], references: [id], onUpdate: Restrict, map: "det_operacion_ibfk_2")
 }
@@ -135,6 +136,8 @@ model det_vacuna {
   id                      Int               @id
   historial_clinico_id_fk Int               @unique(map: "historial_clinico_id_fk")
   vacuna_id_fk            Int               @unique(map: "vacuna_id_fk")
+  fecha                   DateTime          @db.DateTime(0)
+  observaciones           String            @db.Text
   historial_clinico       historial_clinico @relation(fields: [historial_clinico_id_fk], references: [id], onUpdate: Restrict, map: "det_vacuna_ibfk_1")
   vacuna                  vacuna            @relation(fields: [vacuna_id_fk], references: [id], onUpdate: Restrict, map: "det_vacuna_ibfk_2")
 }

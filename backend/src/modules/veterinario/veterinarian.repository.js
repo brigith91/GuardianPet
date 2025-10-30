@@ -5,16 +5,15 @@ const selectPublic = {
   id: true,
   nombre: true,
   email: true,
-  matricula: true,
+  matricula: true
 };
 
-const base = createCrudRepository("veterinarian", {
+const base = createCrudRepository("veterinario", {
   defaultSelect: selectPublic,
   searchable: ["nombre", "email", "matricula"],
 });
 
 export default {
   ...base,
-
-  
 };
+

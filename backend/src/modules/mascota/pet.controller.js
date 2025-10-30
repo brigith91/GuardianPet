@@ -28,20 +28,22 @@ export default {
   },
 
   listarPorUsuario: async (req, res, next) => {
-    try {
-      res.json(await svc.listarPorUsuario(req.userId));
-    } catch (e) {
-      next(e);
-    }
-  },
+  try {
+    const usuarioId = req.query.usuario_id; 
+    res.json(await svc.listarPorUsuario(usuarioId));
+  } catch (e) {
+    next(e);
+  }
+},
 
   actualizar: async (req, res, next) => {
-    try {
-      res.json(await svc.actualizar(req.params.id, req.body));
-    } catch (e) {
-      next(e);
-    }
-  },
+  try {
+    const petActualizada = await svc.actualizar(req.params.id, req.body);
+    res.json(petActualizada);
+  } catch (e) {
+    res.status(400).json({ error: e.message }); 
+  }
+},
 
   eliminar: async (req, res, next) => {
     try {
