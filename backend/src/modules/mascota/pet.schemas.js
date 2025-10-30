@@ -6,20 +6,29 @@ export const registrarPetSchema = z.object({
     especie: z.string().min(2),
     raza: z.string().min(2),
     sexo: z.string().min(1),
-    fecha_nacimiento: z.number().int().positive(),
-    url_foto: z.string().min(),
+    // Acepta una fecha tipo string, por ejemplo "2022-06-10"
+    fecha_nacimiento: z
+      .string()
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: "Debe ser una fecha válida (YYYY-MM-DD)",
+      }),
+    url_foto: z.string().min(1).optional(),
     usuario_id_fk: z.number().int().positive(),
   }),
 });
-
 
 export const actualizarPetSchema = z.object({
   body: z.object({
     nombre: z.string().min(2).optional(),
     especie: z.string().min(2).optional(),
     raza: z.string().min(2).optional(),
-    fecha_nacimiento: z.number().int().positive().optional(),
     sexo: z.string().min(1).optional(),
+    fecha_nacimiento: z
+      .string()
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: "Debe ser una fecha válida (YYYY-MM-DD)",
+      })
+      .optional(),
     url_foto: z.string().min(1).optional(),
     usuario_id_fk: z.number().int().positive().optional(),
   }),

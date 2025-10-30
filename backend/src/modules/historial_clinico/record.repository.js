@@ -13,7 +13,7 @@ const selectPublic = {
   
 };
 
-const base = createCrudRepository("record", {
+const base = createCrudRepository("historial_clinico", {
   defaultSelect: selectPublic,
   searchable: ["fecha","descripcion", "tipo", "veterinario_id_fk", "mascota_id_fk" ,"cita_id_fk", "url_archivos"],
 });
@@ -21,9 +21,9 @@ const base = createCrudRepository("record", {
 export default {
   ...base,
 findByVeterinario(veterinario_id_fk) {
-    return prisma.historia_clinico.findUnique({ where: { veterinario_id_fk } });
+    return prisma.historial_clinico.findUnique({ where: { veterinario_id_fk } });
   },
 findByVeterinario(mascota_id_fk) {
-    return prisma.historia_clinico.findUnique({ where: { mascota_id_fk } });
+    return prisma.historial_clinico.findUnique({ where: { mascota_id_fk } });
   },
 };
