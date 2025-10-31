@@ -1,17 +1,26 @@
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { hashPassword, comparePassword } from "../../utils/crypto.js";
 import repo from "./user.repository.js";
 
 export default {
-  async registrar({ nombre, email, telefono, contrasena, rol = "usuario", cedula }) {
-    if (await repo.existsEmail(email))
-      throw new Error("El email ya está registrado");
-    else if (await repo.existsCedula(cedula))
-      throw new Error("La cédula ya está registrada");
-    const hash = await hashPassword(contrasena);
-    contrasena = hash;
-    return repo.create({ nombre, email, telefono, contrasena, rol, cedula });
+  async registrar(data) {
+    // Verificar si el correo ya existe
+    const emailExists = await repo.existsEmail(data.email);
+    if (emailExists) throw new Error("El correo ya está registrado");
+
+    // Verificar si la cédula ya existe
+    const cedulaExists = await repo.existsCedula(data.cedula);
+    if (cedulaExists) throw new Error("La cédula ya está registrada");
+
+    // Encriptar la contraseña
+    const hashedPassword = await bcrypt.hash(data.contrasena, 10);
+    data.contrasena = hashedPassword;
+
+    // Crear usuario
+    const nuevoUsuario = await repo.create(data);
+    return nuevoUsuario;
   },
+
   async login({ email, contrasena }) {
     const user = await repo.findByEmail(email);
     if (!user || !(await comparePassword(contrasena, user.contrasena)))
@@ -37,7 +46,14 @@ export default {
   }
   return repo.update(id, data);
   },
-  eliminar(id) {
-    return repo.remove(id);
+
+  async eliminar(id) {
+    return await repo.remove(id);
+  },
+
+  async perfil(id) {
+    const user = await repo.findById(id);
+    if (!user) throw new Error("No encontrado");
+    return user;
   },
 };
