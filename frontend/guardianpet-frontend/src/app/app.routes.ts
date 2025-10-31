@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'registro', canMatch: [guestGuard], loadComponent: () => import('./features/auth/register/register').then(m => m.RegisterComponent) },
   { path: 'indice', canMatch: [guestGuard], loadComponent: () => import('./features/indice/indice').then(m => m.IndiceComponent) },
   { path: 'menu', canMatch: [guestGuard], loadComponent: () => import('./features/menu/menu').then(m => m.IndiceComponent) },
+  { path: 'home', canMatch: [guestGuard], loadComponent: () => import('./features/home/home').then(m => m.HomeComponent) },
 
   // Requieren token
   { path: 'home',     canMatch: [authGuard],  loadComponent: () => import('./features/home/home').then(m => m.HomeComponent) },

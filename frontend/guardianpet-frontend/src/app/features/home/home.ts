@@ -6,14 +6,9 @@ import { AuthService, User } from '../../core/services/auth.service';
   standalone: true,
   selector: 'app-home',
   imports: [CommonModule],
-  template: `
-  <div class="page">
-    <h2>Home</h2>
-    <ng-container *ngIf="me; else notLogged">
-      <p>Hola, {{me?.nombre}} ({{me?.email}})</p>
-    </ng-container>
-    <ng-template #notLogged><p>No autenticado.</p></ng-template>
-  </div>`
+  templateUrl: './home.html',
+  styleUrls: ['./home.scss']
+ 
 })
 export class HomeComponent implements OnInit{
   me?: User;
