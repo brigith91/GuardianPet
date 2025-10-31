@@ -23,25 +23,28 @@ export default {
 
   async login({ email, contrasena }) {
     const user = await repo.findByEmail(email);
-    if (!user) throw new Error("Credenciales inválidas");
-
-    const valid = await bcrypt.compare(contrasena, user.contrasena);
-    if (!valid) throw new Error("Credenciales inválidas");
-
-    // Generar token
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    return { token, user };
+    if (!user || !(await comparePassword(contrasena, user.contrasena)))
+      throw new Error("Credenciales inválidas");
+    const token = jwt.sign(
+      { sub: user.id, email: user.email, rol: user.rol },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
+    );
+    const { id, nombre, telefono, rol, cedula } = user;
+    return { token, user: { id, nombre, email, telefono, rol, cedula } };
   },
 
-  async listar(query) {
-    return await repo.list(query);
+  listar(params) {
+    return repo.list(params);
   },
-
+  perfil(id) {
+    return repo.findById(id);
+  },
   async actualizar(id, data) {
-    if (data.contrasena) {
-      data.contrasena = await bcrypt.hash(data.contrasena, 10);
-    }
-    return await repo.update(id, data);
+  if (data.contrasena) {
+    data.contrasena = await hashPassword(data.contrasena);
+  }
+  return repo.update(id, data);
   },
 
   async eliminar(id) {

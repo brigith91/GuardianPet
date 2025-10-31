@@ -24,28 +24,33 @@ export default {
     }
   },
   listar: async (req, res, next) => {
-    try {
-      res.json(await svc.listar(req.query));
-    } catch (e) {
-      next(e);
-    }
-  },
-  actualizar: async (req, res, next) => {
-    try {
-      res.json(await svc.actualizar(req.params.id, req.body));
-    } catch (e) {
-      next(e);
-    }
-  },
-  obtenerPorId: async (req, res, next) => {
   try {
-    const x = await svc.perfil(req.params.id);
-    if (!x) return res.status(404).json({ error: "No encontrado" });
-    res.json(x);
+    const usuarios = await svc.listar(req.query);
+    res.json(usuarios);
   } catch (e) {
     next(e);
   }
 },
+
+obtenerPorId: async (req, res, next) => {
+  try {
+    const usuario = await svc.perfil(req.params.id);
+    if (!usuario) return res.status(404).json({ error: "Usuario no encontrado" });
+    res.json(usuario);
+  } catch (e) {
+    next(e);
+  }
+
+},
+  actualizar: async (req, res, next) => {
+  try {
+    const usuarioActualizado = await svc.actualizar(req.params.id, req.body);
+    res.json(usuarioActualizado);
+  } catch (e) {
+    next(e);
+  }
+},
+
   eliminar: async (req, res, next) => {
     try {
       await svc.eliminar(req.params.id);
