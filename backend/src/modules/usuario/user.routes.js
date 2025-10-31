@@ -10,7 +10,8 @@ r.post("/registro", validate(registerUserSchema), ctrl.registrar);
 r.post("/login", validate(loginUserSchema), ctrl.login);
 
 //r.use(auth);
-r.get("/me", ctrl.perfil);
+r.get("/me", ctrl.perfil); 
+r.get("/:id", ctrl.obtenerPorId);
 r.get("/", ctrl.listar);
 r.put("/:id", ctrl.actualizar);
 r.delete("/:id", ctrl.eliminar);

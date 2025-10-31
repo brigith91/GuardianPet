@@ -37,6 +37,15 @@ export default {
       next(e);
     }
   },
+  obtenerPorId: async (req, res, next) => {
+  try {
+    const x = await svc.perfil(req.params.id);
+    if (!x) return res.status(404).json({ error: "No encontrado" });
+    res.json(x);
+  } catch (e) {
+    next(e);
+  }
+},
   eliminar: async (req, res, next) => {
     try {
       await svc.eliminar(req.params.id);
