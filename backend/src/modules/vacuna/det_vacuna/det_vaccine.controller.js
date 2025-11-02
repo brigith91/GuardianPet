@@ -1,10 +1,9 @@
-import svc from "./appointment.service.js";
+import svc from "./det_vaccine.service.js";
 
 export default {
-  registrar: async (req, res, next) => {
+  crear: async (req, res, next) => {
     try {
-      const cita = await svc.registrar(req.body);
-      res.status(201).json(cita);
+      res.status(201).json(await svc.crear(req.body));
     } catch (e) {
       next(e);
     }
@@ -20,25 +19,25 @@ export default {
 
   obtenerPorId: async (req, res, next) => {
     try {
-      const cita = await svc.obtenerPorId(req.params.id);
-      if (!cita) return res.status(404).json({ error: "Cita no encontrada" });
-      res.json(cita);
+      const record = await svc.obtenerPorId(req.params.id);
+      if (!record) return res.status(404).json({ error: "Registro no encontrado" });
+      res.json(record);
     } catch (e) {
       next(e);
     }
   },
 
-  listarPorUsuario: async (req, res, next) => {
+  listarPorHistorial: async (req, res, next) => {
     try {
-      res.json(await svc.listarPorUsuario(req.params.usuario_id));
+      res.json(await svc.listarPorHistorial(req.params.historial_clinico_id));
     } catch (e) {
       next(e);
     }
   },
 
-  listarPorVeterinario: async (req, res, next) => {
+  listarPorVacuna: async (req, res, next) => {
     try {
-      res.json(await svc.listarPorVeterinario(req.params.veterinario_id));
+      res.json(await svc.listarPorVacuna(req.params.vacuna_id));
     } catch (e) {
       next(e);
     }

@@ -1,11 +1,17 @@
-import repo from "./cita.repository.js";
+import repo from "./appointment.repository.js";
 
 export default {
-  registrar(data) {
-    return repo.create({
+  async registrar(data) {
+    // Convertir fecha y pasar _fk al repository
+    const citaData = {
       ...data,
       fecha: new Date(data.fecha),
-    });
+      usuario_id_fk: data.usuario_id_fk,
+      veterinario_id_fk: data.veterinario_id_fk,
+    };
+
+    // Llamar al repository que valida y conecta relaciones
+    return repo.create(citaData);
   },
 
   listar(params) {

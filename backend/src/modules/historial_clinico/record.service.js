@@ -21,6 +21,9 @@ export default {
   listarPorMascota(mascota_id_fk) {
     return repo.findByMascotaId(mascota_id_fk);
   },
+   listarPorCita(cita_id_fk) {
+    return repo.findByCita(cita_id_fk);
+  },
 
   async actualizar(id, data) {
     const record = await repo.findById(id);

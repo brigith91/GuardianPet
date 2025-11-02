@@ -25,8 +25,8 @@ export const createCrudRepository = (
           where,
           skip,
           take: pageSize,
-          orderBy: { id: "desc" },
-          ...(select && { select }),
+          orderBy, 
+          ...(select && { select })
         }),
         model.count({ where }),
       ]);

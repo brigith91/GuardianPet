@@ -63,15 +63,17 @@ model tratamiento {
 }
 
 model usuario {
-  id         Int      @id @default(autoincrement())
-  nombre     String   @db.VarChar(255)
-  email      String   @unique(map: "email") @db.VarChar(255)
-  telefono   String   @db.VarChar(255)
-  contrasena String   @db.VarChar(255)
-  rol        String   @db.VarChar(255)
-  cedula     Int      @unique(map: "cedula")
-  cita       cita?
-  mascota    mascota?
+  id        Int      @id @default(autoincrement())
+  nombre    String   @db.VarChar(255)
+  email     String   @unique(map: "email") @db.VarChar(255)
+  telefono  String   @db.VarChar(255)
+  contrasena String  @db.VarChar(255)
+  rol       String   @db.VarChar(255)
+  cedula    Int      @unique(map: "cedula")
+
+  citas     cita[]   // un usuario puede tener muchas citas
+
+  mascota   mascota?
 }
 
 model vacuna {
@@ -86,21 +88,28 @@ model veterinario {
   nombre            String             @db.VarChar(255)
   email             String             @db.VarChar(255)
   matricula         String             @db.VarChar(255)
-  cita              cita?
+  cita              cita[]
   historial_clinico historial_clinico?
 }
 
 model cita {
-  id                Int                @id
-  fecha             DateTime           @db.DateTime(0)
-  usuario_id_fk     Int                @unique(map: "usuario_id")
-  estado            String             @db.VarChar(255)
-  veterinario_id_fk Int                @unique(map: "veterinario_id_fk")
-  observacion       String             @db.Text
-  veterinario       veterinario        @relation(fields: [veterinario_id_fk], references: [id], onUpdate: Restrict, map: "cita_ibfk_1")
-  usuario           usuario            @relation(fields: [id], references: [id], onUpdate: Restrict, map: "cita_ibfk_2")
+  id                Int       @id @default(autoincrement())
+  fecha             DateTime  @db.DateTime(0)
+  estado            String    @db.VarChar(255)
+  observacion       String    @db.Text
+  usuario_id_fk     Int
+  veterinario_id_fk Int
+  usuario           usuario   @relation(fields: [usuario_id_fk], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_cita_usuario")
+  
+  veterinario       veterinario @relation(fields: [veterinario_id_fk], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_cita_veterinario")
+  
   historial_clinico historial_clinico?
+
+  @@index([usuario_id_fk], map: "fk_cita_usuario")
+  @@index([veterinario_id_fk], map: "fk_cita_veterinario")
 }
+
+
 
 model clinica {
   id        Int    @id @default(autoincrement())

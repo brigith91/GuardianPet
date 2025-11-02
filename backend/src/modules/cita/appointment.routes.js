@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ctrl from "./cita.controller.js";
+import ctrl from "./appointment.controller.js";
 
 const r = Router();
 
