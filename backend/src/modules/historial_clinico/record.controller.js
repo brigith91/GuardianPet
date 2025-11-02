@@ -3,7 +3,8 @@ import svc from "./record.service.js";
 export default {
   crear: async (req, res, next) => {
     try {
-      res.status(201).json(await svc.crear(req.body));
+      const nuevo = await svc.crear(req.body);
+      res.status(201).json(nuevo);
     } catch (e) {
       next(e);
     }
@@ -45,7 +46,8 @@ export default {
 
   actualizar: async (req, res, next) => {
     try {
-      res.json(await svc.actualizar(req.params.id, req.body));
+      const actualizado = await svc.actualizar(req.params.id, req.body);
+      res.json(actualizado);
     } catch (e) {
       next(e);
     }
