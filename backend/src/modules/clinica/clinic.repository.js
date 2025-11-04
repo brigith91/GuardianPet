@@ -7,7 +7,7 @@ const selectPublic = {
   telefono: true,
   longitud: true,
   latitud: true,
-  tienda: true
+  tienda: true,
 };
 
 const base = createCrudRepository("clinica", {

@@ -13,11 +13,9 @@ import citaRoutes from "./modules/cita/appointment.routes.js";
 
 // Módulos de detalle 
 
-// ✅ Esta línea ya fue corregida
+
 import detOperationRoutes from "./modules/operacion/det_operacion/det_operation.routes.js"; 
 import detDiseaseRoutes from "./modules/enfermedad/det_enfermedad/det_disease.routes.js";
-
-// ✅ LÍNEA CORREGIDA: Cambiado 'det_vaccine' a 'det_vacuna' para que coincida con la carpeta
 import detVaccineRoutes from "./modules/vacuna/det_vacuna/det_vaccine.routes.js"; 
 
 // importa resto de módulos...

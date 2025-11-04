@@ -11,7 +11,7 @@ export default {
 
   listar: async (req, res, next) => {
     try {
-      res.json(await svc.listar(req.query));
+      res.json(await svc.listar());
     } catch (e) {
       next(e);
     }
@@ -19,9 +19,9 @@ export default {
 
   obtenerPorId: async (req, res, next) => {
     try {
-      const vaccine = await svc.obtenerPorId(req.params.id);
-      if (!vaccine) return res.status(404).json({ error: "Vacuna no encontrada" });
-      res.json(vaccine);
+      const vacuna = await svc.obtenerPorId(req.params.id);
+      if (!vacuna) return res.status(404).json({ error: "Vacuna no encontrada" });
+      res.json(vacuna);
     } catch (e) {
       next(e);
     }

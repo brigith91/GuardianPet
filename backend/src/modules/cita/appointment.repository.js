@@ -49,7 +49,7 @@ export default {
     });
   },
 
-  // 🔹 Buscar por usuario
+  //  Buscar por usuario
   findByUsuarioId(usuario_id_fk) {
     return prisma.cita.findMany({
       where: { usuario_id_fk: parseInt(usuario_id_fk) },
@@ -57,7 +57,7 @@ export default {
     });
   },
 
-  // 🔹 Buscar por veterinario
+  //  Buscar por veterinario
   findByVeterinarioId(veterinario_id_fk) {
     return prisma.cita.findMany({
       where: { veterinario_id_fk: parseInt(veterinario_id_fk) },

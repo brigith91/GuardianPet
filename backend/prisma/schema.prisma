@@ -8,108 +8,117 @@ datasource db {
 }
 
 model enfermedad {
-  id             Int             @id @default(autoincrement())
-  tipo           String          @db.VarChar(255)
-  descripcion    String          @db.Text
-  det_enfermedad det_enfermedad?
-  tratamiento    tratamiento?
+  id             Int              @id @default(autoincrement())
+  tipo           String           @db.VarChar(255)
+  descripcion    String           @db.Text
+  det_enfermedad det_enfermedad[] // Cambiado a array
+  tratamiento    tratamiento[] // Cambiado a array
 }
 
 model historial_clinico {
-  id                Int             @id @default(autoincrement())
-  fecha             DateTime        @db.DateTime(0)
-  descripcion       String          @db.Text
-  tipo              String          @db.VarChar(255)
-  url_archivos      String?         @db.VarChar(255)
-  veterinario_id_fk Int             @unique(map: "veterinario_id_fk")
-  mascota_id_fk     Int             @unique(map: "mascota_id_fk")
-  cita_id_fk        Int?            @unique(map: "cita_id_fk")
-  det_enfermedad    det_enfermedad?
-  det_operacion     det_operacion?
-  det_vacuna        det_vacuna?
-  veterinario       veterinario     @relation(fields: [veterinario_id_fk], references: [id], onUpdate: Restrict, map: "historial_clinico_ibfk_1")
-  mascota           mascota         @relation(fields: [mascota_id_fk], references: [id], onUpdate: Restrict, map: "historial_clinico_ibfk_2")
-  cita              cita?           @relation(fields: [cita_id_fk], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "historial_clinico_ibfk_3")
+  id                Int      @id @default(autoincrement())
+  fecha             DateTime @db.DateTime(0)
+  descripcion       String   @db.Text
+  tipo              String   @db.VarChar(255)
+  url_archivos      String?  @db.VarChar(255)
+  veterinario_id_fk Int
+  mascota_id_fk     Int
+  cita_id_fk        Int?     @unique(map: "cita_id_fk")
+
+  // Relaciones uno-a-muchos
+  det_enfermedad det_enfermedad[] // Cambiado a array
+  det_operacion  det_operacion[] // Cambiado a array
+  det_vacuna     det_vacuna[] // Cambiado a array
+
+  veterinario veterinario @relation(fields: [veterinario_id_fk], references: [id], onUpdate: Restrict, map: "historial_clinico_ibfk_1")
+  mascota     mascota     @relation(fields: [mascota_id_fk], references: [id], onUpdate: Restrict, map: "historial_clinico_ibfk_2")
+  cita        cita?       @relation(fields: [cita_id_fk], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "historial_clinico_ibfk_3")
+
+  @@index([veterinario_id_fk], map: "veterinario_id_fk")
+  @@index([mascota_id_fk], map: "mascota_id_fk")
 }
 
 model mascota {
-  id                Int                @id @default(autoincrement())
-  nombre            String             @db.VarChar(255)
-  especie           String             @db.VarChar(255)
-  raza              String             @db.VarChar(255)
-  sexo              String             @db.VarChar(255)
-  fecha_nacimiento  DateTime           @db.Date
-  usuario_id_fk     Int                @unique(map: "usuario_id_fk")
-  url_foto          String?            @db.VarChar(255)
-  historial_clinico historial_clinico?
-  usuario           usuario            @relation(fields: [usuario_id_fk], references: [id], onUpdate: Restrict, map: "mascota_ibfk_1")
+  id               Int      @id @default(autoincrement())
+  nombre           String   @db.VarChar(255)
+  especie          String   @db.VarChar(255)
+  raza             String   @db.VarChar(255)
+  sexo             String   @db.VarChar(255)
+  fecha_nacimiento DateTime @db.Date
+  usuario_id_fk    Int
+  url_foto         String?  @db.VarChar(255)
+
+  historial_clinico historial_clinico[] // Cambiado a array
+  usuario           usuario             @relation(fields: [usuario_id_fk], references: [id], onUpdate: Restrict, map: "mascota_ibfk_1")
+
+  @@index([usuario_id_fk], map: "usuario_id_fk")
 }
 
 model operacion {
-  id            Int            @id @default(autoincrement())
-  tipo          String         @db.VarChar(255)
-  descripcion   String         @db.Text
-  det_operacion det_operacion?
+  id            Int             @id @default(autoincrement())
+  tipo          String          @db.VarChar(255)
+  descripcion   String          @db.Text
+  det_operacion det_operacion[] // Cambiado a array
 }
 
 model tratamiento {
-  id               Int        @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   tipo             Int
-  fecha            DateTime   @db.DateTime(0)
+  fecha            DateTime @db.DateTime(0)
   fecha_fin        Int
-  descripcion      String     @db.Text
-  enfermedad_id_fk Int        @unique(map: "enfermedad_id_fk")
-  enfermedad       enfermedad @relation(fields: [enfermedad_id_fk], references: [id], onUpdate: Restrict, map: "tratamiento_ibfk_1")
+  descripcion      String   @db.Text
+  enfermedad_id_fk Int
+
+  enfermedad enfermedad @relation(fields: [enfermedad_id_fk], references: [id], onUpdate: Restrict, map: "tratamiento_ibfk_1")
+
+  @@index([enfermedad_id_fk], map: "enfermedad_id_fk")
 }
 
 model usuario {
-  id        Int      @id @default(autoincrement())
-  nombre    String   @db.VarChar(255)
-  email     String   @unique(map: "email") @db.VarChar(255)
-  telefono  String   @db.VarChar(255)
-  contrasena String  @db.VarChar(255)
-  rol       String   @db.VarChar(255)
-  cedula    Int      @unique(map: "cedula")
+  id         Int    @id @default(autoincrement())
+  nombre     String @db.VarChar(255)
+  email      String @unique(map: "email") @db.VarChar(255)
+  telefono   String @db.VarChar(255)
+  contrasena String @db.VarChar(255)
+  rol        String @db.VarChar(255)
+  cedula     Int    @unique(map: "cedula")
 
-  citas     cita[]   // un usuario puede tener muchas citas
-
-  mascota   mascota?
+  citas   cita[]
+  mascota mascota[] // Cambiado a array
 }
 
 model vacuna {
-  id          Int         @id @default(autoincrement())
-  nombre      String      @db.VarChar(255)
-  descripcion String      @db.VarChar(255)
-  det_vacuna  det_vacuna?
+  id          Int          @id @default(autoincrement())
+  nombre      String       @db.VarChar(255)
+  descripcion String       @db.VarChar(255)
+  det_vacuna  det_vacuna[] // Cambiado a array
 }
 
 model veterinario {
-  id                Int                @id @default(autoincrement())
-  nombre            String             @db.VarChar(255)
-  email             String             @db.VarChar(255)
-  matricula         String             @db.VarChar(255)
+  id        Int    @id @default(autoincrement())
+  nombre    String @db.VarChar(255)
+  email     String @db.VarChar(255)
+  matricula String @db.VarChar(255)
+
   cita              cita[]
-  historial_clinico historial_clinico?
+  historial_clinico historial_clinico[] // Cambiado a array
 }
 
 model cita {
-  id                Int       @id @default(autoincrement())
-  fecha             DateTime  @db.DateTime(0)
-  estado            String    @db.VarChar(255)
-  observacion       String    @db.Text
+  id                Int      @id @default(autoincrement())
+  fecha             DateTime @db.DateTime(0)
+  estado            String   @db.VarChar(255)
+  observacion       String   @db.Text
   usuario_id_fk     Int
   veterinario_id_fk Int
-  usuario           usuario   @relation(fields: [usuario_id_fk], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_cita_usuario")
-  
-  veterinario       veterinario @relation(fields: [veterinario_id_fk], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_cita_veterinario")
-  
+
+  usuario           usuario            @relation(fields: [usuario_id_fk], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_cita_usuario")
+  veterinario       veterinario        @relation(fields: [veterinario_id_fk], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_cita_veterinario")
   historial_clinico historial_clinico?
 
   @@index([usuario_id_fk], map: "fk_cita_usuario")
   @@index([veterinario_id_fk], map: "fk_cita_veterinario")
 }
-
-
 
 model clinica {
   id        Int    @id @default(autoincrement())
@@ -121,32 +130,47 @@ model clinica {
 }
 
 model det_enfermedad {
-  id                      Int               @id
-  historial_clinico_id_fk Int               @unique(map: "historial_clinico_id_fk")
-  enfermedad_id_fk        Int               @unique(map: "enfermedad_id_fk")
-  fecha_inicio            DateTime          @db.DateTime(0)
-  fecha_fin               DateTime          @db.DateTime(0)
-  descripcion             String            @db.Text
-  historial_clinico       historial_clinico @relation(fields: [historial_clinico_id_fk], references: [id], onUpdate: Restrict, map: "det_enfermedad_ibfk_1")
-  enfermedad              enfermedad        @relation(fields: [enfermedad_id_fk], references: [id], onUpdate: Restrict, map: "det_enfermedad_ibfk_2")
+  id                      Int      @id @default(autoincrement())
+  historial_clinico_id_fk Int
+  enfermedad_id_fk        Int
+  fecha_inicio            DateTime @db.DateTime(0)
+  fecha_fin               DateTime @db.DateTime(0)
+  descripcion             String   @db.Text
+
+  historial_clinico historial_clinico @relation(fields: [historial_clinico_id_fk], references: [id], onUpdate: Restrict, map: "det_enfermedad_ibfk_1")
+  enfermedad        enfermedad        @relation(fields: [enfermedad_id_fk], references: [id], onUpdate: Restrict, map: "det_enfermedad_ibfk_2")
+
+  @@unique([historial_clinico_id_fk, enfermedad_id_fk], map: "det_enfermedad_unique")
+  @@index([historial_clinico_id_fk], map: "historial_clinico_id_fk")
+  @@index([enfermedad_id_fk], map: "enfermedad_id_fk")
 }
 
 model det_operacion {
-  id                      Int               @id
-  historial_clinico_id_fk Int               @unique(map: "historial_clinico_id_fk")
-  operacion_id_fk         Int               @unique(map: "operacion_id_fk")
-  fecha                   DateTime          @db.DateTime(0)
-  observaciones           String            @db.Text
-  historial_clinico       historial_clinico @relation(fields: [historial_clinico_id_fk], references: [id], onUpdate: Restrict, map: "det_operacion_ibfk_1")
-  operacion               operacion         @relation(fields: [operacion_id_fk], references: [id], onUpdate: Restrict, map: "det_operacion_ibfk_2")
+  id                      Int      @id @default(autoincrement())
+  historial_clinico_id_fk Int
+  operacion_id_fk         Int
+  fecha                   DateTime @db.DateTime(0)
+  observaciones           String   @db.Text
+
+  historial_clinico historial_clinico @relation(fields: [historial_clinico_id_fk], references: [id], onUpdate: Restrict, map: "det_operacion_ibfk_1")
+  operacion         operacion         @relation(fields: [operacion_id_fk], references: [id], onUpdate: Restrict, map: "det_operacion_ibfk_2")
+
+  @@unique([historial_clinico_id_fk, operacion_id_fk], map: "det_operacion_unique")
+  @@index([historial_clinico_id_fk], map: "historial_clinico_id_fk")
+  @@index([operacion_id_fk], map: "operacion_id_fk")
 }
 
 model det_vacuna {
-  id                      Int               @id
-  historial_clinico_id_fk Int               @unique(map: "historial_clinico_id_fk")
-  vacuna_id_fk            Int               @unique(map: "vacuna_id_fk")
-  fecha                   DateTime          @db.DateTime(0)
-  observaciones           String            @db.Text
-  historial_clinico       historial_clinico @relation(fields: [historial_clinico_id_fk], references: [id], onUpdate: Restrict, map: "det_vacuna_ibfk_1")
-  vacuna                  vacuna            @relation(fields: [vacuna_id_fk], references: [id], onUpdate: Restrict, map: "det_vacuna_ibfk_2")
+  id                      Int      @id @default(autoincrement())
+  historial_clinico_id_fk Int
+  vacuna_id_fk            Int
+  fecha                   DateTime @db.DateTime(0)
+  observaciones           String   @db.Text
+
+  historial_clinico historial_clinico @relation(fields: [historial_clinico_id_fk], references: [id], onUpdate: Restrict, map: "det_vacuna_ibfk_1")
+  vacuna            vacuna            @relation(fields: [vacuna_id_fk], references: [id], onUpdate: Restrict, map: "det_vacuna_ibfk_2")
+
+  @@unique([historial_clinico_id_fk, vacuna_id_fk], map: "det_vacuna_unique")
+  @@index([historial_clinico_id_fk], map: "historial_clinico_id_fk")
+  @@index([vacuna_id_fk], map: "vacuna_id_fk")
 }
