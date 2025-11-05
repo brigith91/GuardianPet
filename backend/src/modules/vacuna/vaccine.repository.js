@@ -49,8 +49,6 @@ export default {
     });
   },
 
-  // ⚠️ IMPORTANTE: Esto eliminará también las relaciones det_vacuna
-  // debido al CASCADE en la BD
   remove(id) {
     return prisma.vacuna.delete({
       where: { id: Number(id) },
