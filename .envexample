@@ -1,0 +1,9 @@
+PORT=3000
+NODE_ENV=DEV
+# DB
+DATABASE_URL="mysql://root:@localhost:3306/guardianpet"
+# JWT
+JWT_SECRET=
+JWT_EXPIRES_IN=
+# CORS
+CORS_ORIGIN=

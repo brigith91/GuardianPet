@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -137,3 +138,10 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+=======
+node_modules
+# Keep environment variables out of version control
+.env
+
+/src/generated/prisma
+>>>>>>> e8652e0 (Primer commit del proyecto GuardianPet)
