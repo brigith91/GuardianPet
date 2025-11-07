@@ -1,54 +1,54 @@
-import svc from "./vaccine.service.js";
+import vaccineService from "./vaccine.service.js";
 
 export default {
-  registrar: async (req, res, next) => {
+  registrar: async (req, res) => {
     try {
-      res.status(201).json(await svc.registrar(req.body));
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  listar: async (req, res, next) => {
-    try {
-      res.json(await svc.listar());
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  obtenerPorId: async (req, res, next) => {
-    try {
-      const vacuna = await svc.obtenerPorId(req.params.id);
-      if (!vacuna) return res.status(404).json({ error: "Vacuna no encontrada" });
+      const vacuna = await vaccineService.registrar(req.body);
       res.json(vacuna);
-    } catch (e) {
-      next(e);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: err.message });
     }
   },
 
-  listarPorHistorial: async (req, res, next) => {
+  listar: async (req, res) => {
     try {
-      res.json(await svc.listarPorHistorial(req.params.historial_id));
-    } catch (e) {
-      next(e);
+      const vacunas = await vaccineService.listar();
+      res.json(vacunas);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: err.message });
     }
   },
 
-  actualizar: async (req, res, next) => {
+  obtenerPorId: async (req, res) => {
     try {
-      res.json(await svc.actualizar(req.params.id, req.body));
-    } catch (e) {
-      next(e);
+      const vacuna = await vaccineService.obtenerPorId(parseInt(req.params.id));
+      if (!vacuna) return res.status(404).json({ error: "No encontrado" });
+      res.json(vacuna);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: err.message });
     }
   },
 
-  eliminar: async (req, res, next) => {
+  actualizar: async (req, res) => {
     try {
-      await svc.eliminar(req.params.id);
-      res.status(204).end();
-    } catch (e) {
-      next(e);
+      const vacuna = await vaccineService.actualizar(parseInt(req.params.id), req.body);
+      res.json(vacuna);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: err.message });
     }
   },
+
+  eliminar: async (req, res) => {
+    try {
+      const vacuna = await vaccineService.eliminar(parseInt(req.params.id));
+      res.json({ mensaje: "Vacuna eliminada", vacuna });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: err.message });
+    }
+  }
 };

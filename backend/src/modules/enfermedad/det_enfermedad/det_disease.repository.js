@@ -1,5 +1,4 @@
 import prisma from "../../../config/prisma.js";
-import { createCrudRepository } from "../../../utils/repositoryFactory.js";
 
 const selectPublic = {
   id: true,
@@ -8,27 +7,47 @@ const selectPublic = {
   fecha_inicio: true,
   fecha_fin: true,
   descripcion: true,
+  enfermedad: {
+    select: {
+      tipo: true,
+      descripcion: true,
+    },
+  },
 };
 
-const base = createCrudRepository("det_enfermedad", {
-  defaultSelect: selectPublic,
-  searchable: ["descripcion"],
-});
-
 export default {
-  ...base,
-
-  findByHistorial(historial_clinico_id_fk) {
-    return prisma.det_enfermedad.findMany({
-      where: { historial_clinico_id_fk },
+  create(data) {
+    return prisma.det_enfermedad.create({
+      data,
       select: selectPublic,
     });
   },
 
-  findByEnfermedad(enfermedad_id_fk) {
-    return prisma.det_enfermedad.findMany({
-      where: { enfermedad_id_fk },
+  findById(id) {
+    return prisma.det_enfermedad.findUnique({
+      where: { id },
       select: selectPublic,
+    });
+  },
+
+  list(params) {
+    return prisma.det_enfermedad.findMany({
+      select: selectPublic,
+      orderBy: { fecha_inicio: "desc" },
+    });
+  },
+
+  update(id, data) {
+    return prisma.det_enfermedad.update({
+      where: { id },
+      data,
+      select: selectPublic,
+    });
+  },
+
+  remove(id) {
+    return prisma.det_enfermedad.delete({
+      where: { id },
     });
   },
 };

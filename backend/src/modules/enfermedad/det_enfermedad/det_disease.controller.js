@@ -19,25 +19,9 @@ export default {
 
   obtenerPorId: async (req, res, next) => {
     try {
-      const record = await svc.obtenerPorId(req.params.id);
-      if (!record) return res.status(404).json({ error: "Registro no encontrado" });
-      res.json(record);
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  listarPorHistorial: async (req, res, next) => {
-    try {
-      res.json(await svc.listarPorHistorial(req.params.historial_clinico_id));
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  listarPorEnfermedad: async (req, res, next) => {
-    try {
-      res.json(await svc.listarPorEnfermedad(req.params.enfermedad_id));
+      const det = await svc.obtenerPorId(req.params.id);
+      if (!det) return res.status(404).json({ error: "Detalle no encontrado" });
+      res.json(det);
     } catch (e) {
       next(e);
     }
@@ -60,3 +44,4 @@ export default {
     }
   },
 };
+

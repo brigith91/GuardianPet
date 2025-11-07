@@ -1,31 +1,26 @@
 import repo from "./det_disease.repository.js";
 
 export default {
-  crear({ historial_clinico_id_fk, enfermedad_id_fk, fecha_inicio, fecha_fin, descripcion }) {
-    return repo.create({ historial_clinico_id_fk, enfermedad_id_fk, fecha_inicio, fecha_fin, descripcion });
-  },
-
-  obtenerPorId(id) {
-    return repo.findById(id);
+  async crear(data) {
+    return repo.create(data);
   },
 
   listar(params) {
     return repo.list(params);
   },
 
-  listarPorHistorial(historial_clinico_id_fk) {
-    return repo.findByHistorial(historial_clinico_id_fk);
-  },
-
-  listarPorEnfermedad(enfermedad_id_fk) {
-    return repo.findByEnfermedad(enfermedad_id_fk);
+  obtenerPorId(id) {
+    const detId = Number(id); // convertir a número
+    return repo.findById(detId);
   },
 
   actualizar(id, data) {
-    return repo.update(id, data);
+    const detId = Number(id); // convertir a número
+    return repo.update(detId, data);
   },
 
   eliminar(id) {
-    return repo.remove(id);
+    const detId = Number(id); // convertir a número
+    return repo.remove(detId);
   },
 };

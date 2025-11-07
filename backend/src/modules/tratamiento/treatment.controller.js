@@ -1,54 +1,36 @@
-import svc from "./treatment.service.js";
+import service from "./treatment.service.js";
 
 export default {
-  registrar: async (req, res, next) => {
-    try {
-      res.status(201).json(await svc.registrar(req.body));
-    } catch (e) {
-      next(e);
-    }
+  crear(req, res, next) {
+    service.crear(req.body)
+      .then(data => res.json(data))
+      .catch(next);
   },
 
-  listar: async (req, res, next) => {
-    try {
-      res.json(await svc.listar(req.query));
-    } catch (e) {
-      next(e);
-    }
+  listar(req, res, next) {
+    service.listar()
+      .then(data => res.json({ items: data, total: data.length }))
+      .catch(next);
   },
 
-  obtenerPorId: async (req, res, next) => {
-    try {
-      const treatment = await svc.obtenerPorId(req.params.id);
-      if (!treatment) return res.status(404).json({ error: "Tratamiento no encontrado" });
-      res.json(treatment);
-    } catch (e) {
-      next(e);
-    }
+  obtenerPorId(req, res, next) {
+    const id = parseInt(req.params.id);
+    service.obtenerPorId(id)
+      .then(data => res.json(data))
+      .catch(next);
   },
 
-  listarPorHistorial: async (req, res, next) => {
-    try {
-      res.json(await svc.listarPorHistorial(req.params.historial_id));
-    } catch (e) {
-      next(e);
-    }
+  actualizar(req, res, next) {
+    const id = parseInt(req.params.id);
+    service.actualizar(id, req.body)
+      .then(data => res.json(data))
+      .catch(next);
   },
 
-  actualizar: async (req, res, next) => {
-    try {
-      res.json(await svc.actualizar(req.params.id, req.body));
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  eliminar: async (req, res, next) => {
-    try {
-      await svc.eliminar(req.params.id);
-      res.status(204).end();
-    } catch (e) {
-      next(e);
-    }
+  eliminar(req, res, next) {
+    const id = parseInt(req.params.id);
+    service.eliminar(id)
+      .then(data => res.json({ message: "Tratamiento eliminado", data }))
+      .catch(next);
   },
 };

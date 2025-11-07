@@ -1,17 +1,12 @@
 import { Router } from "express";
-import ctrl from "./treatment.controller.js";
-import { auth, allow } from "../../middlewares/auth.js";
-import { validate } from "../../middlewares/validate.js";
-import { registerTreatmentSchema, updateTreatmentSchema } from "./treatment.schemas.js";
+import controller from "./treatment.controller.js";
 
-const r = Router();
+const router = Router();
 
-//r.use(auth);
-r.post("/", validate(registerTreatmentSchema), ctrl.registrar);
-r.get("/historial/:historial_id", ctrl.listarPorHistorial);
-r.get("/",ctrl.listar);
-r.get("/:id", ctrl.obtenerPorId);
-r.put("/:id", validate(updateTreatmentSchema), ctrl.actualizar);
-r.delete("/:id", ctrl.eliminar);
+router.post("/", controller.crear);
+router.get("/", controller.listar);
+router.get("/:id", controller.obtenerPorId);
+router.put("/:id", controller.actualizar);
+router.delete("/:id", controller.eliminar);
 
-export default r;
+export default router;

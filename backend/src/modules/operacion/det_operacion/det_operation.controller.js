@@ -1,31 +1,55 @@
-import repo from "./det_operation.repository.js";
+import svc from "./det_operation.service.js";
 
 export default {
-  async crear({ historial_clinico_id_fk, operacion_id_fk, fecha, observaciones }) {
-    return repo.create({ historial_clinico_id_fk, operacion_id_fk, fecha, observaciones });
+  registrar: async (req, res, next) => {
+    try {
+      const nuevo = await svc.registrar(req.body);
+      res.status(201).json(nuevo);
+    } catch (e) {
+      next(e);
+    }
   },
 
-  obtenerPorId(id) {
-    return repo.findById(id);
+  listar: async (req, res, next) => {
+    try {
+      res.json(await svc.listar(req.query));
+    } catch (e) {
+      next(e);
+    }
   },
 
-  listar(params) {
-    return repo.list(params);
+  listarPorHistorial: async (req, res, next) => {
+    try {
+      res.json(await svc.listarPorHistorial(req.params.historial_id));
+    } catch (e) {
+      next(e);
+    }
   },
 
-  listarPorHistorial(historial_clinico_id_fk) {
-    return repo.findByHistorial(historial_clinico_id_fk);
+  obtenerPorId: async (req, res, next) => {
+    try {
+      const data = await svc.obtenerPorId(req.params.id);
+      if (!data) return res.status(404).json({ error: "Detalle no encontrado" });
+      res.json(data);
+    } catch (e) {
+      next(e);
+    }
   },
 
-  listarPorOperacion(operacion_id_fk) {
-    return repo.findByOperacion(operacion_id_fk);
+  actualizar: async (req, res, next) => {
+    try {
+      res.json(await svc.actualizar(req.params.id, req.body));
+    } catch (e) {
+      next(e);
+    }
   },
 
-  actualizar(id, data) {
-    return repo.update(id, data);
-  },
-
-  eliminar(id) {
-    return repo.remove(id);
+  eliminar: async (req, res, next) => {
+    try {
+      await svc.eliminar(req.params.id);
+      res.status(204).end();
+    } catch (e) {
+      next(e);
+    }
   },
 };

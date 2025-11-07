@@ -1,5 +1,4 @@
 import prisma from "../../config/prisma.js";
-import { createCrudRepository } from "../../utils/repositoryFactory.js";
 
 const selectPublic = {
   id: true,
@@ -7,33 +6,48 @@ const selectPublic = {
   fecha: true,
   fecha_fin: true,
   descripcion: true,
-  enfermeda_id_fk: true,
+  enfermedad_id_fk: true,
+  enfermedad: {
+    select: {
+      tipo: true,
+      descripcion: true,
+    },
+  },
 };
 
-const  base = createCrudRepository("treatment", {
-  defaultSelect: selectPublic,
-  searchable: ["tipo", "fecha","fecha_fin","descripcion","enfermeda_id_fk"],
-});
-
 export default {
-  ...base,
-
-  findByEnfermedaId(enfermeda_id) {
-    return prisma.treatment.findMany({
-      where: { enfermeda_id_fk: enfermeda_id },
+  create(data) {
+    return prisma.tratamiento.create({
+      data,
       select: selectPublic,
-      orderBy: { fecha: 'desc' },
     });
   },
 
-  
-  findActiveTreatments(enfermeda_id) {
-    return prisma.treatment.findMany({
-      where: {
-        enfermeda_id_fk: enfermeda_id,
-        fecha_fin: null,
-      },
+  findById(id) {
+    return prisma.tratamiento.findUnique({
+      where: { id },
       select: selectPublic,
+    });
+  },
+
+  list() {
+    return prisma.tratamiento.findMany({
+      select: selectPublic,
+      orderBy: { fecha: "desc" },
+    });
+  },
+
+  update(id, data) {
+    return prisma.tratamiento.update({
+      where: { id },
+      data,
+      select: selectPublic,
+    });
+  },
+
+  remove(id) {
+    return prisma.tratamiento.delete({
+      where: { id },
     });
   },
 };

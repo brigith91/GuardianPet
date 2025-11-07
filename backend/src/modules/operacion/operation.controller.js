@@ -3,7 +3,8 @@ import svc from "./operation.service.js";
 export default {
   registrar: async (req, res, next) => {
     try {
-      res.status(201).json(await svc.registrar(req.body));
+      const nuevaOperacion = await svc.registrar(req.body);
+      res.status(201).json(nuevaOperacion);
     } catch (e) {
       next(e);
     }
@@ -20,16 +21,9 @@ export default {
   obtenerPorId: async (req, res, next) => {
     try {
       const operation = await svc.obtenerPorId(req.params.id);
-      if (!operation) return res.status(404).json({ error: "Operación no encontrada" });
+      if (!operation)
+        return res.status(404).json({ error: "Operación no encontrada" });
       res.json(operation);
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  listarPorHistorial: async (req, res, next) => {
-    try {
-      res.json(await svc.listarPorHistorial(req.params.historial_id));
     } catch (e) {
       next(e);
     }

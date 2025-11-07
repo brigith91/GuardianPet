@@ -1,0 +1,28 @@
+<header class="barra_navegacion">
+
+    <div class="contenedor-encabezado">
+        <div class="logo">
+            <img class="imagen-logo"  src="assets/logo.png" alt="Logo GuardianPet" >
+
+            <div class="texto-logo">
+                <span class="nombre"><b>Guardian<span class="pet" >Pet</span> </b></span>
+                <span class="eslogan">¡Siempre al lado de tu mascota!</span>
+            </div>
+        </div>
+
+
+
+            <nav class="navegacion topbar">
+                <a routerLink="/home" *ngIf="auth.isLoggedIn" class="enlaces">Home</a>
+                <a routerLink="/login" *ngIf="!auth.isLoggedIn" class="enlaces iniciar_sesion">Iniciar sesión</a>
+                <a routerLink="/registro" *ngIf="!auth.isLoggedIn" class=" enlaces registrarse">Registrarse</a>
+                <button *ngIf="auth.isLoggedIn" (click)="logout()" class="linklike" style="margin-left:auto">
+                  Salir
+                </button>
+            </nav>
+    </div>
+
+
+</header>
+
+<router-outlet></router-outlet>

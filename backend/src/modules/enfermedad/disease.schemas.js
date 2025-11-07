@@ -1,17 +1,15 @@
 import { z } from "zod";
 
-export const registerDiseaseSchema = z.object({
+export const registrarEnfermedadSchema = z.object({
   body: z.object({
     tipo: z.string().min(2),
-    descripcion: z.string().optional(),
-    
+    descripcion: z.string().min(10),
   }),
 });
 
-export const updateDiseaseSchema = z.object({
+export const actualizarEnfermedadSchema = z.object({
   body: z.object({
     tipo: z.string().min(2).optional(),
-    descripcion: z.string().optional(),
-  
+    descripcion: z.string().min(10).optional(),
   }),
 });

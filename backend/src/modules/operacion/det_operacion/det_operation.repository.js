@@ -7,6 +7,7 @@ const selectPublic = {
   operacion_id_fk: true,
   fecha: true,
   observaciones: true,
+  operacion: { select: { tipo: true, descripcion: true } },
 };
 
 const base = createCrudRepository("det_operacion", {
@@ -17,17 +18,18 @@ const base = createCrudRepository("det_operacion", {
 export default {
   ...base,
 
-  findByHistorial(historial_clinico_id_fk) {
-    return prisma.det_operacion.findMany({
-      where: { historial_clinico_id_fk },
-      select: selectPublic,
-    });
+  async existsByOperacionAndHistorial(operacion_id_fk, historial_clinico_id_fk) {
+    return !!(await prisma.det_operacion.findFirst({
+      where: { operacion_id_fk, historial_clinico_id_fk },
+      select: { id: true },
+    }));
   },
 
-  findByOperacion(operacion_id_fk) {
+  findByHistorialId(historial_id) {
     return prisma.det_operacion.findMany({
-      where: { operacion_id_fk },
+      where: { historial_clinico_id_fk: historial_id },
       select: selectPublic,
+      orderBy: { fecha: "desc" },
     });
   },
 };

@@ -19,11 +19,9 @@ export default {
 
   obtenerPorId: async (req, res, next) => {
     try {
-      const disease = await svc.obtenerPorId(req.params.id);
-      if (!disease) {
-        return res.status(404).json({ error: "Enfermedad no encontrada" });
-      }
-      res.json(disease);
+      const enfermedad = await svc.obtenerPorId(req.params.id);
+      if (!enfermedad) return res.status(404).json({ error: "Enfermedad no encontrada" });
+      res.json(enfermedad);
     } catch (e) {
       next(e);
     }

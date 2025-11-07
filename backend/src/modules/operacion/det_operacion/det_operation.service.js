@@ -1,8 +1,12 @@
 import repo from "./det_operation.repository.js";
 
 export default {
-  async crear({ historial_clinico_id_fk, operacion_id_fk, fecha, observaciones }) {
-    return repo.create({ historial_clinico_id_fk, operacion_id_fk, fecha, observaciones });
+  async registrar({ historial_clinico_id_fk, operacion_id_fk, fecha, observaciones }) {
+    if (await repo.existsByOperacionAndHistorial(operacion_id_fk, historial_clinico_id_fk)) {
+      throw new Error("Ya existe una operación de este tipo para este historial clínico");
+    }
+
+    return repo.create({ historial_clinico_id_fk, operacion_id_fk, fecha: new Date(fecha), observaciones });
   },
 
   obtenerPorId(id) {
@@ -13,19 +17,19 @@ export default {
     return repo.list(params);
   },
 
-  listarPorHistorial(historial_clinico_id_fk) {
-    return repo.findByHistorial(historial_clinico_id_fk);
+  listarPorHistorial(historial_id) {
+    return repo.findByHistorialId(historial_id);
   },
 
-  listarPorOperacion(operacion_id_fk) {
-    return repo.findByOperacion(operacion_id_fk);
-  },
-
-  actualizar(id, data) {
+  async actualizar(id, data) {
+    const existente = await repo.findById(id);
+    if (!existente) throw new Error("Detalle de operación no encontrado");
     return repo.update(id, data);
   },
 
-  eliminar(id) {
+  async eliminar(id) {
+    const existente = await repo.findById(id);
+    if (!existente) throw new Error("Detalle de operación no encontrado");
     return repo.remove(id);
   },
 };

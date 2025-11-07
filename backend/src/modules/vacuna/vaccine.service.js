@@ -1,27 +1,35 @@
-import repo from "./vaccine.repository.js";
+import prisma from "../../config/prisma.js";
 
 export default {
   async registrar(data) {
-    return repo.create(data);
+    return await prisma.vacuna.create({
+      data: {
+        nombre: data.nombre,
+        descripcion: data.descripcion
+      }
+    });
   },
 
-  obtenerPorId(id) {
-    return repo.findById(id);
+  async listar() {
+    return await prisma.vacuna.findMany();
   },
 
-  listar() {
-    return repo.list();
+  async obtenerPorId(id) {
+    return await prisma.vacuna.findUnique({
+      where: { id },
+    });
   },
 
-  listarPorHistorial(historial_id) {
-    return repo.findByHistorialId(historial_id);
+  async actualizar(id, data) {
+    return await prisma.vacuna.update({
+      where: { id },
+      data: data
+    });
   },
 
-  actualizar(id, data) {
-    return repo.update(id, data);
-  },
-
-  eliminar(id) {
-    return repo.remove(id);
-  },
+  async eliminar(id) {
+    return await prisma.vacuna.delete({
+      where: { id }
+    });
+  }
 };

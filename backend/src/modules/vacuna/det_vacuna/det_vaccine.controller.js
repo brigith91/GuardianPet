@@ -1,62 +1,64 @@
-import svc from "./det_vaccine.service.js";
+import service from "./det_vaccine.service.js";
+
+const registrar = async (req, res) => {
+  try {
+    const result = await service.registrar(req.body);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const listar = async (req, res) => {
+  try {
+    const result = await service.listar();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const listarPorHistorial = async (req, res) => {
+  try {
+    const result = await service.listarPorHistorial(Number(req.params.historial_id));
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const obtenerPorId = async (req, res) => {
+  try {
+    const result = await service.obtenerPorId(Number(req.params.id));
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const actualizar = async (req, res) => {
+  try {
+    const result = await service.actualizar(Number(req.params.id), req.body);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const eliminar = async (req, res) => {
+  try {
+    const result = await service.eliminar(Number(req.params.id));
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 export default {
-  crear: async (req, res, next) => {
-    try {
-      res.status(201).json(await svc.crear(req.body));
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  listar: async (req, res, next) => {
-    try {
-      res.json(await svc.listar(req.query));
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  obtenerPorId: async (req, res, next) => {
-    try {
-      const record = await svc.obtenerPorId(req.params.id);
-      if (!record) return res.status(404).json({ error: "Registro no encontrado" });
-      res.json(record);
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  listarPorHistorial: async (req, res, next) => {
-    try {
-      res.json(await svc.listarPorHistorial(req.params.historial_clinico_id));
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  listarPorVacuna: async (req, res, next) => {
-    try {
-      res.json(await svc.listarPorVacuna(req.params.vacuna_id));
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  actualizar: async (req, res, next) => {
-    try {
-      res.json(await svc.actualizar(req.params.id, req.body));
-    } catch (e) {
-      next(e);
-    }
-  },
-
-  eliminar: async (req, res, next) => {
-    try {
-      await svc.eliminar(req.params.id);
-      res.status(204).end();
-    } catch (e) {
-      next(e);
-    }
-  },
+  registrar,
+  listar,
+  listarPorHistorial,
+  obtenerPorId,
+  actualizar,
+  eliminar,
 };

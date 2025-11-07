@@ -1,20 +1,20 @@
 import { z } from "zod";
 
-export const crearDetOperacionSchema = z.object({
+export const registrarDetOperacionSchema = z.object({
   body: z.object({
-    historial_clinico_id_fk: z.number().int().positive(),
-    operacion_id_fk: z.number().int().positive(),
-    fecha: z.string().datetime().or(z.date()),
-    observaciones: z.string().min(5),
+    historial_clinico_id_fk: z.number({ required_error: "El historial clínico es obligatorio" }),
+    operacion_id_fk: z.number({ required_error: "La operación es obligatoria" }),
+    fecha: z.string().datetime().or(z.string().min(1, "La fecha es obligatoria")),
+    observaciones: z.string().min(5, "Las observaciones deben tener al menos 5 caracteres"),
   }),
 });
 
 export const actualizarDetOperacionSchema = z.object({
   body: z.object({
-    historial_clinico_id_fk: z.number().int().positive().optional(),
-    operacion_id_fk: z.number().int().positive().optional(),
-    fecha: z.string().datetime().or(z.date()).optional(),
+    fecha: z.string().datetime().optional(),
     observaciones: z.string().min(5).optional(),
   }),
 });
+
+
 

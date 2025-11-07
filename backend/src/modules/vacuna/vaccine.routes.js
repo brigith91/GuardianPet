@@ -8,7 +8,6 @@ const r = Router();
 r.post("/", validate(registrarVaccineSchema), ctrl.registrar);
 r.get("/", ctrl.listar);
 r.get("/:id", ctrl.obtenerPorId);
-r.get("/historial/:historial_id", ctrl.listarPorHistorial);
 r.put("/:id", validate(actualizarVaccineSchema), ctrl.actualizar);
 r.delete("/:id", ctrl.eliminar);
 

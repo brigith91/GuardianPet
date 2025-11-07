@@ -35,8 +35,8 @@ r.use("/citas", citaRoutes);
 
 // Rutas de detalle
 
-r.use("/det-operation", detOperationRoutes);
-r.use("/det-disease", detDiseaseRoutes);
-r.use("/det-vaccine", detVaccineRoutes);
+r.use("/det_operaciones", detOperationRoutes);
+r.use("/det_enfermedades", detDiseaseRoutes);
+r.use("/det_vacunas", detVaccineRoutes);
 
 export default r;
