@@ -31,7 +31,14 @@ export default {
 
   listar: async (req, res, next) => {
     try {
-      const usuarios = await svc.listar(req.query);
+      const { page = 1, pageSize = 20, search = "" } = req.query;
+
+      const usuarios = await svc.listar({
+        page: Number(page),
+        pageSize: Number(pageSize),
+        search,
+      });
+
       res.json(usuarios);
     } catch (e) {
       next(e);

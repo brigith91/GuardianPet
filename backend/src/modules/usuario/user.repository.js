@@ -6,10 +6,14 @@ const selectPublic = {
   nombre: true,
   email: true,
   telefono: true,
-  contrasena: true,
   rol: true,
   cedula: true
 };
+
+const selectPrivate = {
+  ...selectPublic,
+  contrasena: true,
+}
 
 const base = createCrudRepository("usuario", {
   defaultSelect: selectPublic,
@@ -38,7 +42,7 @@ export default {
   async findByEmail(email) {
     return prisma.usuario.findFirst({
       where: { email },
-      select: selectPublic
+      select: selectPrivate
     });
   }
 };
