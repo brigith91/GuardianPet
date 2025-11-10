@@ -7,11 +7,21 @@ export default {
       .catch(next);
   },
 
-  listar(req, res, next) {
-    service.listar()
-      .then(data => res.json({ items: data, total: data.length }))
-      .catch(next);
-  },
+  listar: async (req, res, next) => {
+      try {
+        const { page = 1, pageSize = 20, search = "" } = req.query;
+  
+        const usuarios = await svc.listar({
+          page: Number(page),
+          pageSize: Number(pageSize),
+          search,
+        });
+  
+        res.json(usuarios);
+      } catch (e) {
+        next(e);
+      }
+    },
 
   obtenerPorId(req, res, next) {
     const id = parseInt(req.params.id);

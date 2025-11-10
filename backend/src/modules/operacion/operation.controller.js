@@ -11,12 +11,20 @@ export default {
   },
 
   listar: async (req, res, next) => {
-    try {
-      res.json(await svc.listar(req.query));
-    } catch (e) {
-      next(e);
-    }
-  },
+      try {
+        const { page = 1, pageSize = 20, search = "" } = req.query;
+  
+        const usuarios = await svc.listar({
+          page: Number(page),
+          pageSize: Number(pageSize),
+          search,
+        });
+  
+        res.json(usuarios);
+      } catch (e) {
+        next(e);
+      }
+    },
 
   obtenerPorId: async (req, res, next) => {
     try {
