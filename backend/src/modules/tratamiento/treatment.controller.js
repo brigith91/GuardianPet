@@ -7,10 +7,21 @@ export default {
       .catch(next);
   },
 
-  listar(req, res, next) {
-    service.listar()
-      .then(data => res.json({ items: data, total: data.length }))
-      .catch(next);
+  listar: async (req, res, next) => {
+    try {
+      const { page = 1, pageSize = 20, search = "" } = req.query;
+
+      // 🔧 Aquí estaba el error: se usaba "svc" en lugar de "service"
+      const tratamientos = await service.listar({
+        page: Number(page),
+        pageSize: Number(pageSize),
+        search,
+      });
+
+      res.json(tratamientos);
+    } catch (e) {
+      next(e);
+    }
   },
 
   obtenerPorId(req, res, next) {

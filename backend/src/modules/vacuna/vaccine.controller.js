@@ -11,15 +11,21 @@ export default {
     }
   },
 
-  listar: async (req, res) => {
-    try {
-      const vacunas = await vaccineService.listar();
-      res.json(vacunas);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: err.message });
-    }
-  },
+  listar: async (req, res, next) => {
+  try {
+    const { page = 1, pageSize = 20, search = "" } = req.query;
+
+    const vacunas = await vaccineService.listar({
+      page: Number(page),
+      pageSize: Number(pageSize),
+      search,
+    });
+
+    res.json(vacunas);
+  } catch (e) {
+    next(e);
+  }
+},
 
   obtenerPorId: async (req, res) => {
     try {
@@ -33,14 +39,14 @@ export default {
   },
 
   actualizar: async (req, res) => {
-    try {
-      const vacuna = await vaccineService.actualizar(parseInt(req.params.id), req.body);
-      res.json(vacuna);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: err.message });
-    }
-  },
+  try {
+    const vacuna = await vaccineService.actualizar(parseInt(req.params.id), req.body);
+    res.json(vacuna);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+},
 
   eliminar: async (req, res) => {
     try {
