@@ -8,20 +8,21 @@ export default {
   },
 
   listar: async (req, res, next) => {
-      try {
-        const { page = 1, pageSize = 20, search = "" } = req.query;
-  
-        const usuarios = await svc.listar({
-          page: Number(page),
-          pageSize: Number(pageSize),
-          search,
-        });
-  
-        res.json(usuarios);
-      } catch (e) {
-        next(e);
-      }
-    },
+    try {
+      const { page = 1, pageSize = 20, search = "" } = req.query;
+
+      // 🔧 Aquí estaba el error: se usaba "svc" en lugar de "service"
+      const tratamientos = await service.listar({
+        page: Number(page),
+        pageSize: Number(pageSize),
+        search,
+      });
+
+      res.json(tratamientos);
+    } catch (e) {
+      next(e);
+    }
+  },
 
   obtenerPorId(req, res, next) {
     const id = parseInt(req.params.id);
