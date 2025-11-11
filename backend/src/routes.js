@@ -19,9 +19,12 @@ import detDiseaseRoutes from "./modules/enfermedad/det_enfermedad/det_disease.ro
 import detVaccineRoutes from "./modules/vacuna/det_vacuna/det_vaccine.routes.js"; 
 
 // importa resto de módulos...
+import { auth } from "./middlewares/auth.js"; 
 
 const r = Router();
 r.use("/usuarios", userRoutes);
+
+r.use(auth);
 r.use("/clinicas", clinicaRoutes);
 r.use("/enfermedades", diseaseRoutes);
 r.use("/historial_clinico", historialRoutes);

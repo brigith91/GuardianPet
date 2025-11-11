@@ -2,15 +2,12 @@ import repo from "./appointment.repository.js";
 
 export default {
   async registrar(data) {
-    // Convertir fecha y pasar _fk al repository
     const citaData = {
       ...data,
       fecha: new Date(data.fecha),
-      usuario_id_fk: data.usuario_id_fk,
+      mascota_id_fk: data.mascota_id_fk,
       veterinario_id_fk: data.veterinario_id_fk,
     };
-
-    // Llamar al repository que valida y conecta relaciones
     return repo.create(citaData);
   },
 
@@ -22,8 +19,18 @@ export default {
     return repo.findById(id);
   },
 
-  listarPorUsuario(usuario_id_fk) {
-    return repo.findByUsuarioId(usuario_id_fk);
+  obtenerPorIdConMascota(id) {
+    return repo.findByIdWithMascota(id);
+  },
+
+  //sigue existiendo: lista citas de un USUARIO por las mascotas
+  listarPorUsuario(usuario_id) {
+    return repo.findByUsuarioId(usuario_id);
+  },
+
+  //nuevo helper
+  listarPorMascota(mascota_id) {
+    return repo.findByMascotaId(mascota_id);
   },
 
   listarPorVeterinario(veterinario_id_fk) {

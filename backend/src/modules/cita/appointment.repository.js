@@ -6,7 +6,7 @@ const selectPublic = {
   fecha: true,
   estado: true,
   observacion: true,
-  usuario_id_fk: true,
+  mascota_id_fk: true,
   veterinario_id_fk: true,
 };
 
@@ -18,50 +18,78 @@ const base = createCrudRepository("cita", {
 export default {
   ...base,
 
-  // 🔹 Crear una cita con relaciones y validación
+  //Crear cita con mascota y veterinario
   async create(data) {
-    // Validar que el usuario existe
-    const usuarioExists = await prisma.usuario.findUnique({
-      where: { id: parseInt(data.usuario_id_fk) },
+    // validar mascota
+    const mascota = await prisma.mascota.findUnique({
+      where: { id: Number(data.mascota_id_fk) },
+      select: { id: true },
     });
-    if (!usuarioExists) {
-      throw new Error(`Usuario con id ${data.usuario_id_fk} no existe`);
+    if (!mascota) {
+      throw new Error(`Mascota con id ${data.mascota_id_fk} no existe`);
     }
 
-    // Validar que el veterinario existe
-    const veterinarioExists = await prisma.veterinario.findUnique({
-      where: { id: parseInt(data.veterinario_id_fk) },
+    // validar veterinario
+    const veterinario = await prisma.veterinario.findUnique({
+      where: { id: Number(data.veterinario_id_fk) },
+      select: { id: true },
     });
-    if (!veterinarioExists) {
-      throw new Error(`Veterinario con id ${data.veterinario_id_fk} no existe`);
+    if (!veterinario) {
+      throw new Error(
+        `Veterinario con id ${data.veterinario_id_fk} no existe`
+      );
     }
 
-    // Crear la cita conectando usuario y veterinario
     return prisma.cita.create({
       data: {
         fecha: new Date(data.fecha),
         estado: data.estado,
         observacion: data.observacion,
-        usuario: { connect: { id: parseInt(data.usuario_id_fk) } },
-        veterinario: { connect: { id: parseInt(data.veterinario_id_fk) } },
+        mascota: { connect: { id: Number(data.mascota_id_fk) } },
+        veterinario: { connect: { id: Number(data.veterinario_id_fk) } },
       },
       select: selectPublic,
     });
   },
 
-  //  Buscar por usuario
-  findByUsuarioId(usuario_id_fk) {
+  //Buscar citas por USUARIO usando la relación mascota → usuario
+  findByUsuarioId(usuarioId) {
     return prisma.cita.findMany({
-      where: { usuario_id_fk: parseInt(usuario_id_fk) },
+      where: {
+        mascota: {
+          usuario_id_fk: Number(usuarioId),
+        },
+      },
       select: selectPublic,
     });
   },
 
-  //  Buscar por veterinario
-  findByVeterinarioId(veterinario_id_fk) {
+  //Buscar citas por MASCOTA (a veces sirve)
+  findByMascotaId(mascotaId) {
     return prisma.cita.findMany({
-      where: { veterinario_id_fk: parseInt(veterinario_id_fk) },
+      where: { mascota_id_fk: Number(mascotaId) },
       select: selectPublic,
     });
   },
+
+  //Buscar por veterinario (lo que ya tenías)
+  findByVeterinarioId(veterinario_id_fk) {
+    return prisma.cita.findMany({
+      where: { veterinario_id_fk: Number(veterinario_id_fk) },
+      select: selectPublic,
+    });
+  },
+  //obtener cita + mascota + dueño
+  async findByIdWithMascota(id) {
+    return prisma.cita.findUnique({
+      where: { id: Number(id) },
+      include: {
+        mascota: {
+          select: {
+            usuario_id_fk: true, // <-- dueño
+          },
+        },
+      },
+    });
+  }
 };
