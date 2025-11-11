@@ -11,6 +11,12 @@ export const routes: Routes = [
   { path: 'indice', canMatch: [guestGuard], loadComponent: () => import('./features/indice/indice').then(m => m.IndiceComponent) },
   { path: 'menu', canMatch: [guestGuard], loadComponent: () => import('./features/menu/menu').then(m => m.IndiceComponent) },
   { path: 'home', canMatch: [guestGuard], loadComponent: () => import('./features/home/home').then(m => m.HomeComponent) },
+  { path: 'mascota', canMatch: [guestGuard], loadComponent: () => import('./features/mascota/mascota').then(m => m.MascotaComponent) },
+    { path: 'tipo', canMatch: [guestGuard], loadComponent: () => import('./features/tipo/tipo').then(m => m.TipoComponent) },
+
+
+
+
 
   // Requieren token
   { path: 'home',     canMatch: [authGuard],  loadComponent: () => import('./features/home/home').then(m => m.HomeComponent) },
