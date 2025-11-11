@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
+import { env } from "../config/env.js";
+
 export const auth = (req, res, next) => {
   const h = req.headers.authorization || "";
   const token = h.startsWith("Bearer ") ? h.slice(7) : null;
   if (!token) return res.status(401).json({ error: "Token requerido" });
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = jwt.verify(token, env.jwtSecret);
     req.userId = payload.sub;
     req.userRole = payload.rol;
     next();
@@ -12,6 +14,7 @@ export const auth = (req, res, next) => {
     res.status(401).json({ error: "Token inválido" });
   }
 };
+
 export const allow =
   (...roles) =>
   (req, res, next) => {

@@ -13,12 +13,14 @@ export default {
     if (cedulaExists) throw new Error("La cédula ya está registrada");
 
     // Validar rol
-    if (!["usuario", "admin"].includes(data.rol)) {
+    const rol = data.rol ?? "usuario";
+    if (!["usuario", "admin"].includes(rol)) {
       throw new Error("Rol inválido, debe ser 'usuario' o 'admin'");
     }
 
     // Encriptar la contraseña
     data.contrasena = await hashPassword(data.contrasena);
+    data.rol = rol;
 
     // Crear usuario
     const nuevoUsuario = await repo.create(data);

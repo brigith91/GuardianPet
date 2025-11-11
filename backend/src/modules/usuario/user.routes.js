@@ -9,11 +9,16 @@ const r = Router();
 r.post("/registro", validate(registerUserSchema), ctrl.registrar);
 r.post("/login", validate(loginUserSchema), ctrl.login);
 
-// r.use(auth); // Descomenta si quieres proteger las rutas con auth
+//valida el token cuando consume el api
+r.use(auth);
+
+//obtiene el perfil logueado
 r.get("/me", ctrl.perfil);
-r.get("/", ctrl.listar);
-r.get("/:id", ctrl.obtenerPorId);
-r.put("/:id", validate(updateUserSchema), ctrl.actualizar);
-r.delete("/:id", ctrl.eliminar);
+
+//administración de usuarios
+r.get("/", allow("admin"), ctrl.listar);
+r.get("/:id", allow("admin"), ctrl.obtenerPorId);
+r.put("/:id", allow("admin"), validate(updateUserSchema), ctrl.actualizar);
+r.delete("/:id", allow("admin"), ctrl.eliminar);
 
 export default r;
