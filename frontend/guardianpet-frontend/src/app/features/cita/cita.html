@@ -1,0 +1,23 @@
+ <div class="contenedor">
+        <button class="boton-cerrar">&times;</button>
+        <h2 class="titulo">Agregar Cita</h2>
+
+        <form class="formulario">
+            <div class="campo">
+                <label class="etiqueta">Fecha</label>
+                <input type="datetime-local" class="entrada" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Estado</label>
+                <input type="text" class="entrada" placeholder="Ej: Pendiente, Confirmada, Completada" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Observación</label>
+                <textarea class="entrada-texto" placeholder="Escribe observaciones sobre la cita" required></textarea>
+            </div>
+
+            <button type="submit" class="boton-guardar">Guardar cita</button>
+        </form>
+    </div>

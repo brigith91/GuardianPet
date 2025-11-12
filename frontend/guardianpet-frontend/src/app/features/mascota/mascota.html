@@ -1,38 +1,43 @@
-<div class="contenedor">
-        <h1 class="titulo">Agregar nueva Mascota</h1>
-        
+ <div class="contenedor">
+        <button class="boton-cerrar">&times;</button>
+        <h2 class="titulo">Agregar nueva Mascota</h2>
+
         <form class="formulario">
-            <div class="grupo">
+            <div class="campo">
                 <label class="etiqueta">Nombre</label>
                 <input type="text" class="entrada" placeholder="Nombre del tutor" required>
             </div>
 
-            <div class="grupo">
+            <div class="campo">
                 <label class="etiqueta">Especie</label>
                 <input type="text" class="entrada" placeholder="Nombre de la mascota" required>
             </div>
 
-            <div class="grupo">
+            <div class="campo">
                 <label class="etiqueta">Raza</label>
                 <input type="text" class="entrada" placeholder="Tipo de mascota" required>
             </div>
 
-            <div class="grupo">
+            <div class="campo">
                 <label class="etiqueta">Sexo</label>
                 <input type="text" class="entrada" placeholder="Ingresa la raza" required>
             </div>
 
-            <div class="grupo">
+            <div class="campo">
                 <label class="etiqueta">Fecha nacimiento</label>
-                <input type="date" class="entrada-fecha" placeholder="dd/mm/aaaa" required>
+                <input type="date" class="entrada" placeholder="dd/mm/aaaa" required>
             </div>
 
-            <div class="grupo">
-                <label class="etiqueta-archivo">Foto (opcional)</label>
-                <input type="file" class="entrada-archivo" accept="image/*">
-                <span class="texto-archivo">Subir archivo</span>
+            <div class="campo">
+                <label class="etiqueta">Foto (opcional)</label>
+                <label for="foto-mascota" class="entrada-archivo">
+                    <span id="nombre-archivo">Subir archivo</span>
+                </label>
+                <input type="file" id="foto-mascota" class="archivo-oculto" accept="image/*">
             </div>
 
-            <button type="submit" class="boton-agregar">Agregar mascota</button>
+            <button type="submit" class="boton-guardar">Agregar mascota</button>
         </form>
     </div>
+
+    
