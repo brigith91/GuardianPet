@@ -3,6 +3,10 @@ import ctrl from "./appointment.controller.js";
 
 const r = Router();
 
+//valida el token cuando consume el api
+//r.use(auth);
+
+
 r.post("/", ctrl.registrar);
 r.get("/", ctrl.listar);
 r.get("/:id", ctrl.obtenerPorId);
