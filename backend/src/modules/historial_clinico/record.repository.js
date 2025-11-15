@@ -10,71 +10,63 @@ const selectPublic = {
   mascota_id_fk: true,
   url_archivos: true,
   cita_id_fk: true,
-  
 };
 
 const base = createCrudRepository("historial_clinico", {
   defaultSelect: selectPublic,
   searchable: [
-    "fecha",
     "descripcion",
     "tipo",
-    "veterinario_id_fk",
-    "mascota_id_fk",
-    "cita_id_fk",
-    "url_archivos",
   ],
 });
 
 export default {
   ...base,
 
+  // Buscar registros por USUARIO usando la relación mascota → usuario
+  findByUsuarioId(usuarioId) {
+    return prisma.historial_clinico.findMany({
+      where: {
+        mascota: {
+          usuario_id_fk: Number(usuarioId),
+        },
+      },
+      select: selectPublic,
+    });
+  },
+
   findByVeterinario(veterinario_id_fk) {
     return prisma.historial_clinico.findMany({
-      where: { veterinario_id_fk },
+      where: { veterinario_id_fk: Number(veterinario_id_fk) },
       select: selectPublic,
     });
   },
 
   findByMascota(mascota_id_fk) {
     return prisma.historial_clinico.findMany({
-      where: { mascota_id_fk },
+      where: { mascota_id_fk: Number(mascota_id_fk) },
       select: selectPublic,
     });
   },
 
   findByCita(cita_id_fk) {
     return prisma.historial_clinico.findMany({
-      where: { cita_id_fk },
+      where: { cita_id_fk: Number(cita_id_fk) },
       select: selectPublic,
     });
   },
 
-  findByFecha(fecha) {
-    return prisma.historial_clinico.findMany({
-      where: { fecha },
-      select: selectPublic,
-    });
-  },
-
-  findByTipo(tipo) {
-    return prisma.historial_clinico.findMany({
-      where: { tipo },
-      select: selectPublic,
-    });
-  },
-
-  findByDescripcion(descripcion) {
-    return prisma.historial_clinico.findMany({
-      where: { descripcion },
-      select: selectPublic,
-    });
-  },
-
-  findByUrlArchivos(url_archivos) {
-    return prisma.historial_clinico.findMany({
-      where: { url_archivos },
-      select: selectPublic,
+  // Obtener registro + mascota + dueño
+  async findByIdWithMascota(id) {
+    return prisma.historial_clinico.findUnique({
+      where: { id: Number(id) },
+      include: {
+        mascota: {
+          select: {
+            usuario_id_fk: true, // <-- dueño
+          },
+        },
+      },
     });
   },
 };

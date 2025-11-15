@@ -10,48 +10,90 @@ export default {
   },
 
   listar: async (req, res, next) => {
-      try {
-        const { page = 1, pageSize = 20, search = "" } = req.query;
-  
-        const usuarios = await svc.listar({
+    try {
+      const { page = 1, pageSize = 20, search = "" } = req.query;
+      const { userId, userRole } = req;
+
+      if (userRole === "admin") {
+        const mascotas = await svc.listar({
           page: Number(page),
           pageSize: Number(pageSize),
           search,
         });
-  
-        res.json(usuarios);
-      } catch (e) {
-        next(e);
+        return res.json(mascotas);
       }
-    },
 
-  obtenerPorId: async (req, res, next) => {
-    try {
-      const pet = await svc.obtenerPorId(req.params.id);
-      if (!pet) return res.status(404).json({ error: "Mascota no encontrada" });
-      res.json(pet);
+      // Usuario normal solo ve sus mascotas
+      const mascotas = await svc.listarPorUsuario(userId);
+      return res.json(mascotas);
     } catch (e) {
       next(e);
     }
   },
 
+  obtenerPorId: async (req, res, next) => {
+    try {
+      const { userId, userRole } = req;
+
+      const pet = await svc.obtenerPorId(req.params.id);
+      if (!pet) {
+        return res.status(404).json({ error: "Mascota no encontrada" });
+      }
+
+      // Si es admin, puede ver cualquier mascota
+      if (userRole === "admin") {
+        return res.json(pet);
+      }
+
+      // Si el dueño de la mascota es el usuario logueado, puede ver
+      if (pet.usuario_id_fk === userId) {
+        return res.json(pet);
+      }
+
+      // Si no, acceso denegado
+      return res.status(403).json({ error: "No autorizado" });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  // Para admin: ver todas las mascotas de un usuario específico
   listarPorUsuario: async (req, res, next) => {
-  try {
-    const usuarioId = req.query.usuario_id; 
-    res.json(await svc.listarPorUsuario(usuarioId));
-  } catch (e) {
-    next(e);
-  }
-},
+    try {
+      const usuarioId = req.params.usuario_id;
+      res.json(await svc.listarPorUsuario(usuarioId));
+    } catch (e) {
+      next(e);
+    }
+  },
 
   actualizar: async (req, res, next) => {
-  try {
-    const petActualizada = await svc.actualizar(req.params.id, req.body);
-    res.json(petActualizada);
-  } catch (e) {
-    res.status(400).json({ error: e.message }); 
-  }
-},
+    try {
+      const { userId, userRole } = req;
+
+      const pet = await svc.obtenerPorId(req.params.id);
+      if (!pet) {
+        return res.status(404).json({ error: "Mascota no encontrada" });
+      }
+
+      // Si es admin, puede actualizar
+      if (userRole === "admin") {
+        const petActualizada = await svc.actualizar(req.params.id, req.body);
+        return res.json(petActualizada);
+      }
+
+      // Si el dueño de la mascota es el usuario logueado, puede actualizar
+      if (pet.usuario_id_fk === userId) {
+        const petActualizada = await svc.actualizar(req.params.id, req.body);
+        return res.json(petActualizada);
+      }
+
+      // Si no, acceso denegado
+      return res.status(403).json({ error: "No autorizado" });
+    } catch (e) {
+      res.status(400).json({ error: e.message });
+    }
+  },
 
   eliminar: async (req, res, next) => {
     try {
