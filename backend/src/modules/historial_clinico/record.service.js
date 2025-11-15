@@ -1,17 +1,25 @@
 import repo from "./record.repository.js";
 
 export default {
-  async crear({ fecha, descripcion, tipo, veterinario_id_fk, mascota_id_fk,url_archivos,  cita_id_fk }) {
-    
-    return repo.create({ fecha, descripcion, tipo, veterinario_id_fk, mascota_id_fk,url_archivos,  cita_id_fk });
+  async crear({ fecha, descripcion, tipo, veterinario_id_fk, mascota_id_fk, url_archivos, cita_id_fk }) {
+    return repo.create({ fecha, descripcion, tipo, veterinario_id_fk, mascota_id_fk, url_archivos, cita_id_fk });
   },
 
   obtenerPorId(id) {
     return repo.findById(id);
   },
 
+  obtenerPorIdConMascota(id) {
+    return repo.findByIdWithMascota(id);
+  },
+
   listar(params) {
     return repo.list(params);
+  },
+
+  // Lista registros de un USUARIO por las mascotas
+  listarPorUsuario(usuario_id) {
+    return repo.findByUsuarioId(usuario_id);
   },
 
   listarPorVeterinario(veterinario_id_fk) {
@@ -19,9 +27,10 @@ export default {
   },
 
   listarPorMascota(mascota_id_fk) {
-    return repo.findByMascotaId(mascota_id_fk);
+    return repo.findByMascota(mascota_id_fk);
   },
-   listarPorCita(cita_id_fk) {
+
+  listarPorCita(cita_id_fk) {
     return repo.findByCita(cita_id_fk);
   },
 
