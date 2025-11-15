@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-11-2025 a las 21:19:59
+-- Tiempo de generación: 11-11-2025 a las 01:57:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `guardianpet`
 --
+CREATE DATABASE IF NOT EXISTS `guardianpet` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `guardianpet`;
 
 -- --------------------------------------------------------
 
@@ -32,7 +34,7 @@ CREATE TABLE `cita` (
   `fecha` datetime NOT NULL,
   `estado` varchar(255) NOT NULL,
   `observacion` text NOT NULL,
-  `usuario_id_fk` int(11) NOT NULL,
+  `mascota_id_fk` int(11) NOT NULL,
   `veterinario_id_fk` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -140,6 +142,13 @@ CREATE TABLE `mascota` (
   `url_foto` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `mascota`
+--
+
+INSERT INTO `mascota` (`id`, `nombre`, `especie`, `raza`, `sexo`, `fecha_nacimiento`, `usuario_id_fk`, `url_foto`) VALUES
+(1, 'Motas', 'Gato', 'Mezcla', 'M', '2025-11-07', 4, '/assest');
+
 -- --------------------------------------------------------
 
 --
@@ -189,7 +198,9 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`id`, `nombre`, `email`, `telefono`, `contrasena`, `rol`, `cedula`) VALUES
 (1, 'Juan Pérez', 'juan@example.com', '3001234567', '$2b$10$Zu3haDx8Yrrzod1hO/po4.9PoUb9XkvBET7qzwwsu0s8dOlXndHmq', 'usuario', 1234567890),
-(2, 'Lina Roncancio', 'lina.roncancio@gmail.com', '3105678923', '$2b$10$ywEeal41MyqNCVrBavuD4ua9KzyQ65O9B/JY5kElf8XirOWJwr6.O', 'usuario', 1024494230);
+(2, 'Lina Roncancio', 'lina.roncancio@gmail.com', '3105678923', '$2b$10$ywEeal41MyqNCVrBavuD4ua9KzyQ65O9B/JY5kElf8XirOWJwr6.O', 'usuario', 1024494230),
+(4, 'Nadia Rodriguez', 'holaaaa@gmail.com', '3123456789', '$2b$10$Js1efclYfBPEQt4tzG6cLOuJoXTyuYEqk7cD6CFpGpw1FhdCu7B.e', 'usuario', 1111111),
+(5, 'Miguel Santa', 'msanta@inter.edu.co', '3156169780', '$2b$10$zevSow4xTELgxLeCt3gm8elSupPB.EXTPHSzCyoLb2ssNDkF9sEXi', 'usuario', 1001053011);
 
 -- --------------------------------------------------------
 
@@ -215,6 +226,13 @@ CREATE TABLE `veterinario` (
   `email` varchar(255) NOT NULL,
   `matricula` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `veterinario`
+--
+
+INSERT INTO `veterinario` (`id`, `nombre`, `email`, `matricula`) VALUES
+(1, 'Juan Perez', 'jperez@example.com', '42356453164122');
 
 -- --------------------------------------------------------
 
@@ -249,7 +267,7 @@ INSERT INTO `_prisma_migrations` (`id`, `checksum`, `finished_at`, `migration_na
 --
 ALTER TABLE `cita`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_cita_usuario` (`usuario_id_fk`),
+  ADD UNIQUE KEY `mascota_id_fk` (`mascota_id_fk`),
   ADD KEY `fk_cita_veterinario` (`veterinario_id_fk`);
 
 --
@@ -354,7 +372,7 @@ ALTER TABLE `_prisma_migrations`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `clinica`
@@ -396,7 +414,7 @@ ALTER TABLE `historial_clinico`
 -- AUTO_INCREMENT de la tabla `mascota`
 --
 ALTER TABLE `mascota`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `operacion`
@@ -414,7 +432,7 @@ ALTER TABLE `tratamiento`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `vacuna`
@@ -426,7 +444,7 @@ ALTER TABLE `vacuna`
 -- AUTO_INCREMENT de la tabla `veterinario`
 --
 ALTER TABLE `veterinario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
@@ -436,7 +454,7 @@ ALTER TABLE `veterinario`
 -- Filtros para la tabla `cita`
 --
 ALTER TABLE `cita`
-  ADD CONSTRAINT `fk_cita_usuario` FOREIGN KEY (`usuario_id_fk`) REFERENCES `usuario` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `cita_ibfk_1` FOREIGN KEY (`mascota_id_fk`) REFERENCES `mascota` (`id`),
   ADD CONSTRAINT `fk_cita_veterinario` FOREIGN KEY (`veterinario_id_fk`) REFERENCES `veterinario` (`id`) ON DELETE CASCADE;
 
 --
