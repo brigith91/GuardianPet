@@ -1,44 +1,51 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   standalone: true,
   selector: 'app-register',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './register.html',
-  styleUrl: './register.scss'  
-
+  styleUrls: ['./register.scss']
 })
-export class RegisterComponent{
+export class RegisterComponent {
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
   nombre = '';
   apellidos = '';
+  telefono = '';
   email = '';
-  telefono = ''; 
+  cedula: string | number = '';
   contrasena = '';
-  cedula = 0;   
-  ok = false;
+  loading = false;
   error = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
-
-  onSubmit(){
-    this.ok = false;
+  onSubmit() {
+    if (this.loading) return;
+    this.loading = true;
     this.error = '';
 
-    // Mapea a la clave que espera el backend:
-    this.auth.registro({
-      nombre: this.nombre,
-      email: this.email,
-      telefono: this.telefono,
-      contrasena: this.contrasena,
-      cedula: this.cedula  
-    })
-    .subscribe({
-      next: () => { this.ok = true; setTimeout(() => this.router.navigate(['/login']), 600); },
-      error: e => this.error = e?.error?.error || 'Error de registro'
+    // Une nombre + apellidos si quieres mantener los dos inputs
+    const nombreCompleto = `${this.nombre} ${this.apellidos}`.trim();
+
+    const payload = {
+      nombre: nombreCompleto,                // backend: string ≥ 2
+      email: this.email,                    // backend: email válido
+      contrasena: this.contrasena,          // backend: string ≥ 6
+      telefono: this.telefono || undefined, // opcional
+      cedula: Number(this.cedula),          // backend: number ≥ 1_000_00                       // opcional; por defecto 'usuario'
+    };
+
+    this.auth.registro(payload).subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: (e: any) => {
+        this.error = e?.error?.error || 'Error de registro';
+        this.loading = false;
+      }
     });
   }
 }

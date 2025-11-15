@@ -1,12 +1,11 @@
-import { CanMatchFn, Router } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
-export const authGuard: CanMatchFn = () => {
+export const authGuard: CanActivateFn = (_route, state) => {
+  const auth = inject(AuthService);
   const router = inject(Router);
-  const hasToken = !!localStorage.getItem('gp_token');
-  if (!hasToken) {
-    router.navigate(['/login']);
-    return false;
-  }
-  return true;
+  if (auth.isLoggedIn()) return true;
+  router.navigate(['/login'], { queryParams: { redirectTo: state.url } });
+  return false;
 };

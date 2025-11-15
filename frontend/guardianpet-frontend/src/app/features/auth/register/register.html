@@ -5,20 +5,25 @@
         <div class="logo_texto">Guardian<span>Pet</span></div>
       </div>
 
-      <input [(ngModel)]="nombre" type="text" placeholder="Nombres" required />
-      <input [(ngModel)]="apellidos" type="text" placeholder="Apellidos" required />
-      <input [(ngModel)]="telefono" type="tel" placeholder="Telefono" required />
-      <input [(ngModel)]="email" type="email" placeholder="Correo electronico" required />
-      <input [(ngModel)]="cedula" type="cedula" placeholder="cedula" required />
-      <!-- <input [(ngModel)]="contrasena" type="password" placeholder="Contraseña" required> -->
-      <!-- <input [(ngModel)]="confirmar_contrasena"type="password" placeholder="Confirmar contraseña" required> -->
+      <!-- name + minLength útiles para el backend -->
+      <input [(ngModel)]="nombre"     name="nombre"     type="text"     placeholder="Nombres"             required minlength="2"/>
+      <input [(ngModel)]="apellidos"  name="apellidos"  type="text"     placeholder="Apellidos"/>
+
+      <input [(ngModel)]="telefono"   name="telefono"   type="tel"      placeholder="Teléfono"/>
+      <input [(ngModel)]="email"      name="email"      type="email"    placeholder="Correo electrónico"   required/>
+
+      <!-- number se envía como string en JS → conviértelo a número en onSubmit() -->
+      <input [(ngModel)]="cedula"     name="cedula"     type="number"   placeholder="Cédula"               required min="1000000"/>
+
+      <input [(ngModel)]="contrasena" name="contrasena" type="password" placeholder="Contraseña"           required minlength="6"/>
 
       <div class="volver">
-        <a href="index.html">Volver</a>
+        <!-- mejor usar routerLink para no recargar -->
+        <a routerLink="/login">Volver</a>
       </div>
 
       <div class="registra">
-        ¿Tienes una cueta?
+        ¿Tienes una cuenta?
         <a routerLink="/login"><span class="ini">Iniciar sesión</span></a>
       </div>
 
@@ -27,7 +32,8 @@
         <label>Acepto los <a>Términos y Condiciones</a></label>
       </div>
 
-      <button class="registro_boton">Registrarse</button>
+      <!-- IMPORTANTE: que sea submit -->
+      <button type="submit" class="registro_boton">Registrarse</button>
     </div>
   </form>
 

@@ -1,36 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-
 
 @Component({
   standalone: true,
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.scss'
+  styleUrls: ['./login.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  private auth = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   email = '';
   contrasena = '';
   loading = false;
   error = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
-  ngOnInit(){ if (this.auth.isLoggedIn) this.router.navigate(['/home']); }
+  ngOnInit() {
+    if (this.auth.isLoggedIn()) this.router.navigate(['/home']);
+  }
 
-  onSubmit(){
+  onSubmit() {
     if (this.loading) return;
     this.loading = true;
     this.error = '';
 
-    // Enviamos la propiedad que espera el backend:
-    this.auth.login({ email: this.email, contrasena: this.contrasena }).subscribe({
-      next: () => this.router.navigate(['/home']),
-      error: (e) => { this.error = e?.error?.error || 'Error de login'; this.loading = false; }
+    this.auth.login(this.email, this.contrasena).subscribe({
+      next: () => {
+        const redirectTo =
+          this.route.snapshot.queryParamMap.get('redirectTo') || '/';
+        this.router.navigateByUrl(redirectTo);
+      },
+      error: (e: any) => {                 // ✅ tipa el parámetro
+        this.error = e?.error?.error || 'Credenciales inválidas';
+        this.loading = false;
+      }
     });
   }
 }
