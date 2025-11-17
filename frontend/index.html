@@ -53,9 +53,9 @@
                 </p>
 
 
-                 <div class="boton_empezar">
-                    <button class=" empezar"><a href="registro.html">Empezar</a></button>
-                 </div>
+                      <div class="boton_empezar">
+                          <button id="openModalBtn" class=" empezar">Empezar</button>
+                      </div>
 
 
             </div>
@@ -177,6 +177,26 @@
             <p>© 2025 PetGuardian. Todos los derechos reservados.</p>
         </div>
     </footer>
+    
+    <!-- Modal markup -->
+    <div id="modal" class="modal" aria-hidden="true">
+        <div class="modal-overlay" data-modal-close></div>
+        <div class="modal-window" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <header class="modal-header">
+                <h2 id="modalTitle">Bienvenido a GuardianPet</h2>
+                <button class="modal-close" data-modal-close aria-label="Cerrar">×</button>
+            </header>
+            <div class="modal-body">
+                <p>Registra tus mascotas, agenda citas y consulta historiales desde un solo lugar. ¿Deseas ir a registro?</p>
+            </div>
+            <footer class="modal-footer">
+                <button class="btn-secondary" data-modal-close>Cancelar</button>
+                <a href="registro.html" class="btn-primary">Registrarse</a>
+            </footer>
+        </div>
+    </div>
+
+    <script defer src="js/modal.js"></script>
 </body>
 </html>
 
