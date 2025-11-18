@@ -71,19 +71,16 @@ model tratamiento {
 }
 
 model usuario {
-  id         Int       @id @default(autoincrement())
-  nombre     String    @db.VarChar(255)
-  email      String    @unique(map: "email") @db.VarChar(255)
-  telefono   String    @db.VarChar(255)
-  contrasena String    @db.VarChar(255)
-  rol        String    @db.VarChar(255)
-  cedula     Int       @unique(map: "cedula")
-  mascota    mascota[]
-
-  // 👇 nuevo
+  id                   Int                    @id @default(autoincrement())
+  nombre               String                 @db.VarChar(255)
+  email                String                 @unique(map: "email") @db.VarChar(255)
+  telefono             String                 @db.VarChar(255)
+  contrasena           String                 @db.VarChar(255)
+  rol                  String                 @db.VarChar(255)
+  cedula               Int                    @unique(map: "cedula")
+  mascota              mascota[]
   password_reset_token password_reset_token[]
 }
-
 
 model vacuna {
   id          Int          @id @default(autoincrement())
@@ -102,15 +99,16 @@ model veterinario {
 }
 
 model cita {
-  id                Int                @id @default(autoincrement())
-  fecha             DateTime           @db.DateTime(0)
-  estado            String             @db.VarChar(255)
-  observacion       String             @db.Text
-  mascota_id_fk     Int
-  veterinario_id_fk Int
-  mascota           mascota            @relation(fields: [mascota_id_fk], references: [id], onUpdate: Restrict, map: "cita_ibfk_1")
-  veterinario       veterinario        @relation(fields: [veterinario_id_fk], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_cita_veterinario")
-  historial_clinico historial_clinico?
+  id                  Int                @id @default(autoincrement())
+  fecha               DateTime           @db.DateTime(0)
+  estado              String             @db.VarChar(255)
+  observacion         String             @db.Text
+  veterinario_id_fk   Int
+  mascota_id_fk       Int
+  reminder_email_sent Boolean            @default(false)
+  mascota             mascota            @relation(fields: [mascota_id_fk], references: [id], onUpdate: Restrict, map: "cita_ibfk_1")
+  veterinario         veterinario        @relation(fields: [veterinario_id_fk], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_cita_veterinario")
+  historial_clinico   historial_clinico?
 
   @@index([veterinario_id_fk], map: "fk_cita_veterinario")
   @@index([mascota_id_fk], map: "mascota_id_fk")
@@ -169,17 +167,16 @@ model det_vacuna {
 }
 
 model password_reset_token {
-  id             Int       @id @default(autoincrement())
-  usuario_id_fk  Int
-  token_hash     String    @unique(map: "token_hash")   // guardamos solo el HASH
-  expires_at     DateTime
-  used_at        DateTime?
-  created_at     DateTime  @default(now())
-  ip             String?
-  user_agent     String?
-
-  usuario        usuario   @relation(fields: [usuario_id_fk], references: [id], onDelete: Cascade, map: "password_reset_token_ibfk_1")
+  id            Int       @id @default(autoincrement())
+  usuario_id_fk Int
+  token_hash    String    @unique(map: "token_hash")
+  expires_at    DateTime
+  used_at       DateTime?
+  created_at    DateTime  @default(now())
+  ip            String?
+  user_agent    String?
+  usuario       usuario   @relation(fields: [usuario_id_fk], references: [id], onDelete: Cascade, map: "password_reset_token_ibfk_1")
 
   @@index([usuario_id_fk], map: "usuario_id_fk")
-  @@index([expires_at],    map: "expires_at")
+  @@index([expires_at], map: "expires_at")
 }

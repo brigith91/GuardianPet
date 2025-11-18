@@ -1,4 +1,8 @@
 import 'dotenv/config';
 import app from './src/app.js';
+import { bootReminderJob } from './src/jobs/reminders.js';
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`[guardianpet] API en http://localhost:${port}`));
+app.listen(port, () => {
+  console.log(`[guardianpet] API en http://localhost:${port}`);
+  bootReminderJob();
+});

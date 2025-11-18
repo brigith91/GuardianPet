@@ -57,6 +57,20 @@ export class AuthService {
       .pipe(tap(resp => this.persist(resp)));
   }
 
+  forgotPassword(email: string) {
+    return this.http.post<{ ok: boolean; message: string }>(
+      `${environment.apiUrl}/auth/forgot-password`,
+      { email }
+    );
+  }
+
+  resetPassword(token: string, contrasena: string) {
+    return this.http.post<{ ok: boolean; message: string }>(
+      `${environment.apiUrl}/auth/reset-password`,
+      { token, contrasena }
+    );
+  }
+
   // ✅ tu front llama "registro" → expón este método
   registro(payload: {
     nombre: string; email: string; contrasena: string;
