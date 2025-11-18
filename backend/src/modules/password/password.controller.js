@@ -14,9 +14,9 @@ export default {
 
       if (result?.rawToken) {
         await sendPasswordResetMail({
-          to: email,
-          name: result.user?.nombre,
-          token: result.rawToken,
+            to: email,
+            name: result.user?.nombre,
+            token: result.rawToken,
         });
       }
 

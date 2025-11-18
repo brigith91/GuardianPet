@@ -15,3 +15,14 @@ SMTP_USER=guardianpetnotificaciones@gmail.com
 SMTP_PASS=
 EMAIL_FROM="GuardianPet <guardianpetnotificaciones@gmail.com>"
 RESET_TOKEN_TTL_MIN=30
+
+# Opcional si hay proxy TLS (dev):
+# SMTP_ALLOW_SELF_SIGNED=true
+
+# Recordatorios
+REMINDER_CRON=0 * * * *            # cada hora
+REMINDER_AHEAD_MINUTES=1440        # 24 horas
+APP_TZ=America/Bogota              # para formatear texto de fecha
+
+# Para UID único del .ics (cambia a tu dominio si tienes)
+ICS_UID_DOMAIN=guardianpet.local

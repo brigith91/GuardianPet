@@ -1,6 +1,7 @@
 // src/modules/cita/appointment.controller.js
 import { request } from "express";
 import svc from "./appointment.service.js";
+import { sendNewAppointmentInvite } from './alerts.js';
 
 export default {
   registrar: async (req, res, next) => {
@@ -8,6 +9,8 @@ export default {
       // si quieres, aquí puedes comprobar que la mascota pertenece al usuario
       const cita = await svc.registrar(req.body);
       res.status(201).json(cita);
+
+      sendNewAppointmentInvite(cita.id).catch(console.error);
     } catch (e) {
       next(e);
     }
@@ -92,6 +95,7 @@ export default {
   actualizar: async (req, res, next) => {
     try {
       res.json(await svc.actualizar(req.params.id, req.body));
+      sendNewAppointmentInvite(cita.id).catch(console.error);
     } catch (e) {
       next(e);
     }
