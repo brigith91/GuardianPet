@@ -1,16 +1,16 @@
+<div class="contenedor-centro">
 <div class="formulario">
   <form (ngSubmit)="onSubmit()">
     <div class="contenido">
 
 
       <div class="logo">
-          <img class="imagen-logo"  src="assets/logo.png" alt="Logo GuardianPet" >
         <div class="logo_texto">Guardian<span>Pet</span></div>
       </div>
 
 
-          <input [(ngModel)]="email" name="email" type="email" required/>
-          <input [(ngModel)]="contrasena" name="contrasena" type="contrasena" required/>
+          <input [(ngModel)]="email" name="email" type="email" placeholder="Correo electronico" required/>
+          <input [(ngModel)]="contrasena" name="contrasena" type="contrasena" placeholder="contraseña" required/>
 
               <div class="volver">
                 <a   href="index.html">Volver</a>
@@ -24,11 +24,7 @@
         </div>
 
 
-          <div class="terminos">
-            <input type="checkbox"  required>
-            <label>Acepto los <a>Términos y Condiciones</a></label>
-          </div>
-
+          
 
 
 
@@ -50,3 +46,4 @@
     </div>
 </div>
 
+</div>

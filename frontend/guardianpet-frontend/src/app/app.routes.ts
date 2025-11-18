@@ -10,12 +10,14 @@ export const routes: Routes = [
   { path: 'registro', canMatch: [guestGuard], loadComponent: () => import('./features/auth/register/register').then(m => m.RegisterComponent) },
   { path: 'indice', canMatch: [guestGuard], loadComponent: () => import('./features/indice/indice').then(m => m.IndiceComponent) },
   { path: 'menu', canMatch: [guestGuard], loadComponent: () => import('./features/menu/menu').then(m => m.IndiceComponent) },
+  { path: 'modal', canMatch: [authGuard], loadComponent: () => import('./features/modal/modal').then(m => m.ModalComponent) },
 
 
 
 
 
   // Requieren token
+  { path: 'modal', canMatch: [authGuard], loadComponent: () => import('./features/modal/modal').then(m => m.ModalComponent) },
   { path: 'home',     canMatch: [authGuard],  loadComponent: () => import('./features/home/home').then(m => m.HomeComponent) },
   { path: 'mascota', canMatch: [authGuard], loadComponent: () => import('./features/mascota/mascota').then(m => m.MascotaComponent) },
   { path: 'tipo', canMatch: [authGuard], loadComponent: () => import('./features/tipo/tipo').then(m => m.TipoComponent) },
