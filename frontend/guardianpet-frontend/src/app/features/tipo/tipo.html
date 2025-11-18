@@ -1,11 +1,17 @@
- <div class="contenedor">
-        <h1 class="titulo">Tipo de registro</h1>
-        
-        <div class="botones">
-            <button class="boton">Cita</button>
-            <button class="boton">Enfermedad</button>
-            <button class="boton">operacion</button>
-            <button class="boton">tratamiento</button>
-            <button class="boton">vacuna</button>
-        </div>
-    </div>
+<div class="contenedor">
+  <h1 class="titulo">Tipo de registro</h1>
+
+  <div class="botones">
+
+    <button class="boton" [routerLink]="['/cita']">Cita</button>
+
+    <button class="boton" [routerLink]="['/enfermedad']">Enfermedad</button>
+
+    <button class="boton" [routerLink]="['/operacion']">Operacion</button>
+
+    <button class="boton" [routerLink]="['/tratamiento']">Tratamiento</button>
+
+    <button class="boton" [routerLink]="['/vacuna']">Vacuna</button>
+
+  </div>
+</div>

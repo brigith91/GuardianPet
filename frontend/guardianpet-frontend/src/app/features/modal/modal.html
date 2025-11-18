@@ -1,0 +1,144 @@
+
+<div class="contenedor-centro">
+<div class="contenedor-principal">
+    <h2 class="titulo-principal">Tipo de registro</h2>
+    
+    <label for="toggleCita" class="boton-registro">Cita</label>
+    <label for="toggleEnfermedad" class="boton-registro">Enfermedad</label>
+    <label for="toggleOperacion" class="boton-registro">Operación</label>
+    <label for="toggleTratamiento" class="boton-registro">Tratamiento</label>
+    <label for="toggleVacuna" class="boton-registro">Vacuna</label>
+</div>
+
+<!-- cita -->
+<input type="checkbox" id="toggleCita" class="modal-toggle">
+<div class="modal">
+    <div class="modal-contenido">
+        <div class="contenedor-modal">
+            <label for="toggleCita" class="boton-cerrar">&times;</label>
+            <h2 class="titulo-modal">Agregar Cita</h2>
+            <form class="formulario">
+               
+                <div class="campo">
+                    <label class="etiqueta">Fecha </label>
+                    <input type="datetime-local" class="entrada" required>
+                </div>
+                
+                <div class="campo">
+                    <label class="etiqueta">Estado</label>
+                    <textarea class="entrada-texto" placeholder="Ej: Pendiente, confirmada , completada " required></textarea>
+                </div>
+                 <div class="campo">
+                    <label class="etiqueta">Observacion</label>
+                    <textarea type="text" class="entrada" placeholder="Escribe observaciones sobre la cita" required></textarea>
+
+                </div>
+                <button type="submit" class="boton-guardar">Guardar cita</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- enfermedad -->
+<input type="checkbox" id="toggleEnfermedad" class="modal-toggle">
+<div class="modal">
+    <div class="modal-contenido">
+        <div class="contenedor-modal">
+            <label for="toggleEnfermedad" class="boton-cerrar">&times;</label>
+            <h2 class="titulo-modal">Agregar Enfermedad</h2>
+            <form class="formulario">
+                <div class="campo">
+                    <label class="etiqueta">Tipo</label>
+                    <input type="text" class="entrada" placeholder="Tipo de enfermedad" required>
+                </div>
+                
+                
+                <div class="campo">
+                    <label class="etiqueta">Descripción</label>
+                    <textarea class="entrada-texto" placeholder="descripcion de la enfermedad" required></textarea>
+                </div>
+                <button type="submit" class="boton-guardar">Guardar enfermedad</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- operacion -->
+<input type="checkbox" id="toggleOperacion" class="modal-toggle">
+<div class="modal">
+    <div class="modal-contenido">
+        <div class="contenedor-modal">
+            <label for="toggleOperacion" class="boton-cerrar">&times;</label>
+            <h2 class="titulo-modal">Agregar Operación</h2>
+            <form class="formulario">
+              
+                
+                <div class="campo">
+                    <label class="etiqueta">Tipo</label>
+                    <input type="text" class="entrada" placeholder="Tipo de operacion" required>
+                </div>
+                
+                <div class="campo">
+                    <label class="etiqueta">Descripcion</label>
+                    <textarea class="entrada-texto" placeholder="Descripcion de la operación" required></textarea>
+                </div>
+                <button type="submit" class="boton-guardar">Guardar operación</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- tratamiento -->
+<input type="checkbox" id="toggleTratamiento" class="modal-toggle">
+<div class="modal">
+    <div class="modal-contenido">
+        <div class="contenedor-modal">
+            <label for="toggleTratamiento" class="boton-cerrar">&times;</label>
+            <h2 class="titulo-modal">Agregar Tratamiento</h2>
+            <form class="formulario">
+                <div class="campo">
+                    <label class="etiqueta">Tipo</label>
+                    <input type="text" class="entrada" placeholder="Tipo de tratamiento" required>
+                </div>
+                <div class="campo">
+                    <label class="etiqueta">Fecha</label>
+                    <input type="date" class="entrada" required>
+                </div>
+                <div class="campo">
+                    <label class="etiqueta">Fecha fin</label>
+                    <input type="date" class="entrada" required>
+                </div>
+                <div class="campo">
+                    <label class="etiqueta">Descripción</label>
+                    <textarea class="entrada-texto" placeholder="Descripción del tratamiento" required></textarea>
+                </div>
+                <button type="submit" class="boton-guardar">Guardar tratamiento</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- vacuna -->
+<input type="checkbox" id="toggleVacuna" class="modal-toggle">
+<div class="modal">
+    <div class="modal-contenido">
+        <div class="contenedor-modal">
+            <label for="toggleVacuna" class="boton-cerrar">&times;</label>
+            <h2 class="titulo-modal">Agregar Vacuna</h2>
+            <form class="formulario">
+                <div class="campo">
+                    <label class="etiqueta">Nombre de la vacuna</label>
+                    <input type="text" class="entrada" placeholder="Nombre de la vacuna" required>
+                </div>
+               
+                <div class="campo">
+                    <label class="etiqueta">Notas</label>
+                    <textarea class="entrada-texto" placeholder="Descripcion de vacuna"></textarea>
+                </div>
+                <button type="submit" class="boton-guardar">Guardar vacuna</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</div>
