@@ -23,6 +23,7 @@ function matchValidator(a: string, b: string) {
   selector: 'app-reset-password',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './reset-password.html',
+   styleUrls: ['./reset-password.scss']
 })
 export class ResetPasswordComponent {
   private fb = inject(FormBuilder);
