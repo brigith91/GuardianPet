@@ -11,6 +11,9 @@ export const routes: Routes = [
   { path: 'indice', canMatch: [guestGuard], loadComponent: () => import('./features/indice/indice').then(m => m.IndiceComponent) },
   { path: 'menu', canMatch: [guestGuard], loadComponent: () => import('./features/menu/menu').then(m => m.IndiceComponent) },
 
+  { path: 'recuperar',  canMatch: [guestGuard], loadComponent: () => import('./features/auth/forgot/forgot').then(m => m.ForgotPasswordComponent) },
+  { path: 'reset-password', loadComponent: () => import('./features/auth/reset-password/reset-password').then(m => m.ResetPasswordComponent) },
+
 
 
 

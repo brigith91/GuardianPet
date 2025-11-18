@@ -1,0 +1,21 @@
+<div class="auth-card">
+  <h2>Recuperar contraseña</h2>
+  <p *ngIf="!sent">Escribe tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+  <p *ngIf="sent" class="ok">
+    Si el correo existe, recibirás instrucciones en unos minutos.
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="!sent">
+    <label>Correo</label>
+    <input type="email" formControlName="email" placeholder="tucorreo@ejemplo.com" />
+    <div class="err" *ngIf="form.controls.email.invalid && form.controls.email.touched">
+      Ingresa un email válido.
+    </div>
+
+    <button type="submit" [disabled]="loading || form.invalid">
+      {{ loading ? 'Enviando...' : 'Enviar enlace' }}
+    </button>
+  </form>
+
+  <div class="err" *ngIf="error">{{ error }}</div>
+</div>
