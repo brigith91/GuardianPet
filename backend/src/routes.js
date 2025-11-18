@@ -9,6 +9,7 @@ import treatmentRoutes from "./modules/tratamiento/treatment.routes.js";
 import vaccineRoutes from "./modules/vacuna/vaccine.routes.js";
 import veterinarianRoutes from "./modules/veterinario/veterinarian.routes.js";
 import citaRoutes from "./modules/cita/appointment.routes.js";
+import passwordRoutes from './modules/password/password.routes.js';
 
 // Módulos de detalle 
 import detOperationRoutes from "./modules/operacion/det_operacion/det_operation.routes.js"; 
@@ -18,6 +19,8 @@ import detVaccineRoutes from "./modules/vacuna/det_vacuna/det_vaccine.routes.js"
 const r = Router();
 
 //  Rutas públicas (SIN autenticación) - deben ir PRIMERO
+
+r.use('/auth', passwordRoutes); 
 r.use("/usuarios", userRoutes);
 
 //  Rutas protegidas (CON autenticación interna en cada módulo)
