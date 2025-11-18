@@ -21,7 +21,7 @@ function matchValidator(a: string, b: string) {
 @Component({
   standalone: true,
   selector: 'app-reset-password',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './reset-password.html',
 })
 export class ResetPasswordComponent {

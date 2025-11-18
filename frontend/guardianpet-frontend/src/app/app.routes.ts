@@ -19,7 +19,7 @@ export const routes: Routes = [
 
 
   // Requieren token
-  { path: 'home', canMatch: [guestGuard],  loadComponent: () => import('./features/home/home').then(m => m.HomeComponent) },
+  { path: 'home', canMatch: [authGuard],  loadComponent: () => import('./features/home/home').then(m => m.HomeComponent) },
   { path: 'mascota', canMatch: [authGuard], loadComponent: () => import('./features/mascota/mascota').then(m => m.MascotaComponent) },
   { path: 'tipo', canMatch: [authGuard], loadComponent: () => import('./features/tipo/tipo').then(m => m.TipoComponent) },
   { path: 'enfermedad', canMatch: [authGuard], loadComponent: () => import('./features/enfermedad/enfermedad').then(m => m.EnfermedadComponent) },
