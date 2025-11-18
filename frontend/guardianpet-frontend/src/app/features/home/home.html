@@ -48,11 +48,61 @@
         <p class="texto-vacio">Aún no tienes mascotas registradas.</p>
       </ng-template>
     </div>
+<!-- BOTÓN AGREGAR MASCOTA -->
+<label for="toggleModalMascota" class="boton-agregar-mascota">
+  <span class="icono-mas">+</span> Agregar mascota
+</label>
 
-    <button class="boton-agregar-mascota">
-      <span class="icono-mas">+</span>
-      Agregar mascota
-    </button>
+<!-- MODAL AGREGAR MASCOTA -->
+<input type="checkbox" id="toggleModalMascota" class="modal-toggle">
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-centro">
+      <div class="contenedor">
+        <label for="toggleModalMascota" class="boton-cerrar">&times;</label>
+        <h2 class="titulo">Agregar nueva Mascota</h2>
+
+        <form class="formulario">
+            <div class="campo">
+                <label class="etiqueta">Nombre</label>
+                <input type="text" class="entrada" placeholder="Nombre de la mascota" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Especie</label>
+                <input type="text" class="entrada" placeholder="Especie" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Raza</label>
+                <input type="text" class="entrada" placeholder="Raza" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Sexo</label>
+                <input type="text" class="entrada" placeholder="Sexo" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Fecha nacimiento</label>
+                <input type="date" class="entrada" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Foto (opcional)</label>
+                <label for="foto-mascota" class="entrada-archivo">
+                    <span id="nombre-archivo">Subir archivo</span>
+                </label>
+                <input type="file" id="foto-mascota" class="archivo-oculto" accept="image/*">
+            </div>
+
+            <button type="submit" class="boton-guardar">Agregar mascota</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
     <div class="item-menu configuracion">
       <span class="icono-menu">⚙️</span>
