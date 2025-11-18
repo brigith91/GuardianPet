@@ -26,3 +26,9 @@ APP_TZ=America/Bogota              # para formatear texto de fecha
 
 # Para UID único del .ics (cambia a tu dominio si tienes)
 ICS_UID_DOMAIN=guardianpet.local
+
+OLLAMA_HOST=https://ollama.com
+OLLAMA_MODEL=gpt-oss:120b
+OLLAMA_API_KEY=
+# Opcional: timeout en ms
+OLLAMA_TIMEOUT_MS=45000
