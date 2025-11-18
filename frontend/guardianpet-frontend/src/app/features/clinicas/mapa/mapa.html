@@ -1,0 +1,13 @@
+<div class="map-layout">
+  <aside class="list">
+    <h3>Clínicas</h3>
+    <ul>
+      <li *ngFor="let c of clinics" (click)="focus(c)">
+        <div class="name">{{ c.tienda }}</div>
+        <div class="addr">{{ c.direccion }}</div>
+        <div class="tel">{{ c.telefono }}</div>
+      </li>
+    </ul>
+  </aside>
+  <div id="map" class="map"></div>
+</div>
