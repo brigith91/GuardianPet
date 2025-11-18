@@ -1,14 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   standalone: true,
   selector: 'app-tipo',
-  imports: [CommonModule],
   templateUrl: './tipo.html',
-  styleUrls: ['./tipo.scss']
+  styleUrls: ['./tipo.scss'],
+  imports: [RouterLink]
 })
-export class TipoComponent{
-  me: any = null;
-
-}
+export class TipoComponent { }
