@@ -22,7 +22,7 @@ export const mailer = nodemailer.createTransport({
 export async function sendPasswordResetMail({ to, name, token }) {
   const base = process.env.FRONTEND_URL || 'http://localhost:4200';
   // Link que tu frontend debe atender (ruta /auth/reset-password?token=...)
-  const url = `${base}/auth/reset-password?token=${encodeURIComponent(token)}`;
+  const url = `${base}/reset-password?token=${encodeURIComponent(token)}`;
 
   const html = `
     <div style="font-family:system-ui, -apple-system, Segoe UI, Roboto, sans-serif; line-height:1.5">

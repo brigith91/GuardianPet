@@ -12,6 +12,6 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=465
 SMTP_SECURE=true
 SMTP_USER=guardianpetnotificaciones@gmail.com
-SMTP_PASS=liol mmrp sagb kyqy
+SMTP_PASS=
 EMAIL_FROM="GuardianPet <guardianpetnotificaciones@gmail.com>"
 RESET_TOKEN_TTL_MIN=30
