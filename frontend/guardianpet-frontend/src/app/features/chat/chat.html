@@ -1,3 +1,4 @@
+<div class="contenedor-centro">
 <div class="chat">
   <div class="thread">
     <div *ngFor="let m of history" class="msg" [class.me]="m.role==='user'">
@@ -16,4 +17,5 @@
       {{ loading ? 'Enviando…' : 'Enviar' }}
     </button>
   </div>
+</div>
 </div>
