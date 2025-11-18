@@ -1,4 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+@import "leaflet/dist/leaflet.css";
+
+/* fuerza altura visible del mapa (prueba con esto primero) */
+#map {
+  height: 70vh;      /* o 500px para probar */
+  min-height: 400px;
+}
 .footer {
     background-color: #1a5555;
     color: white;

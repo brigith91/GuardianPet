@@ -13,6 +13,7 @@ export const routes: Routes = [
 
   { path: 'recuperar',  canMatch: [guestGuard], loadComponent: () => import('./features/auth/forgot/forgot').then(m => m.ForgotPasswordComponent) },
   { path: 'reset-password', loadComponent: () => import('./features/auth/reset-password/reset-password').then(m => m.ResetPasswordComponent) },
+  { path: 'clinicas', loadComponent: () => import('./features/clinicas/mapa/mapa').then(m => m.ClinicasMapaComponent) },
 
 
 
