@@ -44,7 +44,7 @@ model mascota {
   fecha_nacimiento  DateTime            @db.Date
   usuario_id_fk     Int
   url_foto          String?             @db.VarChar(255)
-  cita              cita?
+  cita              cita[]
   historial_clinico historial_clinico[]
   usuario           usuario             @relation(fields: [usuario_id_fk], references: [id], onUpdate: Restrict, map: "mascota_ibfk_1")
 
@@ -79,7 +79,11 @@ model usuario {
   rol        String    @db.VarChar(255)
   cedula     Int       @unique(map: "cedula")
   mascota    mascota[]
+
+  // 👇 nuevo
+  password_reset_token password_reset_token[]
 }
+
 
 model vacuna {
   id          Int          @id @default(autoincrement())
@@ -102,13 +106,14 @@ model cita {
   fecha             DateTime           @db.DateTime(0)
   estado            String             @db.VarChar(255)
   observacion       String             @db.Text
-  mascota_id_fk     Int                @unique(map: "mascota_id_fk")
+  mascota_id_fk     Int
   veterinario_id_fk Int
   mascota           mascota            @relation(fields: [mascota_id_fk], references: [id], onUpdate: Restrict, map: "cita_ibfk_1")
   veterinario       veterinario        @relation(fields: [veterinario_id_fk], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_cita_veterinario")
   historial_clinico historial_clinico?
 
   @@index([veterinario_id_fk], map: "fk_cita_veterinario")
+  @@index([mascota_id_fk], map: "mascota_id_fk")
 }
 
 model clinica {
@@ -161,4 +166,20 @@ model det_vacuna {
   @@unique([historial_clinico_id_fk, vacuna_id_fk], map: "det_vacuna_unique")
   @@index([historial_clinico_id_fk], map: "historial_clinico_id_fk")
   @@index([vacuna_id_fk], map: "vacuna_id_fk")
+}
+
+model password_reset_token {
+  id             Int       @id @default(autoincrement())
+  usuario_id_fk  Int
+  token_hash     String    @unique(map: "token_hash")   // guardamos solo el HASH
+  expires_at     DateTime
+  used_at        DateTime?
+  created_at     DateTime  @default(now())
+  ip             String?
+  user_agent     String?
+
+  usuario        usuario   @relation(fields: [usuario_id_fk], references: [id], onDelete: Cascade, map: "password_reset_token_ibfk_1")
+
+  @@index([usuario_id_fk], map: "usuario_id_fk")
+  @@index([expires_at],    map: "expires_at")
 }

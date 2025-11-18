@@ -7,3 +7,11 @@ JWT_SECRET=
 JWT_EXPIRES_IN=
 # CORS
 CORS_ORIGIN=
+# CORREO
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=guardianpetnotificaciones@gmail.com
+SMTP_PASS=liol mmrp sagb kyqy
+EMAIL_FROM="GuardianPet <guardianpetnotificaciones@gmail.com>"
+RESET_TOKEN_TTL_MIN=30
