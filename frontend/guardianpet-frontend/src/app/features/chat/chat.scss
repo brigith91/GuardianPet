@@ -1,0 +1,8 @@
+.chat { max-width: 800px; margin: 0 auto; display:flex; flex-direction:column; gap:10px; }
+.thread { display:flex; flex-direction:column; gap:8px; max-height: 70vh; overflow:auto; }
+.msg { display:flex; }
+.msg .bubble { background:#f2f2f2; padding:10px 12px; border-radius:12px; max-width:70%; white-space:pre-wrap; }
+.msg.me { justify-content:flex-end; }
+.msg.me .bubble { background:#d9eaff; }
+.composer { display:flex; gap:8px; }
+textarea { flex:1; resize:vertical; }

@@ -15,6 +15,7 @@ import passwordRoutes from './modules/password/password.routes.js';
 import detOperationRoutes from "./modules/operacion/det_operacion/det_operation.routes.js"; 
 import detDiseaseRoutes from "./modules/enfermedad/det_enfermedad/det_disease.routes.js";
 import detVaccineRoutes from "./modules/vacuna/det_vacuna/det_vaccine.routes.js"; 
+import chatRoutes from './modules/chat/chat.routes.js';
 
 const r = Router();
 
@@ -34,6 +35,7 @@ r.use("/mascotas", petRoutes);
 r.use("/operaciones", operationRoutes);
 r.use("/tratamientos", treatmentRoutes);
 r.use("/citas", citaRoutes);
+r.use('/chat', chatRoutes);
 
 // Rutas de detalle
 r.use("/det_operaciones", detOperationRoutes);

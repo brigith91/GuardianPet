@@ -1,0 +1,19 @@
+<div class="chat">
+  <div class="thread">
+    <div *ngFor="let m of history" class="msg" [class.me]="m.role==='user'">
+      <div class="bubble">{{ m.content }}</div>
+    </div>
+  </div>
+
+  <div class="composer">
+    <textarea
+      [(ngModel)]="input"
+      name="msg"
+      rows="2"
+      (keydown.enter)="onEnter($event)"
+      placeholder="Escribe tu pregunta sobre cuidado o alimentación…"></textarea>
+    <button type="button" (click)="send()" [disabled]="loading || !input.trim()">
+      {{ loading ? 'Enviando…' : 'Enviar' }}
+    </button>
+  </div>
+</div>

@@ -6,7 +6,7 @@ const selectPublic = {
   fecha: true,
   fecha_fin: true,
   descripcion: true,
-  enfermedad_id_fk: true,
+  det_enfermedad_id_fk: true,
   enfermedad: {
     select: {
       tipo: true,
