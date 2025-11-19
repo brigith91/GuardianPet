@@ -272,7 +272,7 @@ body {
     margin: 2px 0;
 }
 
-.boton-agregar-registro {
+.boton-agregar-historial {
     padding: 12px 24px;
     background-color: #b8e6d5;
     border: none;
@@ -287,7 +287,7 @@ body {
     transition: background-color 0.3s;
 }
 
-.boton-agregar-registro:hover {
+.boton-agregar-historial:hover {
     background-color: #a0ddc8;
 }
 
@@ -325,6 +325,12 @@ body {
     font-size: 20px;
     font-weight: 600;
     color: #333;
+    margin-bottom: 20px;
+}
+.contenedor-historial-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 20px;
 }
 
@@ -690,4 +696,71 @@ body {
 
 .boton-guardar:hover {
     background-color: #6ab896;
+}
+/* BOTÓN TIPO DE REGISTRO */
+.boton-tipo-registro {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin: 15px 0;
+    background: #e8f5f0;
+    color: #5a7a68;
+    border: 2px dashed #81c9a4;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+    text-decoration: none;
+}
+
+.boton-tipo-registro:hover {
+    background: #d4eee5;
+    border-color: #6fb894;
+}
+/* === SISTEMA DE TABS SIN JAVASCRIPT === */
+.tab-radio {
+    display: none;
+}
+
+.contenido-tab {
+    display: none;
+}
+
+#tab-historial-radio:checked ~ #contenido-historial {
+    display: block;
+}
+
+#tab-citas-radio:checked ~ #contenido-citas {
+    display: block;
+}
+
+#tab-historial-radio:checked ~ .tabs-navegacion label[for="tab-historial-radio"],
+#tab-citas-radio:checked ~ .tabs-navegacion label[for="tab-citas-radio"] {
+    color: #333;
+    border-bottom-color: #5dd4d4;
+}
+
+/* === ESTILOS PARA CITAS PROGRAMADAS === */
+.etiqueta-cita-programada {
+    background-color: #ffd4a3;
+}
+
+.badge-estado-cita {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+.badge-pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-confirmada {
+    background-color: #d4edda;
+    color: #155724;
 }
