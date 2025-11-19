@@ -123,12 +123,88 @@
         <p class="texto-info">Dueño • {{ me?.nombre }}</p>
       </div>
 
-      <!-- BOTÓN AGREGAR REGISTRO -->
-<label for="toggleModalRegistro" class="boton-agregar-registro">
-  <span class="icono-mas">+</span> Agregar registro
-</label>
 
-<!-- MODAL DE REGISTRO -->
+
+    </div>
+
+
+  <!-- INPUTS RADIO PARA CONTROLAR LOS TABS -->
+<input type="radio" id="tab-historial-radio" name="tabs" class="tab-radio" checked>
+<input type="radio" id="tab-citas-radio" name="tabs" class="tab-radio">
+
+<!-- TABS DE NAVEGACIÓN -->
+<div class="tabs-navegacion">
+  <label for="tab-historial-radio" class="tab activo">Historial clínico</label>
+  <label for="tab-citas-radio" class="tab">Citas programadas</label>
+</div>
+
+
+  
+
+    <div id="contenido-historial" class="contenido-tab">
+
+      <div class="contenedor-historial-titulo"> 
+        <h3 class="titulo-historial">Historial clínico de {{ pet.nombre }}</h3> 
+        <label for="toggleModalHistorialGeneral" class="boton-agregar-historial"> 
+    <span class="icono-mas">+</span> Agregar historial clínico </label>
+   </div>
+
+
+ <!-- MODAL HISTORIAL CLÍNICO GENERAL (Primero) -->
+    <input type="checkbox" id="toggleModalHistorialGeneral" class="modal-toggle">
+    <div class="modal">
+      <div class="modal-contenido">
+        <div class="contenedor-modal">
+          <label for="toggleModalHistorialGeneral" class="boton-cerrar">&times;</label>
+          <h2 class="titulo-modal">Agregar Historial Clínico</h2>
+
+          <form class="formulario">
+            <div class="campo">
+              <label class="etiqueta">Fecha</label>
+              <input type="datetime-local" class="entrada" required>
+            </div>
+
+            <div class="campo">
+              <label class="etiqueta">Descripción</label>
+              <textarea class="entrada-texto" placeholder="Descripción del registro" required></textarea>
+            </div>
+
+            <div class="campo">
+              <label class="etiqueta">Veterinario</label>
+              <input type="text" class="entrada" placeholder="Nombre del veterinario" required>
+            </div>
+
+            <div class="campo">
+              <label class="etiqueta">Mascota</label>
+              <input type="text" class="entrada" placeholder="Nombre de la mascota" required>
+            </div>
+
+            <div class="campo">
+              <label class="etiqueta">Cita</label>
+              <input type="text" class="entrada" placeholder="Información de la cita (opcional)">
+            </div>
+
+            <div class="campo">
+              <label class="etiqueta">Archivo (opcional)</label>
+              <label for="archivo-historial" class="entrada-archivo">
+                <span id="nombre-archivo-historial">Subir archivo</span>
+              </label>
+              <input type="file" id="archivo-historial" class="archivo-oculto" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+            </div>
+
+            <!-- BOTÓN QUE ABRE EL MODAL DE TIPO DE REGISTRO -->
+            <label for="toggleModalRegistro" class="boton-tipo-registro">
+              Seleccionar tipo de registro específico
+            </label>
+
+            <button type="submit" class="boton-guardar">Guardar historial clínico</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- MODAL DE REGISTRO -->
 <input type="checkbox" id="toggleModalRegistro" class="modal-toggle">
 <div class="modal">
   <div class="modal-contenido">
@@ -266,13 +342,8 @@
   </div>
 </div>
 
-    </div>
 
-    <div class="tabs-navegacion">
-      <button class="tab activo">Historial clínico</button>
-    </div>
-
-    <h3 class="titulo-historial">Historial clínico de {{ pet.nombre }}</h3>
+   
 
     <!-- Opción A: aquí se muestra SOLO lo filtrado en el componente -->
     <div class="lista-registros" *ngIf="historial?.length; else noRecords">
@@ -295,6 +366,101 @@
         </div>
       </div>
     </div>
+    </div>
+    <!-- SECCIÓN CITAS PROGRAMADAS -->
+<div id="contenido-citas" class="contenido-tab">
+  <div class="contenedor-historial-titulo">
+    <h3 class="titulo-historial">Citas programadas</h3>
+    <label for="toggleModalCitaNueva" class="boton-agregar-historial">
+      <span class="icono-mas">+</span> Agregar cita
+    </label>
+  </div>
+
+  <!-- MODAL AGREGAR CITA -->
+  <input type="checkbox" id="toggleModalCitaNueva" class="modal-toggle">
+  <div class="modal">
+    <div class="modal-contenido">
+      <div class="contenedor-modal">
+        <label for="toggleModalCitaNueva" class="boton-cerrar">&times;</label>
+        <h2 class="titulo-modal">Agregar Cita</h2>
+        <form class="formulario">
+          <div class="campo">
+            <label class="etiqueta">Fecha y hora</label>
+            <input type="datetime-local" class="entrada" required>
+          </div>
+          <div class="campo">
+            <label class="etiqueta">Motivo de la cita</label>
+            <input type="text" class="entrada" placeholder="Ej: Vacunación, Chequeo general" required>
+          </div>
+          <div class="campo">
+            <label class="etiqueta">Veterinario</label>
+            <input type="text" class="entrada" placeholder="Nombre del veterinario" required>
+          </div>
+          <div class="campo">
+            <label class="etiqueta">Estado</label>
+            <select class="entrada" required>
+              <option value="">Seleccionar estado</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="confirmada">Confirmada</option>
+              <option value="completada">Completada</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label class="etiqueta">Observaciones</label>
+            <textarea class="entrada-texto" placeholder="Observaciones adicionales"></textarea>
+          </div>
+          <button type="submit" class="boton-guardar">Guardar cita</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTA DE CITAS -->
+  <div class="lista-registros">
+    <div class="tarjeta-registro">
+      <div class="contenido-registro">
+        <div class="etiqueta-tipo etiqueta-cita-programada">Cita</div>
+        <h4 class="titulo-registro">Vacunación antirrábica</h4>
+        <p class="descripcion-registro">Aplicación de vacuna antirrábica anual</p>
+        <div class="info-doctor">
+          <span class="icono-doctor">👨‍⚕️</span>
+          <span class="nombre-doctor">Dr. Carlos Ruiz</span>
+        </div>
+      </div>
+      <div class="acciones-registro">
+        <span class="fecha-registro">20 Nov 2025, 10:00 AM</span>
+        <div class="badge-estado-cita badge-pendiente">Pendiente</div>
+        <div class="botones-accion">
+          <button class="boton-icono" title="Editar">✏️</button>
+          <button class="boton-icono" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tarjeta-registro">
+      <div class="contenido-registro">
+        <div class="etiqueta-tipo etiqueta-cita-programada">Cita</div>
+        <h4 class="titulo-registro">Chequeo mensual</h4>
+        <p class="descripcion-registro">Revisión rutinaria de salud</p>
+        <div class="info-doctor">
+          <span class="icono-doctor">👩‍⚕️</span>
+          <span class="nombre-doctor">Dra. María López</span>
+        </div>
+      </div>
+      <div class="acciones-registro">
+        <span class="fecha-registro">25 Nov 2025, 3:00 PM</span>
+        <div class="badge-estado-cita badge-confirmada">Confirmada</div>
+        <div class="botones-accion">
+          <button class="boton-icono" title="Editar">✏️</button>
+          <button class="boton-icono" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
     <ng-template #noRecords>
       <p class="texto-vacio">Sin registros para esta mascota.</p>

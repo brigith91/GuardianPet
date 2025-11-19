@@ -16,6 +16,11 @@
     <button type="submit" [disabled]="loading || form.invalid">
       {{ loading ? 'Enviando...' : 'Enviar enlace' }}
     </button>
+     
+    <button type="submit" routerLink="/login" class="btn-secondary">
+      Cancelar
+    </button>
+    
   </form>
 
   <div class="err" *ngIf="error">{{ error }}</div>
