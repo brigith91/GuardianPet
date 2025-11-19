@@ -1,0 +1,309 @@
+<header class="barra-superior">
+  <div class="logo">
+    <img class="imagen-logo" src="assets/logo.png" alt="Logo GuardianPet" />
+    <span class="texto-logo"><strong>Guardian</strong>Pet</span>
+  </div>
+
+  <div class="barra-busqueda">
+    <span class="icono-busqueda">🔍</span>
+    <input type="text" class="campo-busqueda" placeholder="Buscar mascota" />
+  </div>
+
+  <div class="perfil-usuario" *ngIf="me as u">
+    <div class="avatar-usuario">{{ iniciales(u.nombre) }}</div>
+    <span class="nombre-usuario">{{ u.nombre }}</span>
+  </div>
+</header>
+
+<div class="contenedor-principal">
+  <aside class="barra-lateral">
+    <div class="item-menu activo">
+      <span class="icono-menu">🐾</span>
+      <span class="texto-menu">Mascotas</span>
+    </div>
+
+    <div class="seccion-mascotas">
+      <h3 class="titul">Mascotas</h3>
+
+      <ng-container *ngIf="mascotas?.length; else noPets">
+        <div
+          class="tarjeta-mascota"
+          *ngFor="let m of mascotas"
+          (click)="seleccionarMascota(m)"
+          [class.seleccionada]="m.id === seleccionada?.id"
+        >
+          <img
+            [src]="m.foto_url || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=60&h=60&fit=crop'"
+            [alt]="m.nombre"
+            class="foto-mascota"
+          />
+          <div class="info-mascota">
+            <h4 class="nombre-mascota">{{ m.nombre }}</h4>
+            <p class="detalles-mascota">{{ m.especie || 'Mascota' }}</p>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #noPets>
+        <p class="texto-vacio">Aún no tienes mascotas registradas.</p>
+      </ng-template>
+    </div>
+<!-- BOTÓN AGREGAR MASCOTA -->
+<label for="toggleModalMascota" class="boton-agregar-mascota">
+  <span class="icono-mas">+</span> Agregar mascota
+</label>
+
+<!-- MODAL AGREGAR MASCOTA -->
+<input type="checkbox" id="toggleModalMascota" class="modal-toggle">
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-centro">
+      <div class="contenedor">
+        <label for="toggleModalMascota" class="boton-cerrar">&times;</label>
+        <h2 class="titulo">Agregar nueva Mascota</h2>
+
+        <form class="formulario">
+            <div class="campo">
+                <label class="etiqueta">Nombre</label>
+                <input type="text" class="entrada" placeholder="Nombre de la mascota" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Especie</label>
+                <input type="text" class="entrada" placeholder="Especie" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Raza</label>
+                <input type="text" class="entrada" placeholder="Raza" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Sexo</label>
+                <input type="text" class="entrada" placeholder="Sexo" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Fecha nacimiento</label>
+                <input type="date" class="entrada" required>
+            </div>
+
+            <div class="campo">
+                <label class="etiqueta">Foto (opcional)</label>
+                <label for="foto-mascota" class="entrada-archivo">
+                    <span id="nombre-archivo">Subir archivo</span>
+                </label>
+                <input type="file" id="foto-mascota" class="archivo-oculto" accept="image/*">
+            </div>
+
+            <button type="submit" class="boton-guardar">Agregar mascota</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <div class="item-menu configuracion">
+      <span class="icono-menu">⚙️</span>
+      <span class="texto-menu">Configuración</span>
+    </div>
+  </aside>
+
+  <main class="area-contenido" *ngIf="seleccionada as pet; else noSelection">
+    <div class="encabezado-mascota">
+      <img
+        [src]="pet.foto_url || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&h=100&fit=crop'"
+        [alt]="pet.nombre"
+        class="foto-mascota-grande"
+      />
+      <div class="info-mascota-grande">
+        <h2 class="nombre-mascota-grande">{{ pet.nombre }}</h2>
+        <p class="texto-info">{{ pet.raza || pet.especie || 'Mascota' }}</p>
+        <p class="texto-info">Dueño • {{ me?.nombre }}</p>
+      </div>
+
+      <!-- BOTÓN AGREGAR REGISTRO -->
+<label for="toggleModalRegistro" class="boton-agregar-registro">
+  <span class="icono-mas">+</span> Agregar registro
+</label>
+
+<!-- MODAL DE REGISTRO -->
+<input type="checkbox" id="toggleModalRegistro" class="modal-toggle">
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <label for="toggleModalRegistro" class="boton-cerrar">&times;</label>
+      <h2 class="titulo-modal">Tipo de registro</h2>
+
+      <label for="toggleCita" class="boton-registro">Cita</label>
+      <label for="toggleEnfermedad" class="boton-registro">Enfermedad</label>
+      <label for="toggleOperacion" class="boton-registro">Operación</label>
+      <label for="toggleTratamiento" class="boton-registro">Tratamiento</label>
+      <label for="toggleVacuna" class="boton-registro">Vacuna</label>
+    </div>
+  </div>
+</div>
+<!-- CITA -->
+<input type="checkbox" id="toggleCita" class="modal-toggle">
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <label for="toggleCita" class="boton-cerrar">&times;</label>
+      <h2 class="titulo-modal">Agregar Cita</h2>
+      <form class="formulario">
+        <div class="campo">
+          <label class="etiqueta">Fecha</label>
+          <input type="datetime-local" class="entrada" required>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Estado</label>
+          <textarea class="entrada-texto" placeholder="Ej: Pendiente, Confirmada, Completada" required></textarea>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Observación</label>
+          <textarea class="entrada-texto" placeholder="Escribe observaciones sobre la cita" required></textarea>
+        </div>
+        <button type="submit" class="boton-guardar">Guardar cita</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--  ENFERMEDAD -->
+<input type="checkbox" id="toggleEnfermedad" class="modal-toggle">
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <label for="toggleEnfermedad" class="boton-cerrar">&times;</label>
+      <h2 class="titulo-modal">Agregar Enfermedad</h2>
+      <form class="formulario">
+        <div class="campo">
+          <label class="etiqueta">Tipo</label>
+          <input type="text" class="entrada" placeholder="Tipo de enfermedad" required>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Descripción</label>
+          <textarea class="entrada-texto" placeholder="Descripción de la enfermedad" required></textarea>
+        </div>
+        <button type="submit" class="boton-guardar">Guardar enfermedad</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--  OPERACIÓN -->
+<input type="checkbox" id="toggleOperacion" class="modal-toggle">
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <label for="toggleOperacion" class="boton-cerrar">&times;</label>
+      <h2 class="titulo-modal">Agregar Operación</h2>
+      <form class="formulario">
+        <div class="campo">
+          <label class="etiqueta">Tipo</label>
+          <input type="text" class="entrada" placeholder="Tipo de operación" required>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Descripción</label>
+          <textarea class="entrada-texto" placeholder="Descripción de la operación" required></textarea>
+        </div>
+        <button type="submit" class="boton-guardar">Guardar operación</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--  TRATAMIENTO -->
+<input type="checkbox" id="toggleTratamiento" class="modal-toggle">
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <label for="toggleTratamiento" class="boton-cerrar">&times;</label>
+      <h2 class="titulo-modal">Agregar Tratamiento</h2>
+      <form class="formulario">
+        <div class="campo">
+          <label class="etiqueta">Tipo</label>
+          <input type="text" class="entrada" placeholder="Tipo de tratamiento" required>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Fecha inicio</label>
+          <input type="date" class="entrada" required>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Fecha fin</label>
+          <input type="date" class="entrada" required>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Descripción</label>
+          <textarea class="entrada-texto" placeholder="Descripción del tratamiento" required></textarea>
+        </div>
+        <button type="submit" class="boton-guardar">Guardar tratamiento</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- VACUNA -->
+<input type="checkbox" id="toggleVacuna" class="modal-toggle">
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <label for="toggleVacuna" class="boton-cerrar">&times;</label>
+      <h2 class="titulo-modal">Agregar Vacuna</h2>
+      <form class="formulario">
+        <div class="campo">
+          <label class="etiqueta">Nombre de la vacuna</label>
+          <input type="text" class="entrada" placeholder="Nombre de la vacuna" required>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Notas</label>
+          <textarea class="entrada-texto" placeholder="Descripción de la vacuna"></textarea>
+        </div>
+        <button type="submit" class="boton-guardar">Guardar vacuna</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div class="tabs-navegacion">
+      <button class="tab activo">Historial clínico</button>
+    </div>
+
+    <h3 class="titulo-historial">Historial clínico de {{ pet.nombre }}</h3>
+
+    <!-- Opción A: aquí se muestra SOLO lo filtrado en el componente -->
+    <div class="lista-registros" *ngIf="historial?.length; else noRecords">
+      <div class="tarjeta-registro" *ngFor="let r of historial">
+        <div class="contenido-registro">
+          <div class="etiqueta-tipo">{{ r.tipo || 'Registro' }}</div>
+          <h4 class="titulo-registro">{{ r.titulo || ('#' + r.id) }}</h4>
+          <p class="descripcion-registro">{{ r.descripcion || '—' }}</p>
+          <div class="info-doctor" *ngIf="r.veterinario">
+            <span class="icono-doctor">👩‍⚕️</span>
+            <span class="nombre-doctor">{{ r.veterinario }}</span>
+          </div>
+        </div>
+        <div class="acciones-registro">
+          <span class="fecha-registro">{{ r.fecha | date:'longDate' }}</span>
+          <div class="botones-accion">
+            <button class="boton-icono" title="Editar">✏️</button>
+            <button class="boton-icono" title="Eliminar">🗑️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noRecords>
+      <p class="texto-vacio">Sin registros para esta mascota.</p>
+    </ng-template>
+  </main>
+
+  <ng-template #noSelection>
+    <main class="area-contenido">
+      <p class="texto-vacio">Selecciona una mascota para ver su historial.</p>
+    </main>
+  </ng-template>
+</div>
