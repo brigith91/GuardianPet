@@ -1,6 +1,6 @@
 import express from "express";
-import helmet from "helmet";
 import cors from "cors";
+import helmet from "helmet";
 import routes from "./routes.js";
 import { errorHandler, notFound } from "./middlewares/error.js";
 import rateLimit from "./middlewares/rateLimit.js";
@@ -36,5 +36,6 @@ app.use("/api", routes);
 // Manejo de errores al final
 app.use(notFound);
 app.use(errorHandler);
+
 
 export default app;
