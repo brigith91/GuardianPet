@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-11-2025 a las 01:57:07
+-- Tiempo de generación: 18-11-2025 a las 05:24:24
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,9 +34,20 @@ CREATE TABLE `cita` (
   `fecha` datetime NOT NULL,
   `estado` varchar(255) NOT NULL,
   `observacion` text NOT NULL,
+  `veterinario_id_fk` int(11) NOT NULL,
   `mascota_id_fk` int(11) NOT NULL,
-  `veterinario_id_fk` int(11) NOT NULL
+  `reminder_email_sent` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `cita`
+--
+
+INSERT INTO `cita` (`id`, `fecha`, `estado`, `observacion`, `veterinario_id_fk`, `mascota_id_fk`, `reminder_email_sent`) VALUES
+(1, '2025-11-19 09:30:00', 'Programada', 'Chequeo columna de la mascota', 1, 1, 0),
+(2, '2025-11-18 10:30:00', 'Programada', 'Chequeo pulgas de la mascota', 1, 1, 0),
+(3, '2025-11-18 10:30:00', 'Programada', 'Chequeo pulgas de la mascota', 1, 1, 0),
+(4, '2025-11-18 15:30:00', 'Programada', 'Chequeo pulgas de la mascota', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -52,6 +63,14 @@ CREATE TABLE `clinica` (
   `latitud` double NOT NULL,
   `longitud` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `clinica`
+--
+
+INSERT INTO `clinica` (`id`, `tienda`, `direccion`, `telefono`, `latitud`, `longitud`) VALUES
+(1, 'PetGuardian', 'Cale 23 #68-23', '3156464854', 4.711, -74.0721),
+(2, 'PetGuardian', 'Cale 23 #68-23', '3156464854', 6.2442, -75.5812);
 
 -- --------------------------------------------------------
 
@@ -82,6 +101,13 @@ CREATE TABLE `det_operacion` (
   `observaciones` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `det_operacion`
+--
+
+INSERT INTO `det_operacion` (`id`, `historial_clinico_id_fk`, `operacion_id_fk`, `fecha`, `observaciones`) VALUES
+(1, 4, 1, '2025-11-18 03:39:44', 'Salió bien de cirugía');
+
 -- --------------------------------------------------------
 
 --
@@ -95,6 +121,13 @@ CREATE TABLE `det_vacuna` (
   `fecha` datetime NOT NULL,
   `observaciones` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `det_vacuna`
+--
+
+INSERT INTO `det_vacuna` (`id`, `historial_clinico_id_fk`, `vacuna_id_fk`, `fecha`, `observaciones`) VALUES
+(1, 4, 1, '2025-11-18 01:45:40', 'Se aplicó la vacuna correctamente');
 
 -- --------------------------------------------------------
 
@@ -120,10 +153,18 @@ CREATE TABLE `historial_clinico` (
   `descripcion` text NOT NULL,
   `tipo` varchar(255) NOT NULL,
   `url_archivos` varchar(255) DEFAULT NULL,
-  `veterinario_id_fk` int(11) NOT NULL,
+  `veterinario_id_fk` int(11) DEFAULT NULL,
   `mascota_id_fk` int(11) NOT NULL,
   `cita_id_fk` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `historial_clinico`
+--
+
+INSERT INTO `historial_clinico` (`id`, `fecha`, `descripcion`, `tipo`, `url_archivos`, `veterinario_id_fk`, `mascota_id_fk`, `cita_id_fk`) VALUES
+(4, '2025-11-18 01:40:26', 'Al perro se fue a hacerle una vacuna y se operó de apendicitis', 'Vacuna - operación', '/assets/', 1, 1, NULL),
+(6, '2025-11-18 03:43:07', 'Cita de control', 'Control', '/assets/', 1, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -147,7 +188,8 @@ CREATE TABLE `mascota` (
 --
 
 INSERT INTO `mascota` (`id`, `nombre`, `especie`, `raza`, `sexo`, `fecha_nacimiento`, `usuario_id_fk`, `url_foto`) VALUES
-(1, 'Motas', 'Gato', 'Mezcla', 'M', '2025-11-07', 4, '/assest');
+(1, 'Perrito', 'Perro', 'Chiguagua', 'M', '2025-11-02', 1, '/assets/'),
+(2, 'Ozyel', 'Gato', 'Perza', 'M', '2023-11-01', 1, '/assets/');
 
 -- --------------------------------------------------------
 
@@ -161,6 +203,40 @@ CREATE TABLE `operacion` (
   `descripcion` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `operacion`
+--
+
+INSERT INTO `operacion` (`id`, `tipo`, `descripcion`) VALUES
+(1, 'Apendicitis', 'Operación ambulatoria de apendice');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `password_reset_token`
+--
+
+CREATE TABLE `password_reset_token` (
+  `id` int(11) NOT NULL,
+  `usuario_id_fk` int(11) NOT NULL,
+  `token_hash` varchar(191) NOT NULL,
+  `expires_at` datetime(3) NOT NULL,
+  `used_at` datetime(3) DEFAULT NULL,
+  `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `ip` varchar(191) DEFAULT NULL,
+  `user_agent` varchar(191) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `password_reset_token`
+--
+
+INSERT INTO `password_reset_token` (`id`, `usuario_id_fk`, `token_hash`, `expires_at`, `used_at`, `created_at`, `ip`, `user_agent`) VALUES
+(1, 1, '702f3133712bd39caaab26e425e9ec9a7476efeb2ad5211ab9a2eca11b690cfe', '2025-11-18 00:59:25.528', NULL, '2025-11-18 00:29:25.530', '::1', 'PostmanRuntime/7.49.1'),
+(2, 1, 'de34bb88ac62b1e461027dbb1f3d2c9f36851d33354ce31b0d662420d18704d2', '2025-11-18 01:02:36.167', NULL, '2025-11-18 00:32:36.170', '::1', 'PostmanRuntime/7.49.1'),
+(4, 1, '90be729d04ce6ff7d4365dd2ae4353d3437af349bfef0f16bc9b655e67af275b', '2025-11-18 01:51:51.406', '2025-11-18 01:23:00.248', '2025-11-18 01:21:51.407', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0'),
+(5, 1, '350a6121140e2c359e8f99a8d112003cd7ee5671b5344a912d52e32ba88c6fb2', '2025-11-18 03:24:12.523', '2025-11-18 02:56:19.152', '2025-11-18 02:54:12.524', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0');
+
 -- --------------------------------------------------------
 
 --
@@ -173,7 +249,7 @@ CREATE TABLE `tratamiento` (
   `fecha` datetime NOT NULL,
   `fecha_fin` int(11) NOT NULL,
   `descripcion` text NOT NULL,
-  `enfermedad_id_fk` int(11) NOT NULL
+  `det_enfermedad_id_fk` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -197,10 +273,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id`, `nombre`, `email`, `telefono`, `contrasena`, `rol`, `cedula`) VALUES
-(1, 'Juan Pérez', 'juan@example.com', '3001234567', '$2b$10$Zu3haDx8Yrrzod1hO/po4.9PoUb9XkvBET7qzwwsu0s8dOlXndHmq', 'usuario', 1234567890),
-(2, 'Lina Roncancio', 'lina.roncancio@gmail.com', '3105678923', '$2b$10$ywEeal41MyqNCVrBavuD4ua9KzyQ65O9B/JY5kElf8XirOWJwr6.O', 'usuario', 1024494230),
-(4, 'Nadia Rodriguez', 'holaaaa@gmail.com', '3123456789', '$2b$10$Js1efclYfBPEQt4tzG6cLOuJoXTyuYEqk7cD6CFpGpw1FhdCu7B.e', 'usuario', 1111111),
-(5, 'Miguel Santa', 'msanta@inter.edu.co', '3156169780', '$2b$10$zevSow4xTELgxLeCt3gm8elSupPB.EXTPHSzCyoLb2ssNDkF9sEXi', 'usuario', 1001053011);
+(1, 'Lina Roncancio', 'bridgeth1991@gmail.com', '3207682020', '$2b$10$OsojUx28qJVjflBtZoVJ9.WCj55fuDKERhthwlQTql4ghJlTuy7Z.', 'usuario', 55550100);
 
 -- --------------------------------------------------------
 
@@ -213,6 +286,13 @@ CREATE TABLE `vacuna` (
   `nombre` varchar(255) NOT NULL,
   `descripcion` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `vacuna`
+--
+
+INSERT INTO `vacuna` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'La Rabia', 'Vacuna contra la rabia');
 
 -- --------------------------------------------------------
 
@@ -232,7 +312,7 @@ CREATE TABLE `veterinario` (
 --
 
 INSERT INTO `veterinario` (`id`, `nombre`, `email`, `matricula`) VALUES
-(1, 'Juan Perez', 'jperez@example.com', '42356453164122');
+(1, 'Juan', 'juan@veterinario.com', '12454354135121');
 
 -- --------------------------------------------------------
 
@@ -256,7 +336,8 @@ CREATE TABLE `_prisma_migrations` (
 --
 
 INSERT INTO `_prisma_migrations` (`id`, `checksum`, `finished_at`, `migration_name`, `logs`, `rolled_back_at`, `started_at`, `applied_steps_count`) VALUES
-('a1ae887a-d9d2-492c-ad36-84375f46521e', '09ad54f47241990d123de391798030233c1927123e40092c32c407774fcf5d88', '2025-11-05 19:44:02.981', '20251105194345_initial', NULL, NULL, '2025-11-05 19:43:45.464', 1);
+('a6615658-8a5d-4fa7-8049-e6f0d0049a6e', '4abb821ea89e942570ea84cb097bc83e8628b703c2f9c98c3f3a7495d5bde5a7', '2025-11-18 00:01:22.646', '20251118000122_add_password_reset_tokens', NULL, NULL, '2025-11-18 00:01:22.555', 1),
+('b0597a42-a5ee-42f2-aa74-e1d1573b3dbf', '5707c36818388fb6ac40daa052a53dc2798579e408cae083aa3a2c57ff34aae7', '2025-11-18 00:01:16.323', '20251105194345_initial', NULL, NULL, '2025-11-18 00:01:15.887', 1);
 
 --
 -- Índices para tablas volcadas
@@ -267,8 +348,8 @@ INSERT INTO `_prisma_migrations` (`id`, `checksum`, `finished_at`, `migration_na
 --
 ALTER TABLE `cita`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `mascota_id_fk` (`mascota_id_fk`),
-  ADD KEY `fk_cita_veterinario` (`veterinario_id_fk`);
+  ADD KEY `fk_cita_veterinario` (`veterinario_id_fk`),
+  ADD KEY `mascota_id_fk` (`mascota_id_fk`);
 
 --
 -- Indices de la tabla `clinica`
@@ -332,11 +413,20 @@ ALTER TABLE `operacion`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `password_reset_token`
+--
+ALTER TABLE `password_reset_token`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token_hash` (`token_hash`),
+  ADD KEY `usuario_id_fk` (`usuario_id_fk`),
+  ADD KEY `expires_at` (`expires_at`);
+
+--
 -- Indices de la tabla `tratamiento`
 --
 ALTER TABLE `tratamiento`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `enfermedad_id_fk` (`enfermedad_id_fk`);
+  ADD KEY `det_enfermedad_id_fk` (`det_enfermedad_id_fk`);
 
 --
 -- Indices de la tabla `usuario`
@@ -372,13 +462,13 @@ ALTER TABLE `_prisma_migrations`
 -- AUTO_INCREMENT de la tabla `cita`
 --
 ALTER TABLE `cita`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `clinica`
 --
 ALTER TABLE `clinica`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `det_enfermedad`
@@ -390,13 +480,13 @@ ALTER TABLE `det_enfermedad`
 -- AUTO_INCREMENT de la tabla `det_operacion`
 --
 ALTER TABLE `det_operacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `det_vacuna`
 --
 ALTER TABLE `det_vacuna`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `enfermedad`
@@ -408,19 +498,25 @@ ALTER TABLE `enfermedad`
 -- AUTO_INCREMENT de la tabla `historial_clinico`
 --
 ALTER TABLE `historial_clinico`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `mascota`
 --
 ALTER TABLE `mascota`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `operacion`
 --
 ALTER TABLE `operacion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `password_reset_token`
+--
+ALTER TABLE `password_reset_token`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `tratamiento`
@@ -432,13 +528,13 @@ ALTER TABLE `tratamiento`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `vacuna`
 --
 ALTER TABLE `vacuna`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `veterinario`
@@ -493,10 +589,16 @@ ALTER TABLE `mascota`
   ADD CONSTRAINT `mascota_ibfk_1` FOREIGN KEY (`usuario_id_fk`) REFERENCES `usuario` (`id`);
 
 --
+-- Filtros para la tabla `password_reset_token`
+--
+ALTER TABLE `password_reset_token`
+  ADD CONSTRAINT `password_reset_token_ibfk_1` FOREIGN KEY (`usuario_id_fk`) REFERENCES `usuario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `tratamiento`
 --
 ALTER TABLE `tratamiento`
-  ADD CONSTRAINT `tratamiento_ibfk_1` FOREIGN KEY (`enfermedad_id_fk`) REFERENCES `enfermedad` (`id`);
+  ADD CONSTRAINT `tratamiento_ibfk_1` FOREIGN KEY (`det_enfermedad_id_fk`) REFERENCES `det_enfermedad` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
