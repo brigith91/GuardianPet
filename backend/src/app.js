@@ -1,14 +1,12 @@
 import express from "express";
-import helmet from "helmet";
 import cors from "cors";
+import helmet from "helmet";
 import routes from "./routes.js";
 import { errorHandler, notFound } from "./middlewares/error.js";
 import rateLimit from "./middlewares/rateLimit.js";
 
 const app = express();
 
-// Middlewares en orden correcto
-app.use(helmet());
 app.use(cors({
   origin: (origin, cb) => {
     const allowed = (process.env.CORS_ORIGIN || "")
@@ -21,6 +19,8 @@ app.use(cors({
   },
   credentials: true,
 }));
+// Middlewares en orden correcto
+app.use(helmet());
 
 // CRÍTICO: express.json() ANTES del rate limit
 app.use(express.json({ limit: "1mb" }));
@@ -37,4 +37,6 @@ app.use("/api", routes);
 app.use(notFound);
 app.use(errorHandler);
 
+
 export default app;
+

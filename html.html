@@ -10,8 +10,8 @@
   </div>
 
   <div class="perfil-usuario" *ngIf="me as u">
-    <div class="avatar-usuario">{{ iniciales(u.nombre) }}</div>
-    <span class="nombre-usuario">{{ u.nombre }}</span>
+    <div class="avatar-usuario">jn</div>
+    <span class="nombre-usuario">kiamsaasd</span>
   </div>
 </header>
 
@@ -25,28 +25,21 @@
     <div class="seccion-mascotas">
       <h3 class="titul">Mascotas</h3>
 
-      <ng-container *ngIf="mascotas?.length; else noPets">
+      
         <div
-          class="tarjeta-mascota"
-          *ngFor="let m of mascotas"
-          (click)="seleccionarMascota(m)"
-          [class.seleccionada]="m.id === seleccionada?.id"
+         
         >
           <img
-            [src]="m.foto_url || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=60&h=60&fit=crop'"
-            [alt]="m.nombre"
+            src="foto_url || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=60&h=60&fit=crop'"
+            alt="nombre"
             class="foto-mascota"
           />
           <div class="info-mascota">
-            <h4 class="nombre-mascota">{{ m.nombre }}</h4>
-            <p class="detalles-mascota">{{ m.especie || 'Mascota' }}</p>
+            <h4 class="nombre-mascota">nombre</h4>
+            <p class="detalles-mascota">especie </p>
           </div>
         </div>
-      </ng-container>
-
-      <ng-template #noPets>
-        <p class="texto-vacio">Aún no tienes mascotas registradas.</p>
-      </ng-template>
+     
     </div>
 <!-- BOTÓN AGREGAR MASCOTA -->
 <label for="toggleModalMascota" class="boton-agregar-mascota">
@@ -110,25 +103,27 @@
     </div>
   </aside>
 
-  <main class="area-contenido" *ngIf="seleccionada as pet; else noSelection">
+  <main class="area-contenido" >
     <div class="encabezado-mascota">
       <img
-        [src]="pet.foto_url || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&h=100&fit=crop'"
-        [alt]="pet.nombre"
+        src=" 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&h=100&fit=crop'"
+        alt="nombre"
         class="foto-mascota-grande"
       />
       <div class="info-mascota-grande">
-        <h2 class="nombre-mascota-grande">{{ pet.nombre }}</h2>
-        <p class="texto-info">{{ pet.raza || pet.especie || 'Mascota' }}</p>
-        <p class="texto-info">Dueño • {{ me?.nombre }}</p>
+        <h2 class="nombre-mascota-grande">nombre </h2>
+        <p class="texto-info">raza especie </p>
+        <p class="texto-info">Dueño • nombre </p>
       </div>
+
+      <!-- BOTÓN AGREGAR REGISTRO -->
+
 
 
 
     </div>
 
-
-  <!-- INPUTS RADIO PARA CONTROLAR LOS TABS -->
+   <!-- INPUTS RADIO PARA CONTROLAR LOS TABS -->
 <input type="radio" id="tab-historial-radio" name="tabs" class="tab-radio" checked>
 <input type="radio" id="tab-citas-radio" name="tabs" class="tab-radio">
 
@@ -139,18 +134,17 @@
 </div>
 
 
-  
 
     <div id="contenido-historial" class="contenido-tab">
 
-      <div class="contenedor-historial-titulo"> 
-        <h3 class="titulo-historial">Historial clínico de {{ pet.nombre }}</h3> 
+    <div class="contenedor-historial-titulo"> 
+        <h3 class="titulo-historial">historial clinico</h3> 
         <label for="toggleModalHistorialGeneral" class="boton-agregar-historial"> 
     <span class="icono-mas">+</span> Agregar historial clínico </label>
    </div>
 
 
- <!-- MODAL HISTORIAL CLÍNICO GENERAL (Primero) -->
+   <!-- MODAL HISTORIAL CLÍNICO GENERAL (Primero) -->
     <input type="checkbox" id="toggleModalHistorialGeneral" class="modal-toggle">
     <div class="modal">
       <div class="modal-contenido">
@@ -203,6 +197,12 @@
       </div>
     </div>
 
+
+
+
+
+
+    
 
     <!-- MODAL DE REGISTRO -->
 <input type="checkbox" id="toggleModalRegistro" class="modal-toggle">
@@ -343,22 +343,20 @@
 </div>
 
 
-   
-
     <!-- Opción A: aquí se muestra SOLO lo filtrado en el componente -->
-    <div class="lista-registros" *ngIf="historial?.length; else noRecords">
-      <div class="tarjeta-registro" *ngFor="let r of historial">
+    <div class="lista-registros">
+      <div class="tarjeta-registro" >
         <div class="contenido-registro">
-          <div class="etiqueta-tipo">{{ r.tipo || 'Registro' }}</div>
-          <h4 class="titulo-registro">{{ r.titulo || ('#' + r.id) }}</h4>
-          <p class="descripcion-registro">{{ r.descripcion || '—' }}</p>
-          <div class="info-doctor" *ngIf="r.veterinario">
+          <div class="etiqueta-tipo">Registro</div>
+          <h4 class="titulo-registro">titulo </h4>
+          <p class="descripcion-registro">descripcion </p>
+          <div class="info-doctor">
             <span class="icono-doctor">👩‍⚕️</span>
-            <span class="nombre-doctor">{{ r.veterinario }}</span>
+            <span class="nombre-doctor"></span>
           </div>
         </div>
         <div class="acciones-registro">
-          <span class="fecha-registro">{{ r.fecha | date:'longDate' }}</span>
+          <span class="fecha-registro">fecha</span>
           <div class="botones-accion">
             <button class="boton-icono" title="Editar">✏️</button>
             <button class="boton-icono" title="Eliminar">🗑️</button>
@@ -366,8 +364,12 @@
         </div>
       </div>
     </div>
-    </div>
-    <!-- SECCIÓN CITAS PROGRAMADAS -->
+    
+</div>   
+
+
+
+<!-- SECCIÓN CITAS PROGRAMADAS -->
 <div id="contenido-citas" class="contenido-tab">
   <div class="contenedor-historial-titulo">
     <h3 class="titulo-historial">Citas programadas</h3>
