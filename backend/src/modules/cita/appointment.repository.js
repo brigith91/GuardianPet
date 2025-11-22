@@ -68,7 +68,13 @@ export default {
   findByMascotaId(mascotaId) {
     return prisma.cita.findMany({
       where: { mascota_id_fk: Number(mascotaId) },
-      select: selectPublic,
+      include: {
+        mascota: {
+          select: {
+            usuario_id_fk: true, // <-- dueño
+          },
+        },
+      },
     });
   },
 

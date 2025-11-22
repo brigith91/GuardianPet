@@ -13,7 +13,7 @@ r.get("/", ctrl.listar);
 
 // específicas (ponlas antes de "/:id")
 r.get("/usuario/:usuario_id", allow("admin"), ctrl.listarPorUsuario);      // admin
-r.get("/mascota/:mascota_id", allow("admin"), ctrl.listarPorMascota);      // opcional
+r.get("/mascota/:mascota_id",  ctrl.listarPorMascota);      // opcional
 r.get("/veterinario/:veterinario_id", allow("admin"), ctrl.listarPorVeterinario);
 
 r.get("/:id",  ctrl.obtenerPorId);
