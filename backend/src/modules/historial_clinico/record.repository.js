@@ -45,7 +45,13 @@ export default {
   findByMascota(mascota_id_fk) {
     return prisma.historial_clinico.findMany({
       where: { mascota_id_fk: Number(mascota_id_fk) },
-      select: selectPublic,
+      include: {
+        mascota: {
+          select: {
+            usuario_id_fk: true, // <-- dueño
+          },
+        },
+      },
     });
   },
 
