@@ -57,7 +57,28 @@ export default {
 
   actualizar: async (req, res, next) => {
     try {
-      const usuarioActualizado = await svc.actualizar(req.params.id, req.body);
+      const { userId, userRole } = req;
+      
+      const usuarioActualizado = await svc.perfil(req.params.id);
+      if (!usuarioActualizado) {
+        return res.status(404).json({ error: "Usuario no encontrada" });
+      }
+
+      // Si es admin, puede actualizar
+      if (userRole === "admin") {
+        const userActualizada = await svc.actualizar(req.params.id, req.body);
+        return res.json(userActualizada);
+      }
+
+      // Si el dueño de la mascota es el usuario logueado, puede actualizar
+      if (usuarioActualizado.id === userId) {
+        const userActualizada = await svc.actualizar(req.params.id, req.body);
+        return res.json(userActualizada);
+      }
+
+      // Si no, acceso denegado
+      return res.status(403).json({ error: "No autorizado" });
+    
       res.json(usuarioActualizado);
     } catch (e) {
       next(e);

@@ -5,7 +5,7 @@ import { auth, allow } from "../../middlewares/auth.js";
 const r = Router();
 
 //valida el token cuando consume el api
-//r.use(auth);
+r.use(auth);
 
 
 r.post("/", ctrl.registrar);
