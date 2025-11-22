@@ -1,0 +1,176 @@
+<div class="contenedor-historial-titulo">
+  <h3 class="titulo-historial">Historial clínico de {{ pet.nombre }}</h3>
+  <label for="toggleModalHistorialGeneral" class="boton-agregar-historial">
+    <span class="icono-mas">+</span> Agregar historial clínico
+  </label>
+</div>
+
+<p *ngIf="cargando" class="texto-vacio">Cargando historial...</p>
+<p *ngIf="error" class="mensaje-error">{{ error }}</p>
+
+<!-- MODAL HISTORIAL CLÍNICO GENERAL -->
+<input type="checkbox" id="toggleModalHistorialGeneral" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <label for="toggleModalHistorialGeneral" class="boton-cerrar">&times;</label>
+      <h2 class="titulo-modal">Agregar Historial Clínico</h2>
+
+      <form
+        class="formulario"
+        #formHistorial="ngForm"
+        (ngSubmit)="onSubmitNuevo(formHistorial)"
+      >
+        <div class="campo">
+          <label class="etiqueta">Fecha</label>
+          <input
+            type="datetime-local"
+            class="entrada"
+            required
+            name="fecha"
+            [(ngModel)]="nuevo.fecha"
+          />
+        </div>
+
+        <div class="campo">
+          <label class="etiqueta">Descripción</label>
+          <textarea
+            class="entrada-texto"
+            placeholder="Descripción del registro"
+            required
+            name="descripcion"
+            [(ngModel)]="nuevo.descripcion"
+          ></textarea>
+        </div>
+
+        <div class="campo">
+          <label class="etiqueta">Veterinario</label>
+          <input
+            type="text"
+            class="entrada"
+            placeholder="Nombre del veterinario"
+            required
+            name="veterinario"
+            [(ngModel)]="nuevo.veterinario"
+          />
+        </div>
+
+        <div class="campo">
+          <label class="etiqueta">Cita (opcional)</label>
+          <input
+            type="text"
+            class="entrada"
+            placeholder="Información de la cita"
+            name="cita"
+            [(ngModel)]="nuevo.cita"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="boton-guardar"
+          [disabled]="formHistorial.invalid"
+        >
+          Guardar historial clínico
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- (dejo tus otros modales de tipos igual que antes, si quieres luego los conectamos) -->
+
+<div class="lista-registros" *ngIf="historial?.length; else noRecords">
+  <div class="tarjeta-registro" *ngFor="let r of historial">
+    <div class="contenido-registro">
+      <div class="etiqueta-tipo">{{ r.tipo || 'Registro' }}</div>
+      <h4 class="titulo-registro">{{ r.titulo || ('#' + r.id) }}</h4>
+      <p class="descripcion-registro">{{ r.descripcion || '—' }}</p>
+      <div class="info-doctor" *ngIf="r.veterinario">
+        <span class="icono-doctor">👩‍⚕️</span>
+        <span class="nombre-doctor">{{ r.veterinario }}</span>
+      </div>
+    </div>
+    <div class="acciones-registro">
+      <span class="fecha-registro">{{ r.fecha | date: 'longDate' }}</span>
+      <div class="botones-accion">
+        <button
+          class="boton-icono"
+          title="Editar"
+          (click)="abrirEditar(r)"
+        >
+          ✏️
+        </button>
+        <button
+          class="boton-icono"
+          title="Eliminar"
+          (click)="eliminarRegistro(r)"
+        >
+          🗑️
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noRecords>
+  <p class="texto-vacio">Sin registros para esta mascota.</p>
+</ng-template>
+
+<!-- MODAL EDICIÓN (Angular puro) -->
+<div class="modal" *ngIf="editando">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <button class="boton-cerrar" type="button" (click)="cancelarEdicion()">
+        &times;
+      </button>
+      <h2 class="titulo-modal">Editar historial clínico</h2>
+
+      <form
+        class="formulario"
+        #formEdit="ngForm"
+        (ngSubmit)="onSubmitEditar(formEdit)"
+      >
+        <div class="campo">
+          <label class="etiqueta">Fecha</label>
+          <input
+            type="datetime-local"
+            class="entrada"
+            required
+            name="fechaEdit"
+            [(ngModel)]="editModel.fecha"
+          />
+        </div>
+
+        <div class="campo">
+          <label class="etiqueta">Descripción</label>
+          <textarea
+            class="entrada-texto"
+            required
+            name="descripcionEdit"
+            [(ngModel)]="editModel.descripcion"
+          ></textarea>
+        </div>
+
+        <div class="campo">
+          <label class="etiqueta">Veterinario</label>
+          <input
+            type="text"
+            class="entrada"
+            required
+            name="veterinarioEdit"
+            [(ngModel)]="editModel.veterinario"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="boton-guardar"
+          [disabled]="formEdit.invalid"
+        >
+          Guardar cambios
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

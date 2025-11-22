@@ -1,0 +1,204 @@
+<div class="contenedor-historial-titulo">
+  <h3 class="titulo-historial">Citas programadas</h3>
+  <label for="toggleModalCitaNueva" class="boton-agregar-historial">
+    <span class="icono-mas">+</span> Agregar cita
+  </label>
+</div>
+
+<p *ngIf="cargando" class="texto-vacio">Cargando citas...</p>
+<p *ngIf="error" class="mensaje-error">{{ error }}</p>
+
+<input type="checkbox" id="toggleModalCitaNueva" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <label for="toggleModalCitaNueva" class="boton-cerrar">&times;</label>
+      <h2 class="titulo-modal">Agregar Cita</h2>
+
+      <form
+        class="formulario"
+        #formCita="ngForm"
+        (ngSubmit)="onSubmitNueva(formCita)"
+      >
+        <div class="campo">
+          <label class="etiqueta">Fecha y hora</label>
+          <input
+            type="datetime-local"
+            class="entrada"
+            required
+            name="fecha"
+            [(ngModel)]="nueva.fecha"
+          />
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Motivo de la cita</label>
+          <input
+            type="text"
+            class="entrada"
+            placeholder="Ej: Vacunación, Chequeo general"
+            required
+            name="motivo"
+            [(ngModel)]="nueva.motivo"
+          />
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Estado</label>
+          <select
+            class="entrada"
+            required
+            name="estado"
+            [(ngModel)]="nueva.estado"
+          >
+            <option value="">Seleccionar estado</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Confirmada">Confirmada</option>
+            <option value="Completada">Completada</option>
+            <option value="Cancelada">Cancelada</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Observaciones</label>
+          <textarea
+            class="entrada-texto"
+            placeholder="Observaciones adicionales"
+            name="observacion"
+            [(ngModel)]="nueva.observacion"
+          ></textarea>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Id veterinario</label>
+          <input
+            type="number"
+            class="entrada"
+            name="veterinario_id_fk"
+            [(ngModel)]="nueva.veterinario_id_fk"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="boton-guardar"
+          [disabled]="formCita.invalid"
+        >
+          Guardar cita
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="lista-registros" *ngIf="citas?.length; else noCitas">
+  <div class="tarjeta-registro" *ngFor="let c of citas">
+    <div class="contenido-registro">
+      <div class="etiqueta-tipo etiqueta-cita-programada">Cita</div>
+      <h4 class="titulo-registro">
+        {{ c.observacion || 'Cita veterinaria' }}
+      </h4>
+      <p class="descripcion-registro">
+        Mascota #{{ c.mascota_id_fk }}
+      </p>
+      <div class="info-doctor">
+        <span class="icono-doctor">👨‍⚕️</span>
+        <span class="nombre-doctor">
+          Veterinario #{{ c.veterinario_id_fk }}
+        </span>
+      </div>
+    </div>
+    <div class="acciones-registro">
+      <span class="fecha-registro">
+        {{ c.fecha | date: 'dd MMM y, HH:mm' }}
+      </span>
+      <div class="badge-estado-cita badge-pendiente">
+        {{ c.estado }}
+      </div>
+      <div class="botones-accion">
+        <button
+          class="boton-icono"
+          title="Editar"
+          (click)="abrirEditar(c)"
+        >
+          ✏️
+        </button>
+        <button
+          class="boton-icono"
+          title="Eliminar"
+          (click)="eliminarCita(c)"
+        >
+          🗑️
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noCitas>
+  <p class="texto-vacio">No hay citas programadas para esta mascota.</p>
+</ng-template>
+
+<!-- modal edición -->
+<div class="modal" *ngIf="editando">
+  <div class="modal-contenido">
+    <div class="contenedor-modal">
+      <button class="boton-cerrar" type="button" (click)="cancelarEdicion()">
+        &times;
+      </button>
+      <h2 class="titulo-modal">Editar cita</h2>
+
+      <form
+        class="formulario"
+        #formEditCita="ngForm"
+        (ngSubmit)="onSubmitEditar(formEditCita)"
+      >
+        <div class="campo">
+          <label class="etiqueta">Fecha y hora</label>
+          <input
+            type="datetime-local"
+            class="entrada"
+            required
+            name="fechaEdit"
+            [(ngModel)]="editModel.fecha"
+          />
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Estado</label>
+          <select
+            class="entrada"
+            required
+            name="estadoEdit"
+            [(ngModel)]="editModel.estado"
+          >
+            <option value="Pendiente">Pendiente</option>
+            <option value="Confirmada">Confirmada</option>
+            <option value="Completada">Completada</option>
+            <option value="Cancelada">Cancelada</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Observaciones</label>
+          <textarea
+            class="entrada-texto"
+            name="observacionEdit"
+            [(ngModel)]="editModel.observacion"
+          ></textarea>
+        </div>
+        <div class="campo">
+          <label class="etiqueta">Id veterinario</label>
+          <input
+            type="number"
+            class="entrada"
+            name="vetEdit"
+            [(ngModel)]="editModel.veterinario_id_fk"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="boton-guardar"
+          [disabled]="formEditCita.invalid"
+        >
+          Guardar cambios
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

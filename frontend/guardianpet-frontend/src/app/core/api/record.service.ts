@@ -12,21 +12,33 @@ export interface RecordItem {
   mascota_id_fk: number;
 }
 
+export interface CrearRecordDto {
+  tipo?: string;
+  titulo?: string;
+  descripcion?: string;
+  fecha: string;
+  veterinario?: string;
+  mascota_id_fk: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class RecordService {
   private http = inject(HttpClient);
+  private baseUrl = `${environment.apiUrl}/historial_clinico`;
 
-  // Variante 1: si tu backend acepta query ?mascota_id_fk=123
   listByPet(mascotaId: number) {
-    const params = new HttpParams().set('mascota_id_fk', mascotaId);
-    return this.http.get<RecordItem[]>(`${environment.apiUrl}/historial_clinico`, { params });
+      return this.http.get<RecordItem[]>(`${this.baseUrl}/mascota/${mascotaId}`);
+    }
+
+  create(data: CrearRecordDto) {
+    return this.http.post<RecordItem>(this.baseUrl, data);
   }
 
-  listAll() {
-    return this.http.get<any>(`${environment.apiUrl}/historial_clinico`);
+  update(id: number, data: Partial<CrearRecordDto>) {
+    return this.http.put<RecordItem>(`${this.baseUrl}/${id}`, data);
   }
-  // Variante 2 (si prefieres ruta REST):
-  // listByPet(mascotaId: number) {
-  //   return this.http.get<RecordItem[]>(`${environment.apiUrl}/historial_clinico/mascota/${mascotaId}`);
-  // }
+
+  delete(id: number) {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
 }
