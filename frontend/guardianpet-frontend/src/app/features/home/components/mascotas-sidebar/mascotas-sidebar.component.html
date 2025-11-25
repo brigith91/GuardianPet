@@ -1,5 +1,3 @@
-<!-- src/app/features/home/components/mascotas-sidebar/mascotas-sidebar.component.html -->
-
 <div class="seccion-mascotas">
   <h3 class="titul">Mascotas</h3>
 
@@ -10,14 +8,8 @@
       (click)="seleccionarMascota(m)"
       [class.seleccionada]="m.id === seleccionada?.id"
     >
-      <img
-        [src]="
-          m.url_foto ||
-          'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=60&h=60&fit=crop'
-        "
-        [alt]="m.nombre"
-        class="foto-mascota"
-      />
+      <img [src]="fotoSegura(m)" [alt]="m.nombre" class="foto-mascota" />
+
       <div class="info-mascota">
         <h4 class="nombre-mascota">{{ m.nombre }}</h4>
         <p class="detalles-mascota">
@@ -37,7 +29,13 @@
   <span class="icono-mas">+</span> Agregar mascota
 </label>
 
-<input type="checkbox" id="toggleModalMascota" class="modal-toggle" />
+<input
+  type="checkbox"
+  id="toggleModalMascota"
+  class="modal-toggle"
+  #toggleModalMascota
+/>
+
 <div class="modal">
   <div class="modal-contenido">
     <div class="contenedor-centro">
@@ -110,13 +108,16 @@
           </div>
 
           <div class="campo">
-            <label class="etiqueta">URL foto (opcional)</label>
+            <label class="etiqueta">Foto (opcional)</label>
+            <label for="foto-mascota" class="entrada-archivo">
+              <span>{{ nombreArchivo || 'Subir archivo' }}</span>
+            </label>
             <input
-              type="url"
-              class="entrada"
-              placeholder="https://..."
-              name="url_foto"
-              [(ngModel)]="nueva.url_foto"
+              type="file"
+              id="foto-mascota"
+              class="archivo-oculto"
+              accept="image/*"
+              (change)="onFileChange($event)"
             />
           </div>
 
