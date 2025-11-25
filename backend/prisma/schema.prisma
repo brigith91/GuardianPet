@@ -42,7 +42,7 @@ model mascota {
   sexo              String              @db.VarChar(255)
   fecha_nacimiento  DateTime            @db.Date
   usuario_id_fk     Int
-  url_foto          String?             @db.VarChar(255)
+  url_foto          String?             @db.Text
   cita              cita[]
   historial_clinico historial_clinico[]
   usuario           usuario             @relation(fields: [usuario_id_fk], references: [id], onUpdate: Restrict, map: "mascota_ibfk_1")
