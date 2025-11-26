@@ -1,13 +1,20 @@
-// src/app/core/api/tratamiento.service.ts
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environments';
-import { Observable } from 'rxjs';
+
+export interface Tratamiento {
+  id: number;
+  tipo: number;
+  fecha: string;       // ISO
+  fecha_fin: number;   // cantidad de días
+  descripcion: string;
+  enfermedad_id_fk: number;
+}
 
 export interface CrearTratamientoDto {
-  tipo: number;           // según tu API (1, 2, etc.)
-  fecha: string;          // ISO
-  fecha_fin: number;      // en tu Postman es un número (días)
+  tipo: number;
+  fecha: string;
+  fecha_fin: number;
   descripcion: string;
   enfermedad_id_fk: number;
 }
@@ -17,7 +24,34 @@ export class TratamientoService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/tratamientos`;
 
-  create(data: CrearTratamientoDto): Observable<any> {
-    return this.http.post<any>(this.baseUrl, data);
+  // GET http://localhost:3000/api/tratamientos
+  list() {
+    return this.http.get<Tratamiento[]>(this.baseUrl);
+  }
+
+  // (opcional) listar por enfermedad si en el back aceptas el query param
+  listByEnfermedad(enfermedadId: number) {
+    const params = new HttpParams().set('enfermedad_id_fk', enfermedadId);
+    return this.http.get<Tratamiento[]>(this.baseUrl, { params });
+  }
+
+  // GET http://localhost:3000/api/tratamientos/:id
+  get(id: number) {
+    return this.http.get<Tratamiento>(`${this.baseUrl}/${id}`);
+  }
+
+  // POST http://localhost:3000/api/tratamientos
+  create(dto: CrearTratamientoDto) {
+    return this.http.post<Tratamiento>(this.baseUrl, dto);
+  }
+
+  // PUT http://localhost:3000/api/tratamientos/:id
+  update(id: number, dto: CrearTratamientoDto) {
+    return this.http.put<Tratamiento>(`${this.baseUrl}/${id}`, dto);
+  }
+
+  // DELETE http://localhost:3000/api/tratamientos/:id
+  delete(id: number) {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }
