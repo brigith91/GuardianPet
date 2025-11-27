@@ -118,7 +118,7 @@
             >
               <option [ngValue]="null">Sin veterinario asignado</option>
               <option *ngFor="let v of veterinarios" [ngValue]="v.id">
-                {{ v.nombre }} (ID: {{ v.id }})
+                {{ v.nombre }} (Mat: {{ v.matricula || 'S/N' }})
               </option>
             </select>
           </div>
@@ -289,9 +289,9 @@
         <h2 class="titulo-modal">Detalle de Tratamiento</h2>
         <form class="formulario">
           <div class="campo">
-            <label class="etiqueta">Tipo (código / catálogo)</label>
+            <label class="etiqueta">Tipo </label>
             <input
-              type="number"
+              type="text"
               class="entrada"
               name="tipo_trat"
               [(ngModel)]="detalleTratamiento.tipo"
@@ -309,11 +309,11 @@
             />
           </div>
           <div class="campo">
-            <label class="etiqueta">Duración (días)</label>
+            <label class="etiqueta">Fecha fin</label>
             <input
-              type="number"
+              type="datetime-local"
               class="entrada"
-              name="fecha_fin_trat"
+              name="fecha_fin"
               [(ngModel)]="detalleTratamiento.fecha_fin"
               required
             />
@@ -577,8 +577,8 @@
               {{ (trat.fecha || trat.fecha_inicio) | date: 'short' }}
             </p>
             <p>
-              <strong>Duración (días):</strong>
-              {{ trat.fecha_fin || '-' }}
+              <strong>Fin:</strong>
+              {{ trat.fecha_fin || '-' | date: 'short' }}
             </p>
           </div>
         </ng-container>

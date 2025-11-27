@@ -4,19 +4,19 @@ import { environment } from '../../../environments/environments';
 
 export interface Tratamiento {
   id: number;
-  tipo: number;
+  tipo: string;
   fecha: string;       // ISO
-  fecha_fin: number;   // cantidad de días
+  fecha_fin: string;   // cantidad de días
   descripcion: string;
-  enfermedad_id_fk: number;
+  det_enfermedad_id_fk: number;
 }
 
 export interface CrearTratamientoDto {
-  tipo: number;
+  tipo: string;
   fecha: string;
-  fecha_fin: number;
+  fecha_fin: string;
   descripcion: string;
-  enfermedad_id_fk: number;
+  det_enfermedad_id_fk: number;
 }
 
 @Injectable({ providedIn: 'root' })

@@ -57,6 +57,9 @@ import {
 } from '../../../../core/api/operacion.service';
 
 import { AppointmentService } from '../../../../core/api/appointment.service';
+import { VeterinarioService, Veterinario } from '../../../../core/api/veterinario.service';
+import { switchMap, map } from 'rxjs/operators';
+
 
 
 @Component({
@@ -77,6 +80,8 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
   private vacunaSvc = inject(VacunaService);
   private operacionSvc = inject(OperacionService);
   private appointmentSvc = inject(AppointmentService);
+  private veterinarioSvc = inject(VeterinarioService);
+
 
 
   @Input() pet?: Mascota | null;
@@ -116,9 +121,11 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
     cita_id_fk: null as number | null,
   };
 
-  // --------- DETALLES OPCIONALES ----------
-  // Enfermedad
+  // ===== DETALLES OPCIONALES =====
+
+  // ENFERMEDAD
   detalleEnfermedad = {
+    id: null as number | null,
     enfermedad_id_fk: null as number | null,
     fecha_inicio: '',
     fecha_fin: '',
@@ -126,31 +133,35 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
   };
   tieneEnfermedad = false;
 
-  // Tratamiento (ligado a enfermedad)
+  // TRATAMIENTO (DEPENDE DE det_enfermedad)
   detalleTratamiento = {
-    tipo: 1,
+    id: null as number | null,
+    det_enfermedad_id_fk: null as number | null,
+    tipo: '',
     fecha: '',
-    fecha_fin: 7, // días
+    fecha_fin: '',
     descripcion: '',
   };
   tieneTratamiento = false;
 
-  // Vacuna
+  // VACUNA
   detalleVacuna = {
+    id: null as number | null,
     vacuna_id_fk: null as number | null,
     fecha: '',
     observaciones: '',
   };
   tieneVacuna = false;
 
-  // Operación
-    // Operación
+  // OPERACIÓN
   detalleOperacion = {
+    id: null as number | null,
     operacion_id_fk: null as number | null,
     fecha: '',
     observaciones: '',
   };
   tieneOperacion = false;
+
 
   // --------- ARCHIVO ADJUNTO ----------
   archivoSeleccionado: File | null = null;
@@ -158,7 +169,9 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
   errorArchivo: string | null = null;
 
   // --------- LISTAS PARA SELECTS (rellena desde tu API) ---------
-  veterinarios: { id: number; nombre: string }[] = [];
+  veterinarios: Veterinario[] = [];
+  veterinarioMap = new Map<number, string>(); // 👈 NUEVO
+
   citas: any[] = [];
 
   // --------- CATÁLOGOS ---------
@@ -170,18 +183,21 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
   // -------- CICLO DE VIDA --------
     ngOnInit(): void {
     this.cargarCatalogos();
+    this.cargarVeterinarios();   // 👈 importante
 
     if (this.pet?.id) {
       this.cargarHistorial();
-      this.cargarCitasYVeterinarios();
+      // si ya tienes algo para citas, déjalo
     }
   }
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['pet']) {
       if (this.pet?.id) {
         this.cargarHistorial();
         this.cargarCitasYVeterinarios();
+        this.cargarVeterinarios();
       } else {
         this.historial = [];
         this.citas = [];
@@ -309,6 +325,30 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
     });
   }
 
+  private cargarVeterinarios() {
+    this.veterinarioSvc.listAll().subscribe({
+      next: (lista: Veterinario[]) => {
+        this.veterinarios = lista || [];
+
+        this.veterinarioMap.clear();
+        for (const v of this.veterinarios) {
+          const baseName = v.nombre || `Veterinario #${v.id}`;
+          const label = v.matricula
+            ? `${baseName} (Mat: ${v.matricula})`
+            : baseName;
+
+          this.veterinarioMap.set(Number(v.id), label);
+        }
+      },
+      error: (err) => {
+        console.error('Error cargando veterinarios', err);
+        this.veterinarios = [];
+        this.veterinarioMap.clear();
+      },
+    });
+  }
+
+
     // --------- CARGAR CITAS Y ARMAR LISTA DE VETERINARIOS ----------
   private cargarCitasYVeterinarios() {
     if (!this.pet?.id) {
@@ -331,9 +371,7 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
           if (!vetId) continue;
 
           const nombre =
-            c.veterinario?.nombre ||
-            c.veterinario_nombre ||
-            `Veterinario #${vetId}`;
+            c.veterinario?.nombre
 
           if (!mapa.has(vetId)) {
             mapa.set(vetId, nombre);
@@ -408,21 +446,16 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
       descripcion: record.descripcion || '',
       tipo: record.tipo || '',
       url_archivos: record.url_archivos || '',
-      veterinario_id_fk: record.veterinario_id_fk ?? null,
-      cita_id_fk: record.cita_id_fk ?? null,
+      veterinario_id_fk: (record as any).veterinario_id_fk ?? null,
+      cita_id_fk: (record as any).cita_id_fk ?? null,
     };
 
-    // no precargamos detalles existentes;
-    this.resetDetalles();
     this.error = null;
-
-    // limpiar archivo seleccionado (pero dejamos la url actual)
-    this.archivoSeleccionado = null;
-    this.archivoNombre = '';
-    this.errorArchivo = null;
-
+    this.precargarDetallesDesdeRecord(record);
     this.abrirModalHistorial();
   }
+
+
 
 
   guardar(form: NgForm) {
@@ -565,23 +598,31 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
 
   private resetDetalles() {
     this.detalleEnfermedad = {
+      id: null,
       enfermedad_id_fk: null,
       fecha_inicio: '',
       fecha_fin: '',
       descripcion: '',
     };
+
     this.detalleTratamiento = {
-      tipo: 1,
+      id: null,
+      det_enfermedad_id_fk: null,
+      tipo: '',
       fecha: '',
-      fecha_fin: 7,
+      fecha_fin: '',
       descripcion: '',
     };
+
     this.detalleVacuna = {
+      id: null,
       vacuna_id_fk: null,
       fecha: '',
       observaciones: '',
     };
+
     this.detalleOperacion = {
+      id: null,
       operacion_id_fk: null,
       fecha: '',
       observaciones: '',
@@ -593,70 +634,186 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
     this.tieneOperacion = false;
   }
 
-  // --------- GUARDA DETALLES EN PARALELO ----------
-  private guardarDetalles(historialId: number): Observable<unknown> {
-    const ops: Observable<unknown>[] = [];
 
-    // ENFERMEDAD + TRATAMIENTO
-    if (this.tieneEnfermedad && this.detalleEnfermedad.enfermedad_id_fk) {
-      const detEnf: CrearDetEnfermedadDto = {
-        historial_clinico_id_fk: historialId,
-        enfermedad_id_fk: this.detalleEnfermedad.enfermedad_id_fk,
-        fecha_inicio: this.fromInputDateTime(
-          this.detalleEnfermedad.fecha_inicio
+  /** Precarga los detalles (enfermedad, tratamiento, vacuna, operación) al editar */
+  private precargarDetallesDesdeRecord(record: RecordItem) {
+    this.resetDetalles();
+    const r: any = record as any;
+
+    // ENFERMEDAD
+    const detEnf = this.getPrimeraEnfermedad(record);
+    if (detEnf) {
+      this.tieneEnfermedad = true;
+      this.detalleEnfermedad = {
+        id: detEnf.id ?? null,
+        enfermedad_id_fk:
+          detEnf.enfermedad_id_fk ??
+          detEnf.enfermedad_id ??
+          detEnf.enfermedad?.id ??
+          null,
+        fecha_inicio: this.toInputDateTime(
+          detEnf.fecha_inicio || detEnf.fechaInicio || detEnf.fecha || ''
         ),
-        fecha_fin: this.fromInputDateTime(this.detalleEnfermedad.fecha_fin),
-        descripcion: this.detalleEnfermedad.descripcion,
+        fecha_fin: this.toInputDateTime(
+          detEnf.fecha_fin || detEnf.fechaFin || ''
+        ),
+        descripcion: detEnf.descripcion || detEnf.observaciones || '',
       };
+    }
 
-      const detEnf$ = this.detEnfSvc.create(detEnf);
-      ops.push(detEnf$);
-
-      if (this.tieneTratamiento) {
-        const trat: CrearTratamientoDto = {
-          tipo: this.detalleTratamiento.tipo,
-          fecha: this.fromInputDateTime(this.detalleTratamiento.fecha),
-          fecha_fin: this.detalleTratamiento.fecha_fin,
-          descripcion: this.detalleTratamiento.descripcion,
-          enfermedad_id_fk: this.detalleEnfermedad.enfermedad_id_fk!,
-        };
-        const trat$ = this.tratSvc.create(trat);
-        ops.push(trat$);
-      }
+    // TRATAMIENTO (depende del det_enfermedad)
+    const trat = this.getPrimerTratamiento(record);
+    if (trat) {
+      this.tieneTratamiento = true;
+      this.detalleTratamiento = {
+        id: trat.id ?? null,
+        det_enfermedad_id_fk:
+          trat.det_enfermedad_id_fk ?? this.detalleEnfermedad.id ?? null,
+        tipo: trat.tipo || '',
+        fecha: this.toInputDateTime(trat.fecha || trat.fecha_inicio || ''),
+        fecha_fin: this.toInputDateTime(trat.fecha_fin || trat.fechaFin || ''),
+        descripcion: trat.descripcion || '',
+      };
     }
 
     // VACUNA
-    if (this.tieneVacuna && this.detalleVacuna.vacuna_id_fk) {
-      const detV: CrearDetVacunaDto = {
-        historial_clinico_id_fk: historialId,
-        vacuna_id_fk: this.detalleVacuna.vacuna_id_fk,
-        fecha: this.fromInputDateTime(this.detalleVacuna.fecha),
-        observaciones: this.detalleVacuna.observaciones,
+    const detVac = this.getPrimeraVacuna(record);
+    if (detVac) {
+      this.tieneVacuna = true;
+      this.detalleVacuna = {
+        id: detVac.id ?? null,
+        vacuna_id_fk:
+          detVac.vacuna_id_fk ??
+          detVac.vacuna_id ??
+          detVac.vacuna?.id ??
+          null,
+        fecha: this.toInputDateTime(detVac.fecha || ''),
+        observaciones: detVac.observaciones || '',
       };
-      const detV$ = this.detVacSvc.create(detV);
-      ops.push(detV$);
     }
 
     // OPERACIÓN
-    if (this.tieneOperacion && this.detalleOperacion.operacion_id_fk) {
-      const detO: CrearDetOperacionDto = {
-        historial_clinico_id_fk: historialId,
-        operacion_id_fk: this.detalleOperacion.operacion_id_fk,
-        fecha: this.fromInputDateTime(this.detalleOperacion.fecha),
-        observaciones: this.detalleOperacion.observaciones,
+    const detOp = this.getPrimeraOperacion(record);
+    if (detOp) {
+      this.tieneOperacion = true;
+      this.detalleOperacion = {
+        id: detOp.id ?? null,
+        operacion_id_fk:
+          detOp.operacion_id_fk ??
+          detOp.operacion_id ??
+          detOp.operacion?.id ??
+          null,
+        fecha: this.toInputDateTime(detOp.fecha || ''),
+        observaciones: detOp.observaciones || '',
       };
-      const detO$ = this.detOpSvc.create(detO);
-      ops.push(detO$);
     }
-
-    if (!ops.length) {
-      // no hay detalles que guardar
-      return of(null);
-    }
-
-    // Ejecuta todas las llamadas en paralelo
-    return forkJoin(ops);
   }
+
+
+
+  // --------- GUARDA DETALLES EN PARALELO ----------
+  private guardarDetalles(historialId: number): Observable<unknown> {
+  // 1) RESOLVER det_enfermedad (create/update) Y OBTENER SU ID
+  let detEnfermedadId$: Observable<number | null>;
+
+  if (this.tieneEnfermedad && this.detalleEnfermedad.enfermedad_id_fk) {
+    const detEnfPayload: CrearDetEnfermedadDto = {
+      historial_clinico_id_fk: historialId,
+      enfermedad_id_fk: this.detalleEnfermedad.enfermedad_id_fk!,
+      fecha_inicio: this.fromInputDateTime(this.detalleEnfermedad.fecha_inicio),
+      fecha_fin: this.fromInputDateTime(this.detalleEnfermedad.fecha_fin),
+      descripcion: this.detalleEnfermedad.descripcion,
+    };
+
+    if (this.formMode === 'edit' && this.detalleEnfermedad.id) {
+      // UPDATE -> no rompe la unique constraint
+      detEnfermedadId$ = this.detEnfSvc
+        .update(this.detalleEnfermedad.id, detEnfPayload)
+        .pipe(map(() => this.detalleEnfermedad.id!));
+    } else {
+      // CREATE
+      detEnfermedadId$ = this.detEnfSvc
+        .create(detEnfPayload)
+        .pipe(map((resp: any) => resp.id as number));
+    }
+  } else {
+    detEnfermedadId$ = of(null);
+  }
+
+  // 2) CON ESE ID, GUARDAR TRATAMIENTO, VACUNA Y OPERACIÓN
+  return detEnfermedadId$.pipe(
+    switchMap((detEnfId) => {
+      const ops: Observable<unknown>[] = [];
+
+      // TRATAMIENTO
+      if (this.tieneTratamiento) {
+        const fk =
+          detEnfId ??
+          this.detalleTratamiento.det_enfermedad_id_fk ??
+          null;
+
+        if (fk) {
+          const tratPayload: CrearTratamientoDto = {
+            tipo: this.detalleTratamiento.tipo,
+            fecha: this.fromInputDateTime(this.detalleTratamiento.fecha),
+            fecha_fin: this.fromInputDateTime(this.detalleTratamiento.fecha_fin),
+            descripcion: this.detalleTratamiento.descripcion,
+            det_enfermedad_id_fk: fk,
+          };
+
+          let trat$: Observable<unknown>;
+          if (this.formMode === 'edit' && this.detalleTratamiento.id) {
+            trat$ = this.tratSvc.update(
+              this.detalleTratamiento.id,
+              tratPayload
+            );
+          } else {
+            trat$ = this.tratSvc.create(tratPayload);
+          }
+          ops.push(trat$);
+        }
+      }
+
+      // VACUNA
+      if (this.tieneVacuna && this.detalleVacuna.vacuna_id_fk) {
+        const detVPayload: CrearDetVacunaDto = {
+          historial_clinico_id_fk: historialId,
+          vacuna_id_fk: this.detalleVacuna.vacuna_id_fk!,
+          fecha: this.fromInputDateTime(this.detalleVacuna.fecha),
+          observaciones: this.detalleVacuna.observaciones,
+        };
+
+        if (this.formMode === 'edit' && this.detalleVacuna.id) {
+          ops.push(this.detVacSvc.update(this.detalleVacuna.id, detVPayload));
+        } else {
+          ops.push(this.detVacSvc.create(detVPayload));
+        }
+      }
+
+      // OPERACIÓN
+      if (this.tieneOperacion && this.detalleOperacion.operacion_id_fk) {
+        const detOPayload: CrearDetOperacionDto = {
+          historial_clinico_id_fk: historialId,
+          operacion_id_fk: this.detalleOperacion.operacion_id_fk!,
+          fecha: this.fromInputDateTime(this.detalleOperacion.fecha),
+          observaciones: this.detalleOperacion.observaciones,
+        };
+
+        if (this.formMode === 'edit' && this.detalleOperacion.id) {
+          ops.push(this.detOpSvc.update(this.detalleOperacion.id, detOPayload));
+        } else {
+          ops.push(this.detOpSvc.create(detOPayload));
+        }
+      }
+
+      if (!ops.length) {
+        return of(null);
+      }
+      return forkJoin(ops);
+    })
+  );
+}
+
 
   // --------- DETALLES EXPANDIBLES EN LA LISTA ----------
   registroExpandidoId: number | null = null;
@@ -754,39 +911,48 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
   }
 
     // --------- LABELS PARA VISTA: VETERINARIO Y CITA ----------
-    getVeterinarioLabel(r: RecordItem): string {
-    const anyR: any = r as any;
+  getVeterinarioLabel(r: RecordItem): string {
+  const anyR: any = r as any;
 
-    // intentamos varios posibles nombres de campo para el id
-    const id =
-      anyR.veterinario_id_fk ??
-      anyR.veterinarioIdFk ??
-      anyR.vet_id;
+  const rawId =
+    anyR.veterinario_id_fk ??
+    anyR.veterinarioIdFk ??
+    anyR.vet_id;
 
-    if (!id) {
-      return '-';
-    }
-
-    // 1) Si el backend manda el objeto veterinario en el registro
-    const vetObj = anyR.veterinario;
-    if (vetObj?.nombre) {
-      return vetObj.nombre;
-    }
-
-    // 2) Si viene como campo plano en el registro
-    if (anyR.veterinario_nombre) {
-      return anyR.veterinario_nombre;
-    }
-
-    // 3) Si lo tenemos en el array de veterinarios cargado en el componente
-    const vetFromList = this.veterinarios?.find((v) => v.id === id);
-    if (vetFromList) {
-      return vetFromList.nombre;
-    }
-
-    // 4) Fallback
-    return `Veterinario #${id}`;
+  const id = rawId != null ? Number(rawId) : NaN;
+  if (!id || Number.isNaN(id)) {
+    return '-';
   }
+
+  // 1) Si viene el objeto veterinario embebido en el registro
+  const vetObj = anyR.veterinario;
+  if (vetObj) {
+    const baseName = vetObj.nombre || `Veterinario #${id}`;
+    const label = vetObj.matricula
+      ? `${baseName} (Mat: ${vetObj.matricula})`
+      : baseName;
+    return label;
+  }
+
+  // 2) Intentar el mapa (llenado en cargarVeterinarios)
+  const fromMap = this.veterinarioMap.get(id);
+  if (fromMap) {
+    return fromMap;
+  }
+
+  // 3) Extra: buscar en el array por si acaso
+  const vetFromList = this.veterinarios.find((v) => Number(v.id) === id);
+  if (vetFromList) {
+    const baseName = vetFromList.nombre || `Veterinario #${id}`;
+    const label = vetFromList.matricula
+      ? `${baseName} (Mat: ${vetFromList.matricula})`
+      : baseName;
+    return label;
+  }
+
+  // 4) Fallback
+  return `Veterinario #${id}`;
+}
 
   getCitaLabel(r: RecordItem): string {
     const anyR: any = r as any;

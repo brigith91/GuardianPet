@@ -68,7 +68,7 @@ export class RecordFacadeService {
               const tratCalls = e.tratamientos.map((t) =>
                 this.tratSvc.create({
                   ...t,
-                  enfermedad_id_fk: e.detalle.enfermedad_id_fk,
+                  det_enfermedad_id_fk: e.detalle.enfermedad_id_fk,
                 })
               );
               return forkJoin(tratCalls);
