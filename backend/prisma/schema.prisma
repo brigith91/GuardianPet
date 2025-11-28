@@ -19,7 +19,7 @@ model historial_clinico {
   fecha             DateTime         @db.DateTime(0)
   descripcion       String           @db.Text
   tipo              String           @db.VarChar(255)
-  url_archivos      String?          @db.VarChar(255)
+  url_archivos      String?          @db.Text
   veterinario_id_fk Int?
   mascota_id_fk     Int
   cita_id_fk        Int?             @unique(map: "cita_id_fk")
@@ -42,7 +42,7 @@ model mascota {
   sexo              String              @db.VarChar(255)
   fecha_nacimiento  DateTime            @db.Date
   usuario_id_fk     Int
-  url_foto          String?             @db.VarChar(255)
+  url_foto          String?             @db.Text
   cita              cita[]
   historial_clinico historial_clinico[]
   usuario           usuario             @relation(fields: [usuario_id_fk], references: [id], onUpdate: Restrict, map: "mascota_ibfk_1")
@@ -59,9 +59,9 @@ model operacion {
 
 model tratamiento {
   id                   Int            @id @default(autoincrement())
-  tipo                 Int
+  tipo                 String         @db.VarChar(255)
   fecha                DateTime       @db.DateTime(0)
-  fecha_fin            Int
+  fecha_fin            DateTime?      @db.DateTime(0)
   descripcion          String         @db.Text
   det_enfermedad_id_fk Int
   det_enfermedad       det_enfermedad @relation(fields: [det_enfermedad_id_fk], references: [id], onUpdate: Restrict, map: "tratamiento_ibfk_1")

@@ -15,7 +15,7 @@ r.get("/", ctrl.listar);
 // Rutas específicas (ponlas antes de "/:id")
 r.get("/usuario/:usuario_id", allow("admin"), ctrl.listarPorUsuario);
 r.get("/veterinario/:veterinario_id", allow("admin"), ctrl.listarPorVeterinario);
-r.get("/mascota/:mascota_id", allow("admin"), ctrl.listarPorMascota);
+r.get("/mascota/:mascota_id", ctrl.listarPorMascota);
 
 r.get("/:id", ctrl.obtenerPorId);
 r.put("/:id", validate(actualizarRecordSchema), ctrl.actualizar);

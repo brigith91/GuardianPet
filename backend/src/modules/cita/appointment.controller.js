@@ -78,7 +78,35 @@ export default {
   // nueva si quieres listar por mascota directamente
   listarPorMascota: async (req, res, next) => {
     try {
-      res.json(await svc.listarPorMascota(req.params.mascota_id));
+      const { userId, userRole } = req; // viene del middleware auth
+      const mascotaId = Number(req.params.mascota_id);
+
+      if (!mascotaId || Number.isNaN(mascotaId)) {
+        return res.status(400).json({ error: "ID de mascota inválido" });
+      }
+
+      const citas = await svc.listarPorMascota(mascotaId);
+
+      // citas es un array
+      if (!citas || citas.length === 0) {
+        return res.status(404).json({ error: "No hay citas para esta mascota" });
+      }
+
+      // Tomamos el owner de la mascota de la primera cita
+      const ownerId = citas[0]?.mascota?.usuario_id_fk;
+
+      // Si es admin, puede ver las citas de cualquier mascota
+      if (userRole === "admin") {
+        return res.json(citas);
+      }
+
+      // Si el dueño de la mascota es el usuario logueado, OK
+      if (Number(ownerId) === Number(userId)) {
+        return res.json(citas);
+      }
+
+      // Si no, no autorizado
+      return res.status(403).json({ error: "No autorizado" });
     } catch (e) {
       next(e);
     }

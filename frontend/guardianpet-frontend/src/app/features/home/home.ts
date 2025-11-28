@@ -1,64 +1,90 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { AuthService, User } from '../../core/services/auth.service';
 import { MascotaService, Mascota } from '../../core/api/pet.service';
-import { RecordService, RecordItem } from '../../core/api/record.service';
+
+import { MascotasSidebarComponent } from './components/mascotas-sidebar/mascotas-sidebar.component';
+import { HistorialClinicoComponent } from './components/historial-clinico/historial-clinico.component';
+import { CitasProgramadasComponent } from './components/citas-programadas/citas-programadas.component';
+import { AppointmentService, Cita } from '../../core/api/appointment.service';
+
 
 @Component({
   standalone: true,
   selector: 'app-home',
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    MascotasSidebarComponent,
+    HistorialClinicoComponent,
+    CitasProgramadasComponent
+  ],
   templateUrl: './home.html',
-  styleUrls: ['./home.scss']
+  styleUrls: ['./home.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent implements OnInit {
   private auth = inject(AuthService);
   private petsApi = inject(MascotaService);
-  private recordApi = inject(RecordService);
 
   me?: User;
   mascotas: Mascota[] = [];
   seleccionada?: Mascota;
-  historial: RecordItem[] = [];
-  cargando = false;
 
-  ngOnInit() {
-    // si quieres refrescar /me:
-    this.auth.me().subscribe({ next: u => this.me = u, error: () => (this.me = undefined) });
-    this.cargarMisMascotas();
+  ngOnInit(): void {
+    this.auth.me().subscribe({
+      next: (u) => {
+        this.me = u;
+        this.cargarMascotas();
+      },
+      error: () => {
+        this.me = undefined;
+      }
+    });
   }
 
-  cargarMisMascotas() {
-    this.cargando = true;
-    this.petsApi.listMine().subscribe({
+  cargarMascotas() {
+    this.petsApi.list().subscribe({
       next: (list) => {
+
         this.mascotas = list || [];
-        this.seleccionada = this.mascotas[0];
-        if (this.seleccionada) this.cargarHistorial(this.seleccionada.id);
+
+        if (this.mascotas.length && !this.seleccionada) {
+          this.seleccionada = this.mascotas[0];
+        }
       },
-      complete: () => (this.cargando = false)
+      error: () => {
+        this.mascotas = [];
+      }
     });
   }
 
   seleccionarMascota(m: Mascota) {
     this.seleccionada = m;
-    this.historial = []; // limpia la lista
-    this.recordApi.listAll().subscribe({
-      next: (resp) => {
-        // si tu backend devuelve paginado { items, total, ... } usa items; si no, usa resp
-        const items = Array.isArray(resp) ? resp : (resp?.items ?? []);
-        this.historial = items.filter((r: any) => Number(r.mascota_id_fk) === Number(m.id));
-      }
-    });
   }
 
-  cargarHistorial(mascotaId: number) {
-    this.recordApi.listByPet(mascotaId).subscribe({
-      next: (items) => (this.historial = items || [])
-    });
+  mascotaCreada(m: Mascota) {
+    this.mascotas = [...this.mascotas, m];
+    this.seleccionada = m;
   }
 
   iniciales(nombre: string) {
-    return (nombre || '').split(' ').filter(Boolean).slice(0,2).map(p => p[0]?.toUpperCase()).join('');
+    return (nombre || '')
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase())
+      .join('');
   }
+
+    mascotaActualizada(m: Mascota) {
+    this.mascotas = this.mascotas.map((x) =>
+      x.id === m.id ? m : x
+    );
+
+    if (this.seleccionada?.id === m.id) {
+      this.seleccionada = m;
+    }
+  }
+
 }

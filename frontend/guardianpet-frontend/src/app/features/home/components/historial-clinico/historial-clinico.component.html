@@ -1,0 +1,647 @@
+<ng-container *ngIf="pet as p; else noPet">
+  <!-- CABECERA -->
+  <div class="contenedor-historial-titulo">
+    <h3 class="titulo-historial">Historial clínico de {{ p.nombre }}</h3>
+
+    <button
+      type="button"
+      class="boton-agregar-historial"
+      (click)="openCreate()"
+    >
+      <span class="icono-mas">+</span> Agregar historial clínico
+    </button>
+
+  </div>
+
+  <!-- MODAL PRINCIPAL: CREAR / EDITAR HISTORIAL -->
+  <input
+    type="checkbox"
+    id="toggleModalHistorial"
+    class="modal-toggle"
+    name="toggleModalHistorial"
+    [(ngModel)]="modalHistorialAbierto"
+    [ngModelOptions]="{ standalone: true }"
+  />
+
+  <div class="modal">
+    <div class="modal-contenido">
+      <div class="contenedor-modal">
+        <label for="toggleModalHistorial" class="boton-cerrar">&times;</label>
+
+        <h2 class="titulo-modal">
+          {{
+            formMode === 'create'
+              ? 'Agregar historial clínico'
+              : 'Editar historial clínico'
+          }}
+        </h2>
+
+        <form
+          class="formulario"
+          #formHistorial="ngForm"
+          (ngSubmit)="guardar(formHistorial)"
+        >
+          <div class="campo">
+            <label class="etiqueta">Fecha</label>
+            <input
+              type="datetime-local"
+              class="entrada"
+              name="fecha"
+              required
+              [(ngModel)]="formModel.fecha"
+            />
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Descripción</label>
+            <textarea
+              class="entrada-texto"
+              name="descripcion"
+              placeholder="Descripción del historial clínico"
+              required
+              [(ngModel)]="formModel.descripcion"
+            ></textarea>
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Tipo</label>
+            <input
+              type="text"
+              class="entrada"
+              name="tipo"
+              placeholder="Ej: Control, Vacuna, Cirugía..."
+              [(ngModel)]="formModel.tipo"
+            />
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Archivo adjunto (PDF / Word / Excel)</label>
+
+            <!-- input de archivo -->
+            <input
+              type="file"
+              class="entrada"
+              (change)="onArchivoSeleccionado($event)"
+              accept=".pdf,.doc,.docx,.xls,.xlsx"
+            />
+
+            <!-- mostrar archivo seleccionado o el que ya está guardado -->
+            <div class="info-archivo" *ngIf="archivoNombre || formModel.url_archivos">
+              <small *ngIf="archivoNombre">
+                Archivo seleccionado: {{ archivoNombre }}
+              </small>
+              <small *ngIf="!archivoNombre && formModel.url_archivos">
+                Archivo actual:
+                <a [href]="formModel.url_archivos" target="_blank">
+                  {{ formModel.url_archivos }}
+                </a>
+              </small>
+            </div>
+
+            <p class="mensaje-error" *ngIf="errorArchivo">{{ errorArchivo }}</p>
+
+            <!-- ngModel oculto para seguir enviando la URL/base64 al backend -->
+            <input
+              type="hidden"
+              name="url_archivos"
+              [(ngModel)]="formModel.url_archivos"
+            />
+          </div>
+
+          <!-- VETERINARIO -->
+          <div class="campo">
+            <label class="etiqueta">Veterinario (opcional)</label>
+            <select
+              class="entrada"
+              name="veterinario_id_fk"
+              [(ngModel)]="formModel.veterinario_id_fk"
+            >
+              <option [ngValue]="null">Sin veterinario asignado</option>
+              <option *ngFor="let v of veterinarios" [ngValue]="v.id">
+                {{ v.nombre }} (Mat: {{ v.matricula || 'S/N' }})
+              </option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Cita asociada (opcional)</label>
+            <select
+              class="entrada"
+              name="cita_id_fk"
+              [(ngModel)]="formModel.cita_id_fk"
+            >
+              <option [ngValue]="null">Sin cita asociada</option>
+              <option *ngFor="let c of citas" [ngValue]="c.id">
+                <!-- ajusta estos campos a lo que tenga tu Appointment -->
+                {{ c.descripcion || (c.fecha | date: 'short') || ('Cita ' + c.id) }}
+              </option>
+            </select>
+
+            <!-- Resumen de detalles activados -->
+            <div class="campo resumen-detalles">
+              <span class="badge" *ngIf="tieneEnfermedad">Enfermedad</span>
+              <span class="badge" *ngIf="tieneTratamiento">Tratamiento</span>
+              <span class="badge" *ngIf="tieneVacuna">Vacuna</span>
+              <span class="badge" *ngIf="tieneOperacion">Operación</span>
+            </div>
+
+            <!-- BOTÓN PARA ABRIR MODAL DE TIPOS DE REGISTRO -->
+            <label for="toggleModalRegistro" class="boton-tipo-registro">
+              Seleccionar tipo de registro específico
+            </label>
+
+          </div>
+
+          
+
+          <p class="mensaje-error" *ngIf="error">{{ error }}</p>
+
+          <button
+            type="submit"
+            class="boton-guardar"
+            [disabled]="formHistorial.invalid"
+          >
+            {{
+              formMode === 'create'
+                ? 'Guardar historial clínico'
+                : 'Guardar cambios'
+            }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SELECCIÓN TIPO DE REGISTRO -->
+  <input type="checkbox" id="toggleModalRegistro" class="modal-toggle" />
+  <div class="modal">
+    <div class="modal-contenido">
+      <div class="contenedor-modal">
+        <label for="toggleModalRegistro" class="boton-cerrar">&times;</label>
+        <h2 class="titulo-modal">Tipo de registro</h2>
+
+        <label for="toggleEnfermedad" class="boton-registro">Enfermedad</label>
+        
+        <label for="toggleVacuna" class="boton-registro">Vacuna</label>
+        <label for="toggleOperacion" class="boton-registro"
+          >Operación</label
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- ENFERMEDAD -->
+  <input
+    type="checkbox"
+    id="toggleEnfermedad"
+    class="modal-toggle"
+    #toggleEnfermedadInput
+  />
+  <div class="modal">
+    <div class="modal-contenido">
+      <div class="contenedor-modal">
+        <label for="toggleEnfermedad" class="boton-cerrar">&times;</label>
+        <h2 class="titulo-modal">Detalle de Enfermedad</h2>
+
+        <form class="formulario">
+          <!-- SELECT DE ENFERMEDAD -->
+          <div class="campo">
+            <label class="etiqueta">Enfermedad</label>
+            <select
+              class="entrada"
+              name="enfermedad_id_fk"
+              [(ngModel)]="detalleEnfermedad.enfermedad_id_fk"
+              required
+            >
+              <option [ngValue]="null" disabled selected>
+                Selecciona una enfermedad
+              </option>
+              <option
+                *ngFor="let enf of enfermedadesCatalog"
+                [ngValue]="enf.id"
+              >
+                {{ enf.tipo }} - {{ enf.descripcion }}
+              </option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Fecha inicio</label>
+            <input
+              type="datetime-local"
+              class="entrada"
+              name="fecha_inicio_enf"
+              [(ngModel)]="detalleEnfermedad.fecha_inicio"
+              required
+            />
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Fecha fin</label>
+            <input
+              type="datetime-local"
+              class="entrada"
+              name="fecha_fin_enf"
+              [(ngModel)]="detalleEnfermedad.fecha_fin"
+              required
+            />
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Descripción</label>
+            <textarea
+              class="entrada-texto"
+              name="descripcion_enf"
+              [(ngModel)]="detalleEnfermedad.descripcion"
+            ></textarea>
+          </div>
+
+          <!-- BOTÓN PARA AGREGAR TRATAMIENTO (dentro del modal de enfermedad) -->
+          <div class="campo" *ngIf="detalleEnfermedad.enfermedad_id_fk">
+            <label for="toggleTratamiento" class="boton-tipo-registro">
+              + Agregar tratamiento para esta enfermedad
+            </label>
+          </div>
+
+          <button
+            type="button"
+            class="boton-guardar"
+            (click)="confirmarEnfermedad()"
+          >
+            Usar esta enfermedad
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRATAMIENTO -->
+  <input
+    type="checkbox"
+    id="toggleTratamiento"
+    class="modal-toggle"
+    #toggleTratamientoInput
+  />
+  <div class="modal">
+    <div class="modal-contenido">
+      <div class="contenedor-modal">
+        <label for="toggleTratamiento" class="boton-cerrar">&times;</label>
+        <h2 class="titulo-modal">Detalle de Tratamiento</h2>
+        <form class="formulario">
+          <div class="campo">
+            <label class="etiqueta">Tipo </label>
+            <input
+              type="text"
+              class="entrada"
+              name="tipo_trat"
+              [(ngModel)]="detalleTratamiento.tipo"
+              required
+            />
+          </div>
+          <div class="campo">
+            <label class="etiqueta">Fecha inicio</label>
+            <input
+              type="datetime-local"
+              class="entrada"
+              name="fecha_trat"
+              [(ngModel)]="detalleTratamiento.fecha"
+              required
+            />
+          </div>
+          <div class="campo">
+            <label class="etiqueta">Fecha fin</label>
+            <input
+              type="datetime-local"
+              class="entrada"
+              name="fecha_fin"
+              [(ngModel)]="detalleTratamiento.fecha_fin"
+              required
+            />
+          </div>
+          <div class="campo">
+            <label class="etiqueta">Descripción</label>
+            <textarea
+              class="entrada-texto"
+              name="desc_trat"
+              [(ngModel)]="detalleTratamiento.descripcion"
+            ></textarea>
+          </div>
+
+          <button
+            type="button"
+            class="boton-guardar"
+            (click)="confirmarTratamiento()"
+          >
+            Usar este tratamiento
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- VACUNA -->
+  <input
+    type="checkbox"
+    id="toggleVacuna"
+    class="modal-toggle"
+    #toggleVacunaInput
+  />
+  <div class="modal">
+    <div class="modal-contenido">
+      <div class="contenedor-modal">
+        <label for="toggleVacuna" class="boton-cerrar">&times;</label>
+        <h2 class="titulo-modal">Detalle de Vacuna</h2>
+        <form class="formulario">
+          <div class="campo">
+            <label class="etiqueta">Vacuna</label>
+            <select
+              class="entrada"
+              name="vacuna_id_fk"
+              [(ngModel)]="detalleVacuna.vacuna_id_fk"
+              required
+            >
+              <option [ngValue]="null" disabled selected>
+                Selecciona una vacuna
+              </option>
+              <option *ngFor="let v of vacunasCatalog" [ngValue]="v.id">
+                {{ v.nombre }} - {{ v.descripcion }}
+              </option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Fecha</label>
+            <input
+              type="datetime-local"
+              class="entrada"
+              name="fecha_vac"
+              [(ngModel)]="detalleVacuna.fecha"
+              required
+            />
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Observaciones</label>
+            <textarea
+              class="entrada-texto"
+              name="obs_vac"
+              [(ngModel)]="detalleVacuna.observaciones"
+            ></textarea>
+          </div>
+
+          <button
+            type="button"
+            class="boton-guardar"
+            (click)="confirmarVacuna()"
+          >
+            Usar esta vacuna
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPERACIÓN -->
+  <input
+    type="checkbox"
+    id="toggleOperacion"
+    class="modal-toggle"
+    #toggleOperacionInput
+  />
+  <div class="modal">
+    <div class="modal-contenido">
+      <div class="contenedor-modal">
+        <label for="toggleOperacion" class="boton-cerrar">&times;</label>
+        <h2 class="titulo-modal">Detalle de Operación</h2>
+        <form class="formulario">
+          <div class="campo">
+            <label class="etiqueta">Operación</label>
+            <select
+              class="entrada"
+              name="operacion_id_fk"
+              [(ngModel)]="detalleOperacion.operacion_id_fk"
+              required
+            >
+              <option [ngValue]="null" disabled selected>
+                Selecciona una operación
+              </option>
+              <option *ngFor="let op of operacionesCatalog" [ngValue]="op.id">
+                {{ op.tipo }} - {{ op.descripcion }}
+              </option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Fecha</label>
+            <input
+              type="datetime-local"
+              class="entrada"
+              name="fecha_op"
+              [(ngModel)]="detalleOperacion.fecha"
+              required
+            />
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta">Observaciones</label>
+            <textarea
+              class="entrada-texto"
+              name="obs_op"
+              [(ngModel)]="detalleOperacion.observaciones"
+            ></textarea>
+          </div>
+
+          <button
+            type="button"
+            class="boton-guardar"
+            (click)="confirmarOperacion()"
+          >
+            Usar esta operación
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTA DE HISTORIALES -->
+  <div class="lista-registros" *ngIf="tieneHistorial; else noRecords">
+    <div class="tarjeta-registro" *ngFor="let r of historial">
+      <div class="contenido-registro">
+        <div class="etiqueta-tipo">{{ r.tipo || 'Registro' }}</div>
+
+        <h4 class="titulo-registro">
+          {{
+            (r.descripcion || '') | slice : 0 : 80
+          }}<ng-container
+            *ngIf="(r.descripcion || '').length > 80"
+            >…</ng-container
+          >
+        </h4>
+
+        <p class="descripcion-registro">{{ r.descripcion || '—' }}</p>
+
+          
+
+          <!-- INFO EXTRA: VETERINARIO / CITA / ARCHIVO -->
+          <div>
+            <p class="texto-info" *ngIf="r.veterinario_id_fk">
+              Veterinario: {{ getVeterinarioLabel(r) }}
+            </p>
+      
+            <p class="texto-info" *ngIf="r.cita_id_fk">
+              Cita: {{ getCitaLabel(r) }}
+            </p>
+            <br>
+            <a
+              *ngIf="r.url_archivos"
+              class="boton-ver-detalles"
+              href="javascript:void(0)"
+              (click)="abrirArchivo(r)"
+            >
+              Ver archivo adjunto
+            </a>
+          </div>
+
+          <br>
+
+          <!-- BADGES DE DETALLES ASOCIADOS -->
+          <div class="chips-detalles">
+            <span class="badge badge-detalle" *ngIf="hasEnfermedad(r)">
+              Enfermedad
+            </span>
+            <span class="badge badge-detalle" *ngIf="hasTratamiento(r)">
+              Tratamiento
+            </span>
+            <span class="badge badge-detalle" *ngIf="hasVacuna(r)">
+              Vacuna
+            </span>
+            <span class="badge badge-detalle" *ngIf="hasOperacion(r)">
+              Operación
+            </span>
+          </div>
+
+          <!-- BOTÓN PARA MOSTRAR / OCULTAR DETALLES -->
+          <button
+            class="boton-ver-detalles"
+            *ngIf="hasEnfermedad(r) || hasTratamiento(r) || hasVacuna(r) || hasOperacion(r)"
+            (click)="toggleDetalles(r)"
+          >
+            {{ registroExpandidoId === r.id ? 'Ocultar detalles' : 'Ver detalles' }}
+          </button>
+
+      </div>
+
+      <div class="acciones-registro">
+        <span class="fecha-registro">
+          {{ r.fecha | date: 'longDate' }} {{ r.fecha | date: 'shortTime' }}
+        </span>
+        <div class="botones-accion">
+          <button class="boton-icono" title="Editar" (click)="openEdit(r)">
+            ✏️
+          </button>
+          <button class="boton-icono" title="Eliminar" (click)="eliminar(r)">
+            🗑️
+          </button>
+        </div>
+      </div>
+
+      <!-- PANEL DE DETALLES -->
+      <div class="panel-detalles" *ngIf="registroExpandidoId === r.id">
+
+        <!-- ENFERMEDAD -->
+        <ng-container *ngIf="hasEnfermedad(r)">
+          <div class="detalle-bloque" *ngIf="getPrimeraEnfermedad(r) as enf">
+            <h5>Enfermedad</h5>
+            <p><strong>Tipo:</strong> {{ enf.enfermedad?.tipo || '-' }}</p>
+            <p>
+              <strong>Descripción:</strong>
+              {{ enf.descripcion || enf.enfermedad?.descripcion || '-' }}
+            </p>
+            <p>
+              <strong>Desde:</strong>
+              {{ enf.fecha_inicio | date: 'short' }}
+              <strong>Hasta:</strong>
+              {{ enf.fecha_fin | date: 'short' }}
+            </p>
+          </div>
+        </ng-container>
+
+        <!-- TRATAMIENTO -->
+        <ng-container *ngIf="hasTratamiento(r)">
+          <div class="detalle-bloque" *ngIf="getPrimerTratamiento(r) as trat">
+            <h5>Tratamiento</h5>
+            <p><strong>Tipo:</strong> {{ trat.tipo || '-' }}</p>
+            <p><strong>Descripción:</strong> {{ trat.descripcion || '-' }}</p>
+            <p>
+              <strong>Inicio:</strong>
+              {{ (trat.fecha || trat.fecha_inicio) | date: 'short' }}
+            </p>
+            <p>
+              <strong>Fin:</strong>
+              {{ trat.fecha_fin || '-' | date: 'short' }}
+            </p>
+          </div>
+        </ng-container>
+
+        <!-- VACUNA -->
+        <ng-container *ngIf="hasVacuna(r)">
+          <div class="detalle-bloque" *ngIf="getPrimeraVacuna(r) as v">
+            <h5>Vacuna</h5>
+            <p>
+              <strong>Vacuna:</strong>
+              {{ v.vacuna?.nombre || v.nombre || '-' }}
+            </p>
+            <p>
+              <strong>Descripción:</strong>
+              {{ v.vacuna?.descripcion || v.descripcion || '-' }}
+            </p>
+            <p>
+              <strong>Fecha:</strong>
+              {{ v.fecha | date: 'short' }}
+            </p>
+            <p>
+              <strong>Observaciones:</strong>
+              {{ v.observaciones || '-' }}
+            </p>
+          </div>
+        </ng-container>
+
+        <!-- OPERACIÓN -->
+        <ng-container *ngIf="hasOperacion(r)">
+          <div class="detalle-bloque" *ngIf="getPrimeraOperacion(r) as op">
+            <h5>Operación</h5>
+            <p>
+              <strong>Operación:</strong>
+              {{ op.operacion?.tipo || op.tipo || '-' }}
+            </p>
+            <p>
+              <strong>Descripción:</strong>
+              {{ op.operacion?.descripcion || op.descripcion || '-' }}
+            </p>
+            <p>
+              <strong>Fecha:</strong>
+              {{ op.fecha | date: 'short' }}
+            </p>
+            <p>
+              <strong>Observaciones:</strong>
+              {{ op.observaciones || '-' }}
+            </p>
+          </div>
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CUANDO NO HAY REGISTROS -->
+  <ng-template #noRecords>
+    <p class="texto-vacio">
+      {{ noResultsMsg || 'Esta mascota no tiene historial clínico.' }}
+    </p>
+  </ng-template>
+</ng-container>
+
+<!-- CUANDO NO HAY MASCOTA SELECCIONADA -->
+<ng-template #noPet>
+  <p class="texto-vacio">Selecciona una mascota para ver su historial.</p>
+</ng-template>

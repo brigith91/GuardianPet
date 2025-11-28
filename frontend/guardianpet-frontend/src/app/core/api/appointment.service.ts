@@ -11,12 +11,32 @@ export interface Cita {
   veterinario_id_fk: number;
 }
 
+export interface CrearCitaDto {
+  fecha: string;
+  estado: string;
+  observacion?: string;
+  mascota_id_fk: number;
+  veterinario_id_fk: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AppointmentService {
   private http = inject(HttpClient);
+  private baseUrl = `${environment.apiUrl}/citas`;
 
-  // endpoint que definimos antes: /citas/mascota/:mascota_id
   listByPet(mascotaId: number) {
-    return this.http.get<Cita[]>(`${environment.apiUrl}/citas/mascota/${mascotaId}`);
+    return this.http.get<Cita[]>(`${this.baseUrl}/mascota/${mascotaId}`);
+  }
+
+  create(data: CrearCitaDto) {
+    return this.http.post<Cita>(this.baseUrl, data);
+  }
+
+  update(id: number, data: Partial<CrearCitaDto>) {
+    return this.http.put<Cita>(`${this.baseUrl}/${id}`, data);
+  }
+
+  delete(id: number) {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }

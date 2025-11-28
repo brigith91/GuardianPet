@@ -1,0 +1,177 @@
+:host {
+  display: block;
+}
+.contenedor-historial-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.titulo-historial {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.boton-agregar-historial {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background-color: #2bb5c0;
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.boton-agregar-historial:hover {
+  opacity: 0.9;
+}
+
+.icono-mas {
+  font-weight: 700;
+}
+
+/* Resumen de detalles dentro del modal principal */
+.resumen-detalles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.7rem 0 0.4rem;
+}
+
+/* Lista */
+.lista-registros {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tarjeta-registro {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.contenido-registro {
+  flex: 1;
+}
+
+.etiqueta-tipo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #0f766e;
+  margin-bottom: 0.25rem;
+}
+
+.titulo-registro {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.descripcion-registro {
+  margin: 0.2rem 0 0.4rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* chips de detalles en cada historial */
+.chips-detalles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  background: #e2f3ff;
+  color: #0369a1;
+}
+
+.badge-detalle {
+  background: #e0f7f9;
+  color: #0f766e;
+}
+
+.acciones-registro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.fecha-registro {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.botones-accion {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.boton-icono {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.boton-icono:hover {
+  transform: scale(1.05);
+}
+
+.texto-vacio {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-top: 1rem;
+}
+
+.boton-ver-detalles {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  border-radius: 9999px;
+  border: 1px solid #0f766e;
+  background-color: #ffffff;
+  color: #0f766e;
+  cursor: pointer;
+}
+
+.boton-ver-detalles:hover {
+  background-color: #ecfdf5;
+}
+
+.panel-detalles {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.85rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.detalle-bloque h5 {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.detalle-bloque p {
+  margin: 0.1rem 0;
+}
+
