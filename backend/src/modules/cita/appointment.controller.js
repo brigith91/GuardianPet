@@ -1,4 +1,3 @@
-// src/modules/cita/appointment.controller.js
 import { request } from "express";
 import svc from "./appointment.service.js";
 import { sendNewAppointmentInvite } from './alerts.js';

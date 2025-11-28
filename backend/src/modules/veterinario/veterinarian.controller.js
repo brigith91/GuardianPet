@@ -17,7 +17,7 @@ export default {
     }
   },
 
-  perfil: async (req, res, next) => {
+  obtenerPorId: async (req, res, next) => {
     try {
       const veterinarian = await svc.perfil(req.params.id);
       if (!veterinarian) return res.status(404).json({ error: "Veterinario no encontrado" });
@@ -28,20 +28,20 @@ export default {
   },
 
   listar: async (req, res, next) => {
-      try {
-        const { page = 1, pageSize = 20, search = "" } = req.query;
-  
-        const usuarios = await svc.listar({
-          page: Number(page),
-          pageSize: Number(pageSize),
-          search,
-        });
-  
-        res.json(usuarios);
-      } catch (e) {
-        next(e);
-      }
-    },
+    try {
+      const { page = 1, pageSize = 20, search = "" } = req.query;
+
+      const usuarios = await svc.listar({
+        page: Number(page),
+        pageSize: Number(pageSize),
+        search,
+      });
+
+      res.json(usuarios);
+    } catch (e) {
+      next(e);
+    }
+  },
 
   actualizar: async (req, res, next) => {
     try {
