@@ -9,7 +9,6 @@ export const crearRecordSchema = z.object({
     veterinario_id_fk: z.number().int().positive().optional(),
     mascota_id_fk: z.number().int().positive(),
     cita_id_fk: z.number().int().positive().optional(),
-
   }),
 });
 

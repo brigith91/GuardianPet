@@ -14,17 +14,25 @@ export default {
       const { page = 1, pageSize = 20, search = "" } = req.query;
       const { userId, userRole } = req;
 
-      if (userRole === "admin") {
-        const mascotas = await svc.listar({
-          page: Number(page),
-          pageSize: Number(pageSize),
-          search,
-        });
-        return res.json(mascotas);
+      const pageNumber = Number(page);
+      const pageSizeNumber = Number(pageSize);
+
+      if (isNaN(pageNumber) || isNaN(pageSizeNumber)) {
+        return res.status(400).json({ error: "page y pageSize deben ser números" });
       }
 
-      // Usuario normal solo ve sus mascotas
-      const mascotas = await svc.listarPorUsuario(userId);
+      const params = {
+        page: pageNumber,
+        pageSize: pageSizeNumber,
+        search,
+      };
+
+      let mascotas;
+      if (userRole === "admin") {
+        mascotas = await svc.listar(params);
+      } else {
+        mascotas = await svc.listarPorUsuario(userId);
+      }
       return res.json(mascotas);
     } catch (e) {
       next(e);
@@ -91,7 +99,7 @@ export default {
       // Si no, acceso denegado
       return res.status(403).json({ error: "No autorizado" });
     } catch (e) {
-      res.status(400).json({ error: e.message });
+      next(e);
     }
   },
 

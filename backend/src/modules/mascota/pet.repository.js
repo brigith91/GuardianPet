@@ -35,7 +35,6 @@ export default {
     });
   },
 
- 
   async existsByNombreAndUsuario(nombre, usuario_id) {
     return !!(await prisma.mascota.findFirst({
       where: {

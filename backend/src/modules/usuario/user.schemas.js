@@ -20,8 +20,8 @@ export const loginUserSchema = z.object({
 
 export const updateUserSchema = z.object({
   body: z.object({
-    nombre: z.string().min(2).optional(),
-    email: z.string().email().optional(),
+    nombre: z.string().min(2),
+    email: z.string().email(),
     telefono: z.string().optional(),
     contrasena: z.string().min(6).optional(),
     rol: z.enum(["usuario", "admin"]).optional(),

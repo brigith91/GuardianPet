@@ -4,7 +4,7 @@ export const registerTreatmentSchema = z.object({
   body: z.object({
     tipo: z.string().min(1),
     fecha: z.string(),      // ISO date string
-    fecha_fin: z.string(),  // ISO date string
+    fecha_fin: z.string().optional(),  // ISO date string
     descripcion: z.string().min(10),
     enfermedad_id_fk: z.number(),
   }),
@@ -13,10 +13,9 @@ export const registerTreatmentSchema = z.object({
 export const updateTreatmentSchema = z.object({
   body: z.object({
     tipo: z.string().min(1).optional(),
-    fecha: z.string().optional(),
+    fecha: z.string(),
     fecha_fin: z.string().optional(),
     descripcion: z.string().min(10).optional(),
-    enfermedad_id_fk: z.number().optional(),
+    enfermedad_id_fk: z.number(),
   }),
 });
-
