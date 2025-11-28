@@ -414,3 +414,4 @@ export class HistorialClinicoComponent implements OnChanges {
     return forkJoin(ops);
   }
 }
+4
