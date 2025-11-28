@@ -15,9 +15,19 @@ export const auth = (req, res, next) => {
   }
 };
 
-export const allow =
-  (...roles) =>
-  (req, res, next) => {
-    if (!roles.length || roles.includes(req.userRole)) return next();
+export const allow = (...roles) => {
+  return (req, res, next) => {
+    // Verificar si el usuario tiene el rol permitido
+    if (roles.length > 0 && roles.includes(req.userRole)) {
+      return next();
+    }
+
+    // Verificar si el usuario está intentando acceder a su propio perfil
+    if (req.params.id === req.userId) {
+      return next();
+    }
+
+    // Si no cumple ninguna de las condiciones, denegar el acceso
     return res.status(403).json({ error: "Prohibido" });
   };
+};
