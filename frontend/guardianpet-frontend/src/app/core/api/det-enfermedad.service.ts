@@ -12,6 +12,15 @@ export interface CrearDetEnfermedadDto {
   descripcion: string;
 }
 
+export interface DetEnfermedad {
+  id: number;
+  historial_clinico_id_fk: number;
+  enfermedad_id_fk: number;
+  fecha_inicio: string;
+  fecha_fin: string;
+  descripcion: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class DetEnfermedadService {
   private http = inject(HttpClient);
@@ -19,5 +28,9 @@ export class DetEnfermedadService {
 
   create(data: CrearDetEnfermedadDto): Observable<any> {
     return this.http.post<any>(this.baseUrl, data);
+  }
+
+  update(id: number, data: Partial<CrearDetEnfermedadDto>): Observable<DetEnfermedad> {
+    return this.http.put<DetEnfermedad>(`${this.baseUrl}/${id}`, data);
   }
 }

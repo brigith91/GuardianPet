@@ -7,12 +7,6 @@ const selectPublic = {
   fecha_fin: true,
   descripcion: true,
   det_enfermedad_id_fk: true,
-  enfermedad: {
-    select: {
-      tipo: true,
-      descripcion: true,
-    },
-  },
 };
 
 export default {

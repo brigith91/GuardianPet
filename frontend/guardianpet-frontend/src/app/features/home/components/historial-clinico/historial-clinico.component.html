@@ -3,13 +3,14 @@
   <div class="contenedor-historial-titulo">
     <h3 class="titulo-historial">Historial clínico de {{ p.nombre }}</h3>
 
-    <label
-      for="toggleModalHistorial"
+    <button
+      type="button"
       class="boton-agregar-historial"
       (click)="openCreate()"
     >
       <span class="icono-mas">+</span> Agregar historial clínico
-    </label>
+    </button>
+
   </div>
 
   <!-- MODAL PRINCIPAL: CREAR / EDITAR HISTORIAL -->
@@ -17,15 +18,22 @@
     type="checkbox"
     id="toggleModalHistorial"
     class="modal-toggle"
-    #toggleModalHistorial
+    name="toggleModalHistorial"
+    [(ngModel)]="modalHistorialAbierto"
+    [ngModelOptions]="{ standalone: true }"
   />
+
   <div class="modal">
     <div class="modal-contenido">
       <div class="contenedor-modal">
         <label for="toggleModalHistorial" class="boton-cerrar">&times;</label>
 
         <h2 class="titulo-modal">
-          {{ formMode === 'create' ? 'Agregar historial clínico' : 'Editar historial clínico' }}
+          {{
+            formMode === 'create'
+              ? 'Agregar historial clínico'
+              : 'Editar historial clínico'
+          }}
         </h2>
 
         <form
@@ -67,48 +75,84 @@
           </div>
 
           <div class="campo">
-            <label class="etiqueta">URL archivo (opcional)</label>
+            <label class="etiqueta">Archivo adjunto (PDF / Word / Excel)</label>
+
+            <!-- input de archivo -->
             <input
-              type="text"
+              type="file"
               class="entrada"
+              (change)="onArchivoSeleccionado($event)"
+              accept=".pdf,.doc,.docx,.xls,.xlsx"
+            />
+
+            <!-- mostrar archivo seleccionado o el que ya está guardado -->
+            <div class="info-archivo" *ngIf="archivoNombre || formModel.url_archivos">
+              <small *ngIf="archivoNombre">
+                Archivo seleccionado: {{ archivoNombre }}
+              </small>
+              <small *ngIf="!archivoNombre && formModel.url_archivos">
+                Archivo actual:
+                <a [href]="formModel.url_archivos" target="_blank">
+                  {{ formModel.url_archivos }}
+                </a>
+              </small>
+            </div>
+
+            <p class="mensaje-error" *ngIf="errorArchivo">{{ errorArchivo }}</p>
+
+            <!-- ngModel oculto para seguir enviando la URL/base64 al backend -->
+            <input
+              type="hidden"
               name="url_archivos"
-              placeholder="Ej: assets/docs/historial.pdf"
               [(ngModel)]="formModel.url_archivos"
             />
           </div>
 
+          <!-- VETERINARIO -->
           <div class="campo">
-            <label class="etiqueta">ID veterinario (opcional)</label>
-            <input
-              type="number"
+            <label class="etiqueta">Veterinario (opcional)</label>
+            <select
               class="entrada"
               name="veterinario_id_fk"
               [(ngModel)]="formModel.veterinario_id_fk"
-            />
+            >
+              <option [ngValue]="null">Sin veterinario asignado</option>
+              <option *ngFor="let v of veterinarios" [ngValue]="v.id">
+                {{ v.nombre }} (Mat: {{ v.matricula || 'S/N' }})
+              </option>
+            </select>
           </div>
 
           <div class="campo">
-            <label class="etiqueta">ID cita (opcional)</label>
-            <input
-              type="number"
+            <label class="etiqueta">Cita asociada (opcional)</label>
+            <select
               class="entrada"
               name="cita_id_fk"
               [(ngModel)]="formModel.cita_id_fk"
-            />
+            >
+              <option [ngValue]="null">Sin cita asociada</option>
+              <option *ngFor="let c of citas" [ngValue]="c.id">
+                <!-- ajusta estos campos a lo que tenga tu Appointment -->
+                {{ c.descripcion || (c.fecha | date: 'short') || ('Cita ' + c.id) }}
+              </option>
+            </select>
+
+            <!-- Resumen de detalles activados -->
+            <div class="campo resumen-detalles">
+              <span class="badge" *ngIf="tieneEnfermedad">Enfermedad</span>
+              <span class="badge" *ngIf="tieneTratamiento">Tratamiento</span>
+              <span class="badge" *ngIf="tieneVacuna">Vacuna</span>
+              <span class="badge" *ngIf="tieneOperacion">Operación</span>
+            </div>
+
+            <!-- BOTÓN PARA ABRIR MODAL DE TIPOS DE REGISTRO -->
+            <label for="toggleModalRegistro" class="boton-tipo-registro">
+              Seleccionar tipo de registro específico
+            </label>
+
           </div>
 
-          <!-- Resumen de detalles activados -->
-          <div class="campo resumen-detalles">
-            <span class="badge" *ngIf="tieneEnfermedad">Enfermedad</span>
-            <span class="badge" *ngIf="tieneTratamiento">Tratamiento</span>
-            <span class="badge" *ngIf="tieneVacuna">Vacuna</span>
-            <span class="badge" *ngIf="tieneOperacion">Operación</span>
-          </div>
-
-          <!-- BOTÓN PARA ABRIR MODAL DE TIPOS DE REGISTRO -->
-          <label for="toggleModalRegistro" class="boton-tipo-registro">
-            Seleccionar tipo de registro específico
-          </label>
+          
 
           <p class="mensaje-error" *ngIf="error">{{ error }}</p>
 
@@ -137,9 +181,7 @@
         <h2 class="titulo-modal">Tipo de registro</h2>
 
         <label for="toggleEnfermedad" class="boton-registro">Enfermedad</label>
-        <label for="toggleTratamiento" class="boton-registro"
-          >Tratamiento</label
-        >
+        
         <label for="toggleVacuna" class="boton-registro">Vacuna</label>
         <label for="toggleOperacion" class="boton-registro"
           >Operación</label
@@ -149,23 +191,40 @@
   </div>
 
   <!-- ENFERMEDAD -->
-  <input type="checkbox" id="toggleEnfermedad" class="modal-toggle" />
+  <input
+    type="checkbox"
+    id="toggleEnfermedad"
+    class="modal-toggle"
+    #toggleEnfermedadInput
+  />
   <div class="modal">
     <div class="modal-contenido">
       <div class="contenedor-modal">
         <label for="toggleEnfermedad" class="boton-cerrar">&times;</label>
         <h2 class="titulo-modal">Detalle de Enfermedad</h2>
+
         <form class="formulario">
+          <!-- SELECT DE ENFERMEDAD -->
           <div class="campo">
-            <label class="etiqueta">ID Enfermedad (catálogo)</label>
-            <input
-              type="number"
+            <label class="etiqueta">Enfermedad</label>
+            <select
               class="entrada"
               name="enfermedad_id_fk"
               [(ngModel)]="detalleEnfermedad.enfermedad_id_fk"
               required
-            />
+            >
+              <option [ngValue]="null" disabled selected>
+                Selecciona una enfermedad
+              </option>
+              <option
+                *ngFor="let enf of enfermedadesCatalog"
+                [ngValue]="enf.id"
+              >
+                {{ enf.tipo }} - {{ enf.descripcion }}
+              </option>
+            </select>
           </div>
+
           <div class="campo">
             <label class="etiqueta">Fecha inicio</label>
             <input
@@ -176,6 +235,7 @@
               required
             />
           </div>
+
           <div class="campo">
             <label class="etiqueta">Fecha fin</label>
             <input
@@ -186,6 +246,7 @@
               required
             />
           </div>
+
           <div class="campo">
             <label class="etiqueta">Descripción</label>
             <textarea
@@ -193,6 +254,13 @@
               name="descripcion_enf"
               [(ngModel)]="detalleEnfermedad.descripcion"
             ></textarea>
+          </div>
+
+          <!-- BOTÓN PARA AGREGAR TRATAMIENTO (dentro del modal de enfermedad) -->
+          <div class="campo" *ngIf="detalleEnfermedad.enfermedad_id_fk">
+            <label for="toggleTratamiento" class="boton-tipo-registro">
+              + Agregar tratamiento para esta enfermedad
+            </label>
           </div>
 
           <button
@@ -208,7 +276,12 @@
   </div>
 
   <!-- TRATAMIENTO -->
-  <input type="checkbox" id="toggleTratamiento" class="modal-toggle" />
+  <input
+    type="checkbox"
+    id="toggleTratamiento"
+    class="modal-toggle"
+    #toggleTratamientoInput
+  />
   <div class="modal">
     <div class="modal-contenido">
       <div class="contenedor-modal">
@@ -216,9 +289,9 @@
         <h2 class="titulo-modal">Detalle de Tratamiento</h2>
         <form class="formulario">
           <div class="campo">
-            <label class="etiqueta">Tipo (código / catálogo)</label>
+            <label class="etiqueta">Tipo </label>
             <input
-              type="number"
+              type="text"
               class="entrada"
               name="tipo_trat"
               [(ngModel)]="detalleTratamiento.tipo"
@@ -236,11 +309,11 @@
             />
           </div>
           <div class="campo">
-            <label class="etiqueta">Duración (días)</label>
+            <label class="etiqueta">Fecha fin</label>
             <input
-              type="number"
+              type="datetime-local"
               class="entrada"
-              name="fecha_fin_trat"
+              name="fecha_fin"
               [(ngModel)]="detalleTratamiento.fecha_fin"
               required
             />
@@ -267,7 +340,12 @@
   </div>
 
   <!-- VACUNA -->
-  <input type="checkbox" id="toggleVacuna" class="modal-toggle" />
+  <input
+    type="checkbox"
+    id="toggleVacuna"
+    class="modal-toggle"
+    #toggleVacunaInput
+  />
   <div class="modal">
     <div class="modal-contenido">
       <div class="contenedor-modal">
@@ -275,15 +353,22 @@
         <h2 class="titulo-modal">Detalle de Vacuna</h2>
         <form class="formulario">
           <div class="campo">
-            <label class="etiqueta">ID Vacuna (catálogo)</label>
-            <input
-              type="number"
+            <label class="etiqueta">Vacuna</label>
+            <select
               class="entrada"
               name="vacuna_id_fk"
               [(ngModel)]="detalleVacuna.vacuna_id_fk"
               required
-            />
+            >
+              <option [ngValue]="null" disabled selected>
+                Selecciona una vacuna
+              </option>
+              <option *ngFor="let v of vacunasCatalog" [ngValue]="v.id">
+                {{ v.nombre }} - {{ v.descripcion }}
+              </option>
+            </select>
           </div>
+
           <div class="campo">
             <label class="etiqueta">Fecha</label>
             <input
@@ -294,6 +379,7 @@
               required
             />
           </div>
+
           <div class="campo">
             <label class="etiqueta">Observaciones</label>
             <textarea
@@ -316,7 +402,12 @@
   </div>
 
   <!-- OPERACIÓN -->
-  <input type="checkbox" id="toggleOperacion" class="modal-toggle" />
+  <input
+    type="checkbox"
+    id="toggleOperacion"
+    class="modal-toggle"
+    #toggleOperacionInput
+  />
   <div class="modal">
     <div class="modal-contenido">
       <div class="contenedor-modal">
@@ -324,15 +415,22 @@
         <h2 class="titulo-modal">Detalle de Operación</h2>
         <form class="formulario">
           <div class="campo">
-            <label class="etiqueta">ID Operación (catálogo)</label>
-            <input
-              type="number"
+            <label class="etiqueta">Operación</label>
+            <select
               class="entrada"
               name="operacion_id_fk"
               [(ngModel)]="detalleOperacion.operacion_id_fk"
               required
-            />
+            >
+              <option [ngValue]="null" disabled selected>
+                Selecciona una operación
+              </option>
+              <option *ngFor="let op of operacionesCatalog" [ngValue]="op.id">
+                {{ op.tipo }} - {{ op.descripcion }}
+              </option>
+            </select>
           </div>
+
           <div class="campo">
             <label class="etiqueta">Fecha</label>
             <input
@@ -343,6 +441,7 @@
               required
             />
           </div>
+
           <div class="campo">
             <label class="etiqueta">Observaciones</label>
             <textarea
@@ -380,6 +479,56 @@
         </h4>
 
         <p class="descripcion-registro">{{ r.descripcion || '—' }}</p>
+
+          
+
+          <!-- INFO EXTRA: VETERINARIO / CITA / ARCHIVO -->
+          <div>
+            <p class="texto-info" *ngIf="r.veterinario_id_fk">
+              Veterinario: {{ getVeterinarioLabel(r) }}
+            </p>
+      
+            <p class="texto-info" *ngIf="r.cita_id_fk">
+              Cita: {{ getCitaLabel(r) }}
+            </p>
+            <br>
+            <a
+              *ngIf="r.url_archivos"
+              class="boton-ver-detalles"
+              href="javascript:void(0)"
+              (click)="abrirArchivo(r)"
+            >
+              Ver archivo adjunto
+            </a>
+          </div>
+
+          <br>
+
+          <!-- BADGES DE DETALLES ASOCIADOS -->
+          <div class="chips-detalles">
+            <span class="badge badge-detalle" *ngIf="hasEnfermedad(r)">
+              Enfermedad
+            </span>
+            <span class="badge badge-detalle" *ngIf="hasTratamiento(r)">
+              Tratamiento
+            </span>
+            <span class="badge badge-detalle" *ngIf="hasVacuna(r)">
+              Vacuna
+            </span>
+            <span class="badge badge-detalle" *ngIf="hasOperacion(r)">
+              Operación
+            </span>
+          </div>
+
+          <!-- BOTÓN PARA MOSTRAR / OCULTAR DETALLES -->
+          <button
+            class="boton-ver-detalles"
+            *ngIf="hasEnfermedad(r) || hasTratamiento(r) || hasVacuna(r) || hasOperacion(r)"
+            (click)="toggleDetalles(r)"
+          >
+            {{ registroExpandidoId === r.id ? 'Ocultar detalles' : 'Ver detalles' }}
+          </button>
+
       </div>
 
       <div class="acciones-registro">
@@ -387,26 +536,104 @@
           {{ r.fecha | date: 'longDate' }} {{ r.fecha | date: 'shortTime' }}
         </span>
         <div class="botones-accion">
-          <button
-            class="boton-icono"
-            title="Editar"
-            (click)="openEdit(r)"
-          >
+          <button class="boton-icono" title="Editar" (click)="openEdit(r)">
             ✏️
           </button>
-          <button
-            class="boton-icono"
-            title="Eliminar"
-            (click)="eliminar(r)"
-          >
+          <button class="boton-icono" title="Eliminar" (click)="eliminar(r)">
             🗑️
           </button>
         </div>
       </div>
+
+      <!-- PANEL DE DETALLES -->
+      <div class="panel-detalles" *ngIf="registroExpandidoId === r.id">
+
+        <!-- ENFERMEDAD -->
+        <ng-container *ngIf="hasEnfermedad(r)">
+          <div class="detalle-bloque" *ngIf="getPrimeraEnfermedad(r) as enf">
+            <h5>Enfermedad</h5>
+            <p><strong>Tipo:</strong> {{ enf.enfermedad?.tipo || '-' }}</p>
+            <p>
+              <strong>Descripción:</strong>
+              {{ enf.descripcion || enf.enfermedad?.descripcion || '-' }}
+            </p>
+            <p>
+              <strong>Desde:</strong>
+              {{ enf.fecha_inicio | date: 'short' }}
+              <strong>Hasta:</strong>
+              {{ enf.fecha_fin | date: 'short' }}
+            </p>
+          </div>
+        </ng-container>
+
+        <!-- TRATAMIENTO -->
+        <ng-container *ngIf="hasTratamiento(r)">
+          <div class="detalle-bloque" *ngIf="getPrimerTratamiento(r) as trat">
+            <h5>Tratamiento</h5>
+            <p><strong>Tipo:</strong> {{ trat.tipo || '-' }}</p>
+            <p><strong>Descripción:</strong> {{ trat.descripcion || '-' }}</p>
+            <p>
+              <strong>Inicio:</strong>
+              {{ (trat.fecha || trat.fecha_inicio) | date: 'short' }}
+            </p>
+            <p>
+              <strong>Fin:</strong>
+              {{ trat.fecha_fin || '-' | date: 'short' }}
+            </p>
+          </div>
+        </ng-container>
+
+        <!-- VACUNA -->
+        <ng-container *ngIf="hasVacuna(r)">
+          <div class="detalle-bloque" *ngIf="getPrimeraVacuna(r) as v">
+            <h5>Vacuna</h5>
+            <p>
+              <strong>Vacuna:</strong>
+              {{ v.vacuna?.nombre || v.nombre || '-' }}
+            </p>
+            <p>
+              <strong>Descripción:</strong>
+              {{ v.vacuna?.descripcion || v.descripcion || '-' }}
+            </p>
+            <p>
+              <strong>Fecha:</strong>
+              {{ v.fecha | date: 'short' }}
+            </p>
+            <p>
+              <strong>Observaciones:</strong>
+              {{ v.observaciones || '-' }}
+            </p>
+          </div>
+        </ng-container>
+
+        <!-- OPERACIÓN -->
+        <ng-container *ngIf="hasOperacion(r)">
+          <div class="detalle-bloque" *ngIf="getPrimeraOperacion(r) as op">
+            <h5>Operación</h5>
+            <p>
+              <strong>Operación:</strong>
+              {{ op.operacion?.tipo || op.tipo || '-' }}
+            </p>
+            <p>
+              <strong>Descripción:</strong>
+              {{ op.operacion?.descripcion || op.descripcion || '-' }}
+            </p>
+            <p>
+              <strong>Fecha:</strong>
+              {{ op.fecha | date: 'short' }}
+            </p>
+            <p>
+              <strong>Observaciones:</strong>
+              {{ op.observaciones || '-' }}
+            </p>
+          </div>
+        </ng-container>
+
+      </div>
     </div>
   </div>
 
-  <!-- CUANDO NO HAY REGISTROS / 404 -->
+  <!-- CUANDO NO HAY REGISTROS -->
   <ng-template #noRecords>
     <p class="texto-vacio">
       {{ noResultsMsg || 'Esta mascota no tiene historial clínico.' }}
