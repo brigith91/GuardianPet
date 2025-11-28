@@ -17,8 +17,8 @@ r.get("/me", ctrl.perfil);
 
 //administración de usuarios
 r.get("/", allow("admin"), ctrl.listar);
-r.get("/:id", allow("admin"), ctrl.obtenerPorId);
-r.put("/:id", validate(updateUserSchema), ctrl.actualizar);
+r.get("/:id", ctrl.obtenerPorId); // Eliminado auth, allow("admin")
+r.put("/:id", auth, validate(updateUserSchema), ctrl.actualizar); // Agregado auth
 r.delete("/:id", allow("admin"), ctrl.eliminar);
 
 export default r;
