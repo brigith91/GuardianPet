@@ -133,4 +133,51 @@ export class MascotasSidebarComponent {
       },
     });
   }
+
+
+  onSubmitActualizar(form: NgForm) {
+    if (form.invalid || !this.usuarioId) {
+      this.errorCrear = 'Usuario no identificado.';
+      return;
+    }
+
+    this.creando = true;
+    this.errorCrear = null;
+
+    const payload: CrearMascotaDto = {
+      nombre: this.nueva.nombre,
+      especie: this.nueva.especie,
+      raza: this.nueva.raza,
+      sexo: this.nueva.sexo,
+      fecha_nacimiento: this.nueva.fecha_nacimiento,
+      usuario_id_fk: this.usuarioId,
+      url_foto: this.nueva.url_foto || undefined,
+    };
+
+    this.mascotasApi.create(payload).subscribe({
+      next: (mascota) => {
+        this.creando = false;
+        this.creada.emit(mascota);
+
+        // reset
+        this.nueva = {
+          nombre: '',
+          especie: '',
+          raza: '',
+          sexo: '',
+          fecha_nacimiento: '',
+          url_foto: '',
+        };
+        this.nombreArchivo = null;
+        form.resetForm();
+
+        this.cerrarModal();
+      },
+      error: (e) => {
+        this.creando = false;
+        this.errorCrear =
+          e?.error?.message || 'No se pudo crear la mascota';
+      },
+    });
+  }
 }

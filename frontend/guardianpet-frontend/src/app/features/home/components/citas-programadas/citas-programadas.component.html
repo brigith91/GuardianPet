@@ -8,6 +8,7 @@
 <p *ngIf="cargando" class="texto-vacio">Cargando citas...</p>
 <p *ngIf="error" class="mensaje-error">{{ error }}</p>
 
+<!-- MODAL CREAR CITA -->
 <input type="checkbox" id="toggleModalCitaNueva" class="modal-toggle" />
 <div class="modal">
   <div class="modal-contenido">
@@ -87,6 +88,7 @@
   </div>
 </div>
 
+<!-- LISTA DE CITAS -->
 <div class="lista-registros" *ngIf="citas?.length; else noCitas">
   <div class="tarjeta-registro" *ngFor="let c of citas">
     <div class="contenido-registro">
@@ -135,11 +137,21 @@
   <p class="texto-vacio">No hay citas programadas para esta mascota.</p>
 </ng-template>
 
-<!-- modal edición -->
+<!-- MODAL EDITAR CITA -->
+<input
+  type="checkbox"
+  id="toggleModalCitaEditar"
+  class="modal-toggle"
+  [checked]="editando !== null"
+/>
 <div class="modal" *ngIf="editando">
   <div class="modal-contenido">
     <div class="contenedor-modal">
-      <button class="boton-cerrar" type="button" (click)="cancelarEdicion()">
+      <button
+        class="boton-cerrar"
+        type="button"
+        (click)="cancelarEdicion()"
+      >
         &times;
       </button>
       <h2 class="titulo-modal">Editar cita</h2>

@@ -125,10 +125,14 @@ export class CitasProgramadasComponent implements OnChanges {
   onSubmitEditar(form: NgForm) {
     if (!this.editando || form.invalid) return;
 
+    // Convertir la fecha del input datetime-local a ISO string
+    const fechaISO = new Date(this.editModel.fecha).toISOString();
+
     const payload: Partial<CrearCitaDto> = {
-      fecha: this.editModel.fecha,
+      fecha: fechaISO,
       estado: this.editModel.estado,
       observacion: this.editModel.observacion,
+      mascota_id_fk: this.pet.id,
       veterinario_id_fk: this.editModel.veterinario_id_fk || undefined
     };
 
@@ -138,8 +142,10 @@ export class CitasProgramadasComponent implements OnChanges {
           c.id === actualizada.id ? actualizada : c
         );
         this.cancelarEdicion();
+        form.resetForm();
       },
       error: (e) => {
+        console.error('Error al actualizar:', e);
         this.error = e?.error?.message || 'No se pudo actualizar la cita';
       }
     });
