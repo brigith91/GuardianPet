@@ -122,7 +122,7 @@ export default {
   actualizar: async (req, res, next) => {
     try {
       res.json(await svc.actualizar(req.params.id, req.body));
-      sendNewAppointmentInvite(cita.id).catch(console.error);
+      sendNewAppointmentInvite(req.params.id).catch(console.error);
     } catch (e) {
       next(e);
     }
