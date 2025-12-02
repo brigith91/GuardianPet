@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit {
   cargarMascotas() {
     this.petsApi.list().subscribe({
       next: (list) => {
-        
+
         this.mascotas = list || [];
 
         if (this.mascotas.length && !this.seleccionada) {
@@ -76,4 +76,15 @@ export class HomeComponent implements OnInit {
       .map((p) => p[0]?.toUpperCase())
       .join('');
   }
+
+    mascotaActualizada(m: Mascota) {
+    this.mascotas = this.mascotas.map((x) =>
+      x.id === m.id ? m : x
+    );
+
+    if (this.seleccionada?.id === m.id) {
+      this.seleccionada = m;
+    }
+  }
+
 }

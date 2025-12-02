@@ -2,7 +2,6 @@ import repo from "./clinic.repository.js";
 
 export default {
   async registrar({ tienda, direccion, telefono, latitud, longitud }) {
-    
     return repo.create({ tienda, direccion, telefono, latitud, longitud });
   },
 
@@ -15,11 +14,6 @@ export default {
   },
 
   async actualizar(id, data) {
-    if (data.tienda) {
-    
-      const current = await repo.findById(id);
-  
-    }
     return repo.update(id, data);
   },
 

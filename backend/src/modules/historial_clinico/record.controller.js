@@ -78,40 +78,40 @@ export default {
   },
 
   listarPorMascota: async (req, res, next) => {
-  try {
-    const { userId, userRole } = req; // viene del middleware auth
-    const mascotaId = Number(req.params.mascota_id);
+    try {
+      const { userId, userRole } = req; // viene del middleware auth
+      const mascotaId = Number(req.params.mascota_id);
 
-    if (!mascotaId || Number.isNaN(mascotaId)) {
-      return res.status(400).json({ error: "ID de mascota inválido" });
+      if (!mascotaId || Number.isNaN(mascotaId)) {
+        return res.status(400).json({ error: "ID de mascota inválido" });
+      }
+
+      const records = await svc.listarPorMascota(mascotaId);
+
+      // records es un ARRAY
+      if (!records || records.length === 0) {
+        return res.status(404).json({ error: "No hay registros para esta mascota" });
+      }
+
+      // Tomamos el owner desde la primera entrada
+      const ownerId = records[0]?.mascota?.usuario_id_fk;
+
+      // Si es admin, puede ver todo
+      if (userRole === "admin") {
+        return res.json(records);
+      }
+
+      // Si el dueño de la mascota es el usuario logueado, puede ver
+      if (Number(ownerId) === Number(userId)) {
+        return res.json(records);
+      }
+
+      // Si no, acceso denegado
+      return res.status(403).json({ error: "No autorizado" });
+    } catch (e) {
+      next(e);
     }
-
-    const records = await svc.listarPorMascota(mascotaId);
-
-    // records es un ARRAY
-    if (!records || records.length === 0) {
-      return res.status(404).json({ error: "No hay registros para esta mascota" });
-    }
-
-    // Tomamos el owner desde la primera entrada
-    const ownerId = records[0]?.mascota?.usuario_id_fk;
-
-    // Si es admin, puede ver todo
-    if (userRole === "admin") {
-      return res.json(records);
-    }
-
-    // Si el dueño de la mascota es el usuario logueado, puede ver
-    if (Number(ownerId) === Number(userId)) {
-      return res.json(records);
-    }
-
-    // Si no, acceso denegado
-    return res.status(403).json({ error: "No autorizado" });
-  } catch (e) {
-    next(e);
-  }
-},
+  },
 
   actualizar: async (req, res, next) => {
     try {

@@ -24,7 +24,6 @@ export interface CrearMascotaDto {
   usuario_id_fk: number;
   url_foto?: string;
 }
-
 @Injectable({ providedIn: 'root' })
 export class MascotaService {
   private http = inject(HttpClient);

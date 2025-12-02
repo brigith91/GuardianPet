@@ -1,22 +1,29 @@
-// disease.repository.js
 import prisma from "../../config/prisma.js";
 
 const selectPublic = { id: true, tipo: true, descripcion: true };
 
 export default {
-  list(params) {
+  async list(params) {
     const { page = 1, pageSize = 20 } = params;
-    return prisma.enfermedad.findMany({
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      select: selectPublic,
-    }).then(items => ({
+    const skip = (page - 1) * pageSize;
+    const take = Number(pageSize);
+
+    const [items, total] = await Promise.all([
+      prisma.enfermedad.findMany({
+        skip,
+        take,
+        select: selectPublic,
+      }),
+      prisma.enfermedad.count(),
+    ]);
+
+    return {
       items,
-      total: items.length,
-      page,
-      pageSize,
-      pages: Math.ceil(items.length / pageSize),
-    }));
+      total,
+      page: Number(page),
+      pageSize: Number(pageSize),
+      pages: Math.ceil(total / pageSize),
+    };
   },
 
   findById(id) {

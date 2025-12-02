@@ -9,8 +9,7 @@ export const registrarVaccineSchema = z.object({
 
 export const actualizarVaccineSchema = z.object({
   body: z.object({
-    nombre: z.string().min(2).optional(),
+    nombre: z.string().min(2),
     descripcion: z.string().min(5).optional()
   }),
 });
-

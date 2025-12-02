@@ -1058,3 +1058,4 @@ export class HistorialClinicoComponent implements OnChanges, OnInit {
   }
 
 }
+4
