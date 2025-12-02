@@ -1,0 +1,34 @@
+<div class="contenedor-centro">
+<div class="contenedor">
+        <button class="boton-cerrar" (click)="cerrar()">&times;</button>
+
+        <h2 class="titulo">Agregar enfermedad</h2>
+
+        <form (ngSubmit)="onSubmit()">
+            <div class="campo">
+                <label class="etiqueta">Tienda</label>
+                <input type="text" class="entrada" [(ngModel)]="tienda" name="tienda" placeholder="Tipo de enferdemad" required>
+            </div>
+              <div class="campo">
+                <label class="etiqueta">direccion</label>
+                <input type="text" class="entrada" [(ngModel)]="direccion" name="direccion" placeholder="Tipo de enferdemad" required>
+            </div>
+            </div>
+              <div class="campo">
+                <label class="etiqueta">telefono</label>
+                <input type="text" class="entrada" [(ngModel)]="telefono" name="telefono" placeholder="Tipo de enferdemad" required>
+            </div>
+             <div class="campo">
+                <label class="etiqueta">latitud</label>
+                <input type="text" class="entrada" [(ngModel)]="latitud" name="latitud" placeholder="Tipo de enferdemad" required>
+            </div>
+              <div class="campo">
+                <label class="etiqueta">longitud</label>
+                <input type="text" class="entrada" [(ngModel)]="longitud" name="longitud" placeholder="Tipo de enferdemad" required>
+            </div>
+
+
+            <button type="submit" class="boton-guardar">Guardar enfermedad</button>
+        </form>
+    </div>
+</div>

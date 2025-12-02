@@ -1,23 +1,28 @@
-import { Component,inject, OnInit } from '@angular/core';
+import { Component.inject,OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { OperacionService } from '../../core/api/operacion.service';
+import { ClinicaService } from '../../core/api/clinica.service';
+
 
 @Component({
   standalone: true,
-  selector: 'app-operacion',
+  selector: 'app-clinica',
   imports: [CommonModule,FormsModule],
-  templateUrl: './operacion.html',
-  styleUrls: ['./operacion.scss']
-
+  templateUrl: './clinica.html',
+  styleUrls: ['./clinica.scss']
 })
-export class OperacionComponent{
- private op = inject(OperacionService);
+export class ClinicaComponent {
+
+ private clin = inject(ClinicaService);
   private router = inject(Router);
 
-  tipo = '';
-  descripcion = '';
+
+  tienda='';
+  direccion='';
+  telefono='';
+  longitud='';
+  latitud='';
   loading = false;
   error = '';
 
@@ -27,11 +32,11 @@ export class OperacionComponent{
     this.error = '';
 
     const payload = {
-      tipo: this.tipo,
+      tienda: this.tienda,
       descripcion: this.descripcion
     };
 
-    this.op.create(payload).subscribe({
+    this.enf.create(payload).subscribe({
       next: () => this.router.navigate(['/home']),
       error: (e: any) => {
         this.error = e?.error?.error || 'Error de registro';
@@ -43,5 +48,4 @@ export class OperacionComponent{
   cerrar() {
     this.router.navigate(['tipo']);
   }
-
 }

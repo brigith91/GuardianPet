@@ -6,12 +6,12 @@
 
             <a routerLink="/Inicio"  class=" enlaces_log "> <img class="imagen-logo"  src="assets/logo.png" alt="Logo GuardianPet" ></a>
 
-           
+
 
             <div class="texto-logo">
                 <a routerLink="/Inicio" class=" enlaces_log "><span class="nombre"><b>Guardian<span class="pet" >Pet</span> </b></span></a>
 
-                
+
                 <span class="eslogan">¡Siempre al lado de tu mascota!</span>
             </div>
         </div>
@@ -22,7 +22,8 @@
                 <a routerLink="/home" *ngIf="auth.isLoggedIn()" class="enlaces">Home</a>
                 <a routerLink="/Inicio" class=" enlaces ">Inicio</a>
                 <a routerLink="/menu" class=" enlaces ">menu</a>
-                
+                  <a routerLink="/clinica" class=" enlaces ">clinica</a>
+
                 <a routerLink="/login" *ngIf="!auth.isLoggedIn()" class="enlaces iniciar_sesion">Iniciar sesión</a>
                 <a routerLink="/registro" *ngIf="!auth.isLoggedIn()" class=" enlaces registrarse">Registrarse</a>
                 <button *ngIf="auth.isLoggedIn()" (click)="logout()" class="linklike" style="margin-left:auto">

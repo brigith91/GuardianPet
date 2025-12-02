@@ -4,15 +4,15 @@
 
         <h2 class="titulo">Agregar enfermedad</h2>
 
-        <form class="formulario">
+        <form (ngSubmit)="onSubmit()">
             <div class="campo">
                 <label class="etiqueta">Tipo</label>
-                <input type="text" class="entrada" placeholder="Tipo de enferdemad" required>
+                <input type="text" class="entrada" [(ngModel)]="tipo" name="tipo" placeholder="Tipo de enferdemad" required>
             </div>
 
             <div class="campo">
                 <label class="etiqueta">Descripción</label>
-                <textarea class="entrada-texto" placeholder="Descripción de la enfermedad" required></textarea>
+                <textarea  [(ngModel)]="descripcion" name="descripcion" class="entrada-texto" placeholder="Descripción de la enfermedad" required></textarea>
             </div>
 
             <button type="submit" class="boton-guardar">Guardar enfermedad</button>
