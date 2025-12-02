@@ -8,6 +8,8 @@ import { MascotasSidebarComponent } from './components/mascotas-sidebar/mascotas
 import { HistorialClinicoComponent } from './components/historial-clinico/historial-clinico.component';
 import { CitasProgramadasComponent } from './components/citas-programadas/citas-programadas.component';
 import { AppointmentService, Cita } from '../../core/api/appointment.service';
+import { VacunaComponent } from './components/vacunas/vacuna.component';
+import { OperacionComponent } from './components/operaciones/operacion.component';
 
 
 @Component({
@@ -17,7 +19,9 @@ import { AppointmentService, Cita } from '../../core/api/appointment.service';
     CommonModule,
     MascotasSidebarComponent,
     HistorialClinicoComponent,
-    CitasProgramadasComponent
+    CitasProgramadasComponent,
+    VacunaComponent,
+    OperacionComponent 
   ],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],

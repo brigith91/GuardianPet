@@ -7,6 +7,9 @@ export interface VacunaCatalog {
   id: number;
   nombre: string;
   descripcion: string;
+  historial_clinico_id_fk: number;
+  fecha:  Date;
+  observaciones?: string;
 }
 
 export interface CrearVacunaDto {
@@ -47,5 +50,5 @@ export class VacunaService {
   // DELETE http://localhost:3000/api/vacunas/:id
   delete(id: number) {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
-  }
+  } 
 }

@@ -1,0 +1,154 @@
+.operaciones {
+  padding: 24px;
+  max-width: 700px;
+  margin: auto;
+
+  h2, h3 {
+    margin-bottom: 12px;
+    color: #1e2a35;   // tono más serio que el de vacunas
+    font-weight: 600;
+  }
+
+  /* ESTADOS */
+  .loading {
+    color: #1565c0;   // azul profesional
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .error {
+    color: #d9534f;
+    background: #ffe8e7;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  /* LISTA DE OPERACIONES */
+  .lista {
+    margin-bottom: 26px;
+
+    .item {
+      background: #ffffff;
+      border-left: 4px solid #2196f3;      // azul → firma de este módulo
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border-radius: 4px;                   // menos curvo que vacunas
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+      transition: background 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+      &:hover {
+        background: #f4f8ff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      }
+
+      strong {
+        font-size: 16px;
+        color: #333;
+      }
+
+      small {
+        font-size: 13px;
+        color: #555;
+      }
+
+      .acciones {
+        display: flex;
+        gap: 10px;
+
+        button {
+          padding: 6px 10px;
+          border: none;
+          cursor: pointer;
+          color: #fff;
+          border-radius: 4px;
+          font-size: 13px;
+          transition: background 0.2s ease, transform 0.1s ease;
+
+          &:hover {
+            transform: scale(1.03);
+          }
+
+          &.editar {
+            background: #1976d2;   // azul más oscuro
+          }
+
+          &.eliminar {
+            background: #f44336;
+          }
+        }
+      }
+    }
+  }
+
+  /* FORMULARIOS — CREAR / EDITAR */
+  form {
+    background: #f9f9fc;                          // más gris que vacunas
+    padding: 18px 20px;
+    border-radius: 6px;
+    border: 1px solid #d0d7e2;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+
+    h3 {
+      margin-bottom: 4px;
+      color: #1e2a35;
+    }
+
+    input,
+    textarea {
+      padding: 8px;
+      border: 1px solid #bfc7d1;
+      border-radius: 4px;
+      font-size: 14px;
+      background: #fff;
+
+      &:focus {
+        border-color: #2196f3;
+        outline: none;
+        box-shadow: 0 0 2px rgba(33, 150, 243, 0.4);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: opacity 0.15s ease;
+
+      &:hover {
+        opacity: 0.9;
+      }
+
+      /* BOTÓN PRINCIPAL */
+      &:first-of-type {
+        background: #2196f3;
+      }
+
+      &.cancelar {
+        background: #6c757d;
+      }
+    }
+  }
+
+  /* BORDE ESPECIAL PARA FORMULARIO DE EDICIÓN */
+  .editar-form {
+    border-left: 4px solid #2196f3;
+  }
+}

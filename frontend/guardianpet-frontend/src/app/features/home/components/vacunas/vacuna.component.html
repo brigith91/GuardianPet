@@ -1,0 +1,63 @@
+<div class="contenedor">
+  <h2>Vacunas </h2>
+
+  
+  <div *ngIf="cargando" class="loading">Cargando vacunas...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+
+  <div class="lista" *ngIf="!cargando">
+    <div class="vacuna-card" *ngFor="let v of vacunas">
+      <div class="info">
+        <h3>{{ v.nombre }}</h3>
+        <p>{{ v.descripcion }}</p>
+      </div>
+
+      <div class="acciones">
+        <button (click)="editar(v)" class="btn editar">Editar</button>
+        <button (click)="eliminar(v.id)" class="btn eliminar">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <form #fNueva="ngForm" (ngSubmit)="onSubmitNueva(fNueva)" class="formulario">
+    <h3>Registrar nueva vacuna</h3>
+
+    <label>
+      Nombre:
+      <input type="text" name="nombre" [(ngModel)]="nueva.nombre" required />
+    </label>
+
+    <label>
+      Descripción:
+      <textarea name="descripcion" [(ngModel)]="nueva.descripcion" required></textarea>
+    </label>
+
+    <button class="btn crear" type="submit" [disabled]="fNueva.invalid">Agregar Vacuna</button>
+  </form>
+
+  
+  <form
+    *ngIf="editando"
+    #fEditar="ngForm"
+    (ngSubmit)="guardarEdicion()"
+    class="formulario editar-form"
+  >
+    <h3>Editando vacuna</h3>
+
+    <label>
+      Nombre:
+      <input type="text" name="nombre" [(ngModel)]="editModel.nombre" required />
+    </label>
+
+    <label>
+      Descripción:
+      <textarea name="descripcion" [(ngModel)]="editModel.descripcion" required></textarea>
+    </label>
+
+    <button class="btn guardar" type="submit">Guardar cambios</button>
+    <button type="button" class="btn cancelar" (click)="cancelarEdicion()">Cancelar</button>
+
+  </form>
+</div>

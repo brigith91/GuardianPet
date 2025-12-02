@@ -1,0 +1,37 @@
+<div class="operaciones">
+
+  <h3>Operaciones</h3>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <form [formGroup]="fOperacion" (ngSubmit)="editando ? guardarEdicion() : crear()">
+
+    <input formControlName="tipo" placeholder="Tipo de operación" />
+    <textarea formControlName="descripcion" placeholder="Descripción"></textarea>
+
+    <button type="submit">
+      {{ editando ? 'Guardar cambios' : 'Agregar operación' }}
+    </button>
+
+    <button *ngIf="editando" type="button" class="cancelar" (click)="cancelarEdicion()">
+      Cancelar
+    </button>
+
+  </form>
+
+  <div class="lista">
+    <div class="item" *ngFor="let op of operaciones">
+
+      <div>
+        <strong>{{ op.tipo }}</strong><br/>
+        <small>{{ op.descripcion }}</small>
+      </div>
+
+      <div class="acciones">
+        <button (click)="editar(op)">Editar</button>
+        <button class="eliminar" (click)="eliminar(op.id)">Eliminar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
