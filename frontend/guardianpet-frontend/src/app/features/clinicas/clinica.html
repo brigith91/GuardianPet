@@ -1,34 +1,72 @@
 <div class="contenedor-centro">
-<div class="contenedor">
-        <button class="boton-cerrar" (click)="cerrar()">&times;</button>
+  <div class="contenedor">
+    <button class="boton-cerrar" (click)="cerrar()">&times;</button>
 
-        <h2 class="titulo">Agregar enfermedad</h2>
+    <h2 class="titulo">Agregar Clínica</h2>
 
-        <form (ngSubmit)="onSubmit()">
-            <div class="campo">
-                <label class="etiqueta">Tienda</label>
-                <input type="text" class="entrada" [(ngModel)]="tienda" name="tienda" placeholder="Tipo de enferdemad" required>
-            </div>
-              <div class="campo">
-                <label class="etiqueta">direccion</label>
-                <input type="text" class="entrada" [(ngModel)]="direccion" name="direccion" placeholder="Tipo de enferdemad" required>
-            </div>
-            </div>
-              <div class="campo">
-                <label class="etiqueta">telefono</label>
-                <input type="text" class="entrada" [(ngModel)]="telefono" name="telefono" placeholder="Tipo de enferdemad" required>
-            </div>
-             <div class="campo">
-                <label class="etiqueta">latitud</label>
-                <input type="text" class="entrada" [(ngModel)]="latitud" name="latitud" placeholder="Tipo de enferdemad" required>
-            </div>
-              <div class="campo">
-                <label class="etiqueta">longitud</label>
-                <input type="text" class="entrada" [(ngModel)]="longitud" name="longitud" placeholder="Tipo de enferdemad" required>
-            </div>
+    <form (ngSubmit)="onSubmit()">
+      <div class="campo">
+        <label class="etiqueta">Tienda</label>
+        <input
+          type="text"
+          class="entrada"
+          [(ngModel)]="tienda"
+          name="tienda"
+          placeholder="Nombre de la tienda"
+          required>
+      </div>
 
+      <div class="campo">
+        <label class="etiqueta">Dirección</label>
+        <input
+          type="text"
+          class="entrada"
+          [(ngModel)]="direccion"
+          name="direccion"
+          placeholder="Dirección de la clínica"
+          required>
+      </div>
 
-            <button type="submit" class="boton-guardar">Guardar enfermedad</button>
-        </form>
-    </div>
+      <div class="campo">
+        <label class="etiqueta">Teléfono</label>
+        <input
+          type="text"
+          class="entrada"
+          [(ngModel)]="telefono"
+          name="telefono"
+          placeholder="Número de teléfono"
+          required>
+      </div>
+
+      <div class="campo">
+        <label class="etiqueta">Latitud</label>
+        <input
+          type="text"
+          class="entrada"
+          [(ngModel)]="latitud"
+          name="latitud"
+          placeholder="Latitud"
+          required>
+      </div>
+
+      <div class="campo">
+        <label class="etiqueta">Longitud</label>
+        <input
+          type="text"
+          class="entrada"
+          [(ngModel)]="longitud"
+          name="longitud"
+          placeholder="Longitud"
+          required>
+      </div>
+
+      <div *ngIf="error" class="error-mensaje">
+        {{ error }}
+      </div>
+
+      <button type="submit" class="boton-guardar" [disabled]="loading">
+        {{ loading ? 'Guardando...' : 'Guardar clínica' }}
+      </button>
+    </form>
+  </div>
 </div>

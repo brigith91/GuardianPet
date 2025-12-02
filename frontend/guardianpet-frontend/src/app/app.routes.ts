@@ -27,6 +27,7 @@ export const routes: Routes = [
   { path: 'tratamiento', canMatch: [authGuard], loadComponent: () => import('./features/tratamiento/tratamiento').then(m => m.TratamientoComponent) },
   { path: 'vacuna', canMatch: [authGuard], loadComponent: () => import('./features/vacuna/vacuna').then(m => m.VacunaComponent) },
   { path: 'chat', canMatch: [authGuard],  loadComponent: () => import('./features/chat/chat').then(m => m.ChatComponent) },
+  { path: 'veterinario', canMatch: [authGuard], loadComponent: () => import('./features/veterinario/veterinario').then(m => m.VeterinarioComponent) },
 
 
 

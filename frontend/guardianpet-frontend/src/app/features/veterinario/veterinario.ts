@@ -2,25 +2,23 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ClinicaService } from '../../core/api/clinica.service';
+import { VeterinarioService } from '../../core/api/veterinario.service';
 
 @Component({
   standalone: true,
-  selector: 'app-clinica',
-  imports: [CommonModule, FormsModule],
-  templateUrl: './clinica.html',
-  styleUrls: ['./clinica.scss']
+  selector: 'app-veterinario',
+  templateUrl: './veterinario.html',
+  styleUrls: ['./veterinario.scss'],
+  imports: [CommonModule, FormsModule]
 })
-export class ClinicaComponent {
+export class VeterinarioComponent {
 
-  private clin = inject(ClinicaService);
+  private vet = inject(VeterinarioService);
   private router = inject(Router);
 
-  tienda = '';
-  direccion = '';
-  telefono = '';
-  longitud = '';
-  latitud = '';
+  nombre = '';
+  email = '';
+  matricula = '';
   loading = false;
   error = '';
 
@@ -30,14 +28,12 @@ export class ClinicaComponent {
     this.error = '';
 
     const payload = {
-      tienda: this.tienda,
-      direccion: this.direccion,
-      telefono: this.telefono,
-      longitud: this.longitud,
-      latitud: this.latitud
+      nombre: this.nombre,
+      email: this.email,
+      matricula: this.matricula
     };
 
-    this.clin.create(payload as any).subscribe({
+    this.vet.create(payload as any).subscribe({
       next: () => this.router.navigate(['/home']),
       error: (e: any) => {
         this.error = e?.error?.error || 'Error de registro';

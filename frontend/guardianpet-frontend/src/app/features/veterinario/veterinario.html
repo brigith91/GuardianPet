@@ -1,0 +1,50 @@
+<div class="contenedor-centro">
+  <div class="contenedor">
+    <button class="boton-cerrar" (click)="cerrar()">&times;</button>
+
+    <h2 class="titulo">Agregar Veterinario</h2>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="campo">
+        <label class="etiqueta">Nombre</label>
+        <input
+          type="text"
+          class="entrada"
+          [(ngModel)]="nombre"
+          name="nombre"
+          placeholder="Nombre completo del veterinario"
+          required>
+      </div>
+
+      <div class="campo">
+        <label class="etiqueta">Email</label>
+        <input
+          type="email"
+          class="entrada"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="correo@ejemplo.com"
+          required>
+      </div>
+
+      <div class="campo">
+        <label class="etiqueta">Matrícula</label>
+        <input
+          type="text"
+          class="entrada"
+          [(ngModel)]="matricula"
+          name="matricula"
+          placeholder="Número de matrícula profesional"
+          required>
+      </div>
+
+      <div *ngIf="error" class="error-mensaje">
+        {{ error }}
+      </div>
+
+      <button type="submit" class="boton-guardar" [disabled]="loading">
+        {{ loading ? 'Guardando...' : 'Guardar Veterinario' }}
+      </button>
+    </form>
+  </div>
+</div>
