@@ -55,11 +55,11 @@ El desarrollo se guió por un enfoque integrado para garantizar la calidad y la 
 Estructura del Repositorio
 El código fuente sigue una estructura modular para facilitar la escalabilidad y el mantenimiento:
 GuardianPet/
-├── src/            # Núcleo funcional (Controladores, Rutas y Lógica de Negocio en JavaScript)
-├── prisma/         # Modelo de datos y relaciones de MySQL (schema.prisma) 
-├── public/         # Archivos estáticos (CSS, imágenes) 
-├── views/          # Componentes del Frontend (Vistas)
-└── .gitignore
+.src/            # Núcleo funcional (Controladores, Rutas y Lógica de Negocio en JavaScript)
+.prisma/         # Modelo de datos y relaciones de MySQL (schema.prisma) 
+.public/         # Archivos estáticos (CSS, imágenes) 
+.views/          # Componentes del Frontend (Vistas)
+.gitignore
 
 --------------------------------------------------------------------------------
  Estado del Proyecto y Limitaciones
